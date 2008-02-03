@@ -1,4 +1,4 @@
-/* $Id: host_cmd.c,v 1.1 2008/02/03 08:27:51 slotzero Exp $
+/* $Id: host_cmd.c,v 1.2 2008/02/03 08:50:34 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -487,7 +487,7 @@ void Host_Connect_f (void)
 	cls.demonum = -1;		// stop demo loop in case this fails
 	if (cls.demoplayback)
 	{
-		CL_StopPlayback ();
+		//CL_StopPlayback ();
 		CL_Disconnect ();
 	}
 	strcpy (name, Cmd_Argv(1));
@@ -2096,7 +2096,7 @@ void Host_Stopdemo_f (void)
 		return;
 	if (!cls.demoplayback)
 		return;
-	CL_StopPlayback ();
+	//CL_StopPlayback ();
 	CL_Disconnect ();
 }
 

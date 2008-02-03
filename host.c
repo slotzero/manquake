@@ -1,4 +1,4 @@
-/* $Id: host.c,v 1.1 2008/02/03 08:27:51 slotzero Exp $
+/* $Id: host.c,v 1.2 2008/02/03 08:50:34 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -134,7 +134,7 @@ void Host_EndGame (char *message, ...)
 
 	if (cls.demonum != -1)
 	{
-		CL_StopPlayback ();	// JPG 1.05 - patch by CSR to fix crash
+		//CL_StopPlayback ();	// JPG 1.05 - patch by CSR to fix crash
 		CL_NextDemo ();
 	}
 	else

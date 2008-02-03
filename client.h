@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -121,7 +121,7 @@ typedef struct
 {
 	cactive_t	state;
 
-// personalization data sent to server	
+// personalization data sent to server
 	char		mapstring[MAX_QPATH];
 	char		spawnparms[MAX_MAPSTRING];	// to restart a level
 
@@ -145,7 +145,7 @@ typedef struct
 	int			signon;			// 0 to SIGNONS
 	struct qsocket_s	*netcon;
 	sizebuf_t	message;		// writing buffer to send to server
-	
+
 } client_static_t;
 
 extern client_static_t	cls;
@@ -158,7 +158,7 @@ typedef struct
 {
 	int			movemessages;	// since connecting to this server
 								// throw out the first couple, so the player
-								// doesn't accidentally do something the 
+								// doesn't accidentally do something the
 								// first frame
 	usercmd_t	cmd;			// last command sent to the server
 
@@ -178,13 +178,13 @@ typedef struct
 	vec3_t		mviewangles[2];	// during demo playback viewangles is lerped
 								// between these
 	vec3_t		viewangles;
-	
+
 	vec3_t		mvelocity[2];	// update by server, used for lean+bob
 								// (0 is newest)
 	vec3_t		velocity;		// lerped between mvelocity[0] and [1]
 
 	vec3_t		punchangle;		// temporary offset
-	
+
 // pitch drifting vars
 	float		idealpitch;
 	float		pitchvel;
@@ -198,17 +198,17 @@ typedef struct
 	qboolean	paused;			// send over by server
 	qboolean	onground;
 	qboolean	inwater;
-	
+
 	int			intermission;	// don't change view angle, full screen, etc
 	int			completed_time;	// latched at intermission start
-	
-	double		mtime[2];		// the timestamp of last two messages	
+
+	double		mtime[2];		// the timestamp of last two messages
 	double		time;			// clients view of time, should be between
 								// servertime and oldservertime to generate
 								// a lerp point for other data
 	double		oldtime;		// previous cl.time, time-oldtime is used
 								// to decay light values and smooth step ups
-	
+
 
 	float		last_received_message;	// (realtime) for net trouble icon
 
@@ -361,17 +361,6 @@ void CL_BaseMove (usercmd_t *cmd);
 
 float CL_KeyState (kbutton_t *key);
 char *Key_KeynumToString (int keynum);
-
-//
-// cl_demo.c
-//
-void CL_StopPlayback (void);
-int CL_GetMessage (void);
-
-void CL_Stop_f (void);
-void CL_Record_f (void);
-void CL_PlayDemo_f (void);
-void CL_TimeDemo_f (void);
 
 //
 // cl_parse.c

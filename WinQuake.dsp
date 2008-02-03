@@ -164,6 +164,19 @@ SOURCE=.\chase.c
 # Begin Source File
 
 SOURCE=.\cl_demo.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 GL Debug"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 GL Release"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
