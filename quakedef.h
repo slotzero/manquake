@@ -1,4 +1,4 @@
-/* $Id: quakedef.h,v 1.1 2008/02/03 08:27:58 slotzero Exp $
+/* $Id: quakedef.h,v 1.2 2008/02/03 20:24:06 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -337,15 +337,6 @@ extern int			current_skill;		// skill level for currently loaded level (in case
 extern qboolean		isDedicated;
 
 extern int			minimum_memory;
-
-//
-// chase
-//
-extern	cvar_t	chase_active;
-
-void Chase_Init (void);
-void Chase_Reset (void);
-void Chase_Update (void);
 
 extern char dequake[256];	// JPG 1.05 - dedicated console translation
 extern cvar_t pq_dequake;	// JPG 1.05 - dedicated console translation

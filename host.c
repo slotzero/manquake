@@ -1,4 +1,4 @@
-/* $Id: host.c,v 1.3 2008/02/03 19:56:03 slotzero Exp $
+/* $Id: host.c,v 1.4 2008/02/03 20:24:06 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -970,7 +970,6 @@ void Host_Init (quakeparms_t *parms)
 	Cbuf_Init ();
 	Cmd_Init ();
 	V_Init ();
-	Chase_Init ();
 	Host_InitVCR (parms);
 	COM_Init (parms->basedir);
 	Host_InitLocal ();

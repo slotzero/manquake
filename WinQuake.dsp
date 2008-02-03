@@ -94,10 +94,6 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\chase.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\cl_input.c
 # End Source File
 # Begin Source File
@@ -213,22 +209,57 @@ InputName=d_draw16
 # Begin Source File
 
 SOURCE=.\d_edge.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_fill.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_init.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_modech.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_part.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -307,10 +338,24 @@ InputName=d_polysa
 # Begin Source File
 
 SOURCE=.\d_polyse.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_scan.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -352,6 +397,13 @@ InputName=d_scana
 # Begin Source File
 
 SOURCE=.\d_sky.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -393,14 +445,35 @@ InputName=d_spr8
 # Begin Source File
 
 SOURCE=.\d_sprite.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_surf.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_vars.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -442,6 +515,13 @@ InputName=d_varsa
 # Begin Source File
 
 SOURCE=.\d_zpoint.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

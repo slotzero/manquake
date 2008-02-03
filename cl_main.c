@@ -736,7 +736,7 @@ void CL_RelinkEntities (void)
 
 		ent->forcelink = false;
 
-		if (i == cl.viewentity && (!chase_active.value || pq_cheatfree))	// JPG 3.20 - added pq_cheatfree
+		if (i == cl.viewentity &&  pq_cheatfree)	// JPG 3.20 - added pq_cheatfree
 			continue;
 
 #ifdef QUAKE2
