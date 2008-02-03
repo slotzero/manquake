@@ -133,7 +133,6 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/iplog.o \
 	$(BUILDDIR)/squake/keys.o \
 	$(BUILDDIR)/squake/location.o \
-	$(BUILDDIR)/squake/matrix.o \
 	$(BUILDDIR)/squake/menu.o \
 	$(BUILDDIR)/squake/mathlib.o \
 	$(BUILDDIR)/squake/model.o \
