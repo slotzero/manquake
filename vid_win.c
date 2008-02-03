@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -214,7 +214,7 @@ ClearAllStates
 void ClearAllStates (void)
 {
 	int		i;
-	
+
 // send an up event for each key, to make sure the server clears them all
 	for (i=0 ; i<256 ; i++)
 	{
@@ -290,7 +290,7 @@ qboolean VID_AllocBuffers (int width, int height)
 
 	vid_surfcache = (byte *)d_pzbuffer +
 			width * height * sizeof (*d_pzbuffer);
-	
+
 	return true;
 }
 
@@ -318,7 +318,6 @@ int VID_Suspend (MGLDC *dc,m_int flags)
 		S_ClearBuffer ();
 
 		IN_RestoreOriginalMouseState ();
-		CDAudio_Pause ();
 
 	// keep WM_PAINT from trying to redraw
 		in_mode_set = true;
@@ -332,7 +331,6 @@ int VID_Suspend (MGLDC *dc,m_int flags)
 		IN_SetQuakeMouseState ();
 	// fix the leftover Alt from any Alt-Tab or the like that switched us away
 		ClearAllStates ();
-		CDAudio_Resume ();
 		S_UnblockSound ();
 
 		in_mode_set = false;
@@ -1002,7 +1000,7 @@ int VID_NumModes (void)
 	return nummodes;
 }
 
-	
+
 /*
 =================
 VID_GetModePtr
@@ -1597,7 +1595,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	scr_disabled_for_loading = true;
 	in_mode_set = true;
 
-	CDAudio_Pause ();
 	S_ClearBuffer ();
 
 	if (vid_modenum == NO_MODE)
@@ -1638,7 +1635,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	window_height = vid.height << vid_stretched;
 	VID_UpdateWindowStatus ();
 
-	CDAudio_Resume ();
 	scr_disabled_for_loading = temp;
 
 	if (!stat)
@@ -1752,8 +1748,8 @@ void VID_LockBuffer (void)
 	if (lcd_x.value)
 		screenwidth <<= 1;
 }
-		
-		
+
+
 void VID_UnlockBuffer (void)
 {
 	if (dibdc)
@@ -1921,7 +1917,7 @@ VID_DescribeMode_f
 void VID_DescribeMode_f (void)
 {
 	int		modenum;
-	
+
 	modenum = Q_atoi (Cmd_Argv(1));
 
 	Con_Printf ("%s\n", VID_GetExtModeDescription (modenum));
@@ -2588,27 +2584,27 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 //==========================================================================
 
-byte        scantokey[128] = 
-					{ 
-//  0           1       2       3       4       5       6       7 
-//  8           9       A       B       C       D       E       F 
-	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6', 
-	'7',    '8',    '9',    '0',    '-',    '=',    K_BACKSPACE, 9, // 0 
-	'q',    'w',    'e',    'r',    't',    'y',    'u',    'i', 
-	'o',    'p',    '[',    ']',    13 ,    K_CTRL,'a',  's',      // 1 
-	'd',    'f',    'g',    'h',    'j',    'k',    'l',    ';', 
-	'\'' ,    '`',    K_SHIFT,'\\',  'z',    'x',    'c',    'v',      // 2 
-	'b',    'n',    'm',    ',',    '.',    '/',    K_SHIFT,'*', 
-	K_ALT,' ',   0  ,    K_F1, K_F2, K_F3, K_F4, K_F5,   // 3 
-	K_F6, K_F7, K_F8, K_F9, K_F10,  K_PAUSE,    0  , K_HOME, 
-	K_UPARROW,K_PGUP,'-',K_LEFTARROW,'5',K_RIGHTARROW,'+',K_END, //4 
-	K_DOWNARROW,K_PGDN,K_INS,K_DEL,0,0,             0,              K_F11, 
+byte        scantokey[128] =
+					{
+//  0           1       2       3       4       5       6       7
+//  8           9       A       B       C       D       E       F
+	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6',
+	'7',    '8',    '9',    '0',    '-',    '=',    K_BACKSPACE, 9, // 0
+	'q',    'w',    'e',    'r',    't',    'y',    'u',    'i',
+	'o',    'p',    '[',    ']',    13 ,    K_CTRL,'a',  's',      // 1
+	'd',    'f',    'g',    'h',    'j',    'k',    'l',    ';',
+	'\'' ,    '`',    K_SHIFT,'\\',  'z',    'x',    'c',    'v',      // 2
+	'b',    'n',    'm',    ',',    '.',    '/',    K_SHIFT,'*',
+	K_ALT,' ',   0  ,    K_F1, K_F2, K_F3, K_F4, K_F5,   // 3
+	K_F6, K_F7, K_F8, K_F9, K_F10,  K_PAUSE,    0  , K_HOME,
+	K_UPARROW,K_PGUP,'-',K_LEFTARROW,'5',K_RIGHTARROW,'+',K_END, //4
+	K_DOWNARROW,K_PGDN,K_INS,K_DEL,0,0,             0,              K_F11,
 	K_F12,0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 5
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0, 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 6 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0, 
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0         // 7 
-}; 
+	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,
+	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 6
+	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,
+	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0         // 7
+};
 
 /*
 =======
@@ -2803,8 +2799,6 @@ MAIN WINDOW
 ===================================================================
 */
 
-LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
 /* main window procedure */
 LONG WINAPI MainWndProc (
     HWND    hWnd,
@@ -2880,7 +2874,7 @@ LONG WINAPI MainWndProc (
 
 		case WM_SIZE:
 			Minimized = false;
-			
+
 			if (!(wParam & SIZE_RESTORED))
 			{
 				if (wParam & SIZE_MINIMIZED)
@@ -2960,7 +2954,7 @@ LONG WINAPI MainWndProc (
 		// JACK: This is the mouse wheel with the Intellimouse
 		// Its delta is either positive or neg, and we generate the proper
 		// Event.
-		case WM_MOUSEWHEEL: 
+		case WM_MOUSEWHEEL:
 			if ((short) HIWORD(wParam) > 0) {
 				Key_Event(K_MWHEELUP, true);
 				Key_Event(K_MWHEELUP, false);
@@ -3020,7 +3014,7 @@ LONG WINAPI MainWndProc (
 			break;
 
 		case MM_MCINOTIFY:
-            lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
+            lRet = 1;
 			break;
 
 		default:
@@ -3089,7 +3083,7 @@ void VID_MenuDraw (void)
 
 	vid_wmodes = 3;
 	lnummodes = VID_NumModes ();
-	
+
 	for (i=3 ; i<lnummodes ; i++)
 	{
 		ptr = VID_GetModeDescriptionMemCheck (i);
@@ -3112,7 +3106,7 @@ void VID_MenuDraw (void)
 				}
 			}
 
-			if (dup || (vid_wmodes < MAX_MODEDESCS))       
+			if (dup || (vid_wmodes < MAX_MODEDESCS))
 			{
 				if (!dup || !modedescs[dupmode].ismode13 || COM_CheckParm("-noforcevga"))
 				{

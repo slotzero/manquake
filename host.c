@@ -1,4 +1,4 @@
-/* $Id: host.c,v 1.2 2008/02/03 08:50:34 slotzero Exp $
+/* $Id: host.c,v 1.3 2008/02/03 19:56:03 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -821,8 +821,6 @@ void _Host_Frame (float time)
 	else
 		S_Update (vec3_origin, vec3_origin, vec3_origin, vec3_origin);
 
-	CDAudio_Update();
-
 	if (host_speeds.value)
 	{
 		pass1 = (time1 - time3)*1000;
@@ -1021,7 +1019,6 @@ void Host_Init (quakeparms_t *parms)
 #endif
 
 #endif	// _WIN32
-		CDAudio_Init ();
 		Sbar_Init ();
 		CL_Init ();
 #ifdef _WIN32 // on non win32, mouse comes before video for security reasons
@@ -1065,7 +1062,6 @@ void Host_Shutdown(void)
 	Host_WriteConfiguration ();
 	IPLog_WriteLog ();	// JPG 1.05 - ip loggging
 
-	CDAudio_Shutdown ();
 	NET_Shutdown ();
 	S_Shutdown();
 	IN_Shutdown ();
