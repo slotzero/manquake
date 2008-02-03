@@ -289,9 +289,6 @@ $(BUILDDIR)/squake/keys.o :     $(MOUNT_DIR)/keys.c
 $(BUILDDIR)/squake/location.o : $(MOUNT_DIR)/location.c
 	$(DO_CC)
 
-$(BUILDDIR)/squake/matrix.o :   $(MOUNT_DIR)/matrix.c
-	$(DO_CC)
-
 $(BUILDDIR)/squake/menu.o :     $(MOUNT_DIR)/menu.c
 	$(DO_CC)
 
