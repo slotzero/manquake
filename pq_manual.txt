@@ -1,0 +1,951 @@
+Title    : ProQuake version 3.50
+Filename : wqpro330.zip / glpro350.zip
+Version  : 3.50
+Date     : September 21, 2002
+Author   : J.P. Grossman (a.k.a. Mephistopheles)
+Email    : jpg@ai.mit.edu
+URL      : http://planetquake.com/proquake
+
+
+Welcome to ProQuake.  
+
+ProQuake is the first modification to the quake source which is specifically 
+intended for intense deathmatch play.  You won't find spiffy new graphics, 
+cheats, changes to the physics, or features that work "most of the time".  
+What you will find is a rock solid set of enhancements to unmodified netquake.
+Things that quake should have had from the get go.. like precise aim.  Small, 
+simple changes that improve the quality of netplay enormously.
+
+ProQuake is fully compatible with standard NetQuake.  NetQuake clients can 
+connect to ProQuake servers, ProQuake clients can connect to NetQuake 
+servers, and ProQuake servers can run exactly the same modifications as 
+NetQuake servers.  ProQuake is also fully compatible with the advanced 
+features of Clanring CRMod++ version 6.0 including team scores, match 
+timer and client pings.
+
+==============
+Important Note
+==============
+
+If you are getting an error telling you that your video mode is not supported 
+and that you should try 65536 colours or the -window option, you need to go to
+http://www.3dfxgamers.com to download the latest miniGL driver.
+
+============
+Installation
+============
+
+1.  wqpro: Make sure that you have winquake installed and working properly
+    glpro: Make sure that you have GLquake installed and working properly
+
+2.  Place wqpro.exe/glpro.exe in the same directory as winquake/glquake
+
+3.  Create the subdirectory id1/locs and put the .loc files there
+
+4.  Start wqpro.exe/glpro.exe exactly as you started winquake/glquake
+
+5.  READ THE MANUAL!!!
+
+=====================
+New Console Variables
+=====================
+
+pq_timer (0/1)            - enable/disable timer in status bar
+pq_teamscores (0/1)       - enable/disable teamscores in status bar (*)
+pq_scoreboard_pings (0/1) - enable/disable client ping times in scoreboard
+pq_lag (0-400)            - set the amount of synthetic lag in ms
+pq_drawfps (0/1)          - enable/disable frames per second display
+pq_maxfps                 - change the maximum frames per second
+r_waterwarp (0/1)         - added to GLPro (was already in winquake)
+pq_spam_rate              - used to detect spamming
+pq_spam_grace             - temporary grace before spammer is silenced
+pq_haverl                 - %r string for "I have RL"
+pq_needrl                 - %r string for "I need RL"
+pq_needrox                - %r string for "I need rockets"
+pq_quad                   - %p string for quad
+pq_pent                   - %p string for pent
+pq_ring                   - %p string for ring
+pq_weapons                - %w string for weapons
+pq_noweapons              - %w string for no weapons
+pq_moveup (0/1)           - translate +jump to +moveup underwater
+pq_waterblend (0.0 - 1.0) - control underwater colour change
+pq_quadblend (0.0 - 1.0)  - control quad colour change
+pq_pentblend (0.0 - 1.0)  - control pent colour change
+pq_ringblend (0.0 - 1.0)  - control ring colour change
+pq_suitblend (0.0 - 1.0)  - control suit colour change
+pq_fullpitch (0/1)        - enable/disable aiming straight up & down
+pq_timestamp (0/1/2)      - timestamp other players' binds during match
+pq_confilter (0/1)        - filter out "you got" messages
+pq_dequake (0/1)          - plain text output in dedicated server console
+net_connecttimeout        - timeout value for new network connections
+pq_password               - 7-digit password for password-proteceted servers
+rcon_password             - rcon password string
+rcon_server               - rcon server IP address or DNS name
+gl_doubleeyes             - was always there, but was spelled wrong!
+pq_cheatfree (0/1)        - controls weather or not server is cheat-free
+pq_tempmute (0/1)         - enable/disable muting after colour/name change
+pq_removecr (0/1)         - enable/disable removal of '\r' from console
+r_polyblend (0/1)         - wqpro equivalent of gl_polyblend
+
+(*) This feature is only available when connected to CRMod++ 6.0 servers
+
+============
+New Commands
+============
+
+ping +N                   - equivalent to "pq_lag N", e.g. ping +80
+identify <number/name/ip> - identify a player by number, name or ip
+ipdump                    - create human-readable iplog.txt
+ipmerge                   - import another iplog.dat file
+rcon                      - remote console protocol
+bestweapon                - QuakePro+ best weapon selection
+cheatfree                 - find out if you're connected to a cheat-free server
+
+=========================
+Complete List of Features
+=========================
+
+Client Side
+-----------
+
+- Precise aim when connected to ProQuake server
+- Auto-smooth for chasecam/eyecam observer modes
+- Longer mm1/mm2 messages
+- '(say):' replaces 'say:' for mm2
+- Fixed console backscrolling
+- Fixed HOME and END in console
+- Larger console buffer
+- Teamscores displayed in status bar
+- Timer displayed in status bar
+- Pings displayed in scoreboard
+- Sound volume reset to DosQuake levels
+- Synthetic lag
+- Added r_waterwarp to GLPro
+- Crosshair adjustment
+- Frames per second display
+- Support for status, time, location and weapon binds
+- CTRL+V pasting support for console/messagemode
+- Translate +jump to +moveup underwater
+- Changed default zone size to 512
+- "Use Mouse" menu option for X11
+- Control over palette change underwater/with powerup
+- Aim straight up or down
+- Timestamp other players' binds during match
+- Filter out "you got" messages from console
+- Autorepeat for Page Up, Page Down, TAB in console
+- Improved location logic
+- Improved command completion
+- Automatic ip logging / player identification
+- Record demos after connecting to server
+- Set the maximum frames per second
+- Fast connections
+- rcon - remote console protocol
+- Fixed buffer overrun problem with NVidia 5.16 drivers
+- Put [] around your score in the scoreboard
+- Fixed test/test2 commands
+- Fixed spelling of gl_doubleeyes
+- LordHavoc's GL_LoadTexture bug fix
+- Gamma correction for glpro
+- Gamma correction for wqpro screenshots
+- Remove '\r' from console output
+- Recognizes ip_address:port notation
+- Fullbright shaft in glpro
+- r_polyblend in wqpro (same as gl_polyblend in glpro)
+- Support for more graphics modes in glpro
+- Four button mouse support
+- Mouse wheel support
+- QuakePro+ "bestweapon" command
+
+Server Side
+-----------
+
+- Allows multiple connections from a single IP address
+- Precise aim for ProQuake clients
+- ( ) in mm2
+- Named console logs with auto-increment
+- Timestamps in console logs
+- Disabled tell
+- Muted console variables
+- Fixed disable-server security hole
+- Added -ip command line parameter to linux binary
+- Spam protection
+- Changed default zone size to 512
+- Automatic ip logging / player identification
+- qflood protection
+- Plain text console output
+- Fullpitch correction
+- Password-protected servers
+- rcon - remote console protocol
+- Players can't say/say_team immediately after changing name/colour
+- Fixed win2k compatibility problem
+- Remove '\n' and '\r' from player names
+- Fixed incoming message buffer overflow (q1crash)
+- Optionally log player binds to log file
+
+============================================
+Detailed Description of Client Side Features
+============================================
+
+Precise aim when connected to ProQuake server
+---------------------------------------------
+
+Quake transmits your aiming direction over the network as two angles in 
+spherical coordinates.  Each of these angles is sent as a byte, that is, as 
+an integer between 0 and 255.  This quantization means a loss of accuracy of 
+more than one degree - you may have noticed that on some long rocket launcher
+shots, the rocket doesn't quite go where you aimed it (almost, but not quite).  
+
+When a ProQuake client connects to a ProQuake server, the angles are sent as 
+integers between 0 and 65535, giving you 256 times the accuracy that you have 
+in standard quake, and enough resolution to pick up a one pixel difference in 
+your aiming direction.
+
+Auto-smooth for chasecam/eyecam observer modes
+----------------------------------------------
+
+Finally, the holy grail of observer modes!!  Anyone familiar with chasecam 
+observer modes knows how bad they are.. the viewing angle seems to jitter all 
+over the place.  This problem can be partially fixed using "cl_nolerp 1", but 
+this causes a 20fps choppiness effect.  ProQuake autodetects these observer 
+modes and fixes this problem, giving you a perfectly smooth, demo-style 
+viewing experience.
+
+Longer mm1/mm2 messages
+-----------------------
+
+In standard Quake you can only type 31 characters in messagemode 1 or 2.  In 
+ProQuake you can type 44 characters in messagemode 1 and 42 in messagemode 2 
+(these are the maximum lengths that guarantee the message won't get cut off by
+standard quake servers).
+
+'(say):' replaces 'say:' for mm2
+--------------------------------
+
+When typing in messagemode 2, ProQuake displays '(say):' instead of 'say:' at 
+the left side of the screen.  This allows you to verify the messagemode and 
+avoid sending messagemode 1 messages by mistake.
+
+Fixed console backscrolling
+---------------------------
+
+Anyone who has tried to retrieve information from their console is familiar 
+with the problem that every time someone says something, the console pops back
+down to the end.  This is fixed in ProQuake; you can backscroll to your 
+heart's content.
+
+Fixed HOME and END in console
+-----------------------------
+
+The boys at Id Software wrote code for HOME and END to take you to the start 
+and end (respectively) of the console buffer.  But they forgot to set the 
+flags on these keys which tell the console to pay attention to them!  This has
+been fixed.
+
+Larger console buffer
+---------------------
+
+The size of the console buffer has been increased from 16384 bytes to 65536 
+bytes, making it more likely that you will find what you are looking for when 
+you backscroll.
+
+Teamscores displayed in status bar
+----------------------------------
+
+When you connect to a Clanring CRMod++ version 6.0 server running in match 
+mode, team scores will be displayed in your status bar instead of individual 
+scores.  This feature does not> work with earlier versions of CRMod.  You can 
+enable/disable this feature using the new console variable 'pq_teamscores'.
+
+Timer displayed in status bar
+-----------------------------
+
+The timer that you see when you press TAB (or whatever you have +showscores 
+bound to) now appears by default in the top right of your status bar.  In 
+match mode on clanring servers, the timer will show the time remaining in a 
+match.  When you connect to a Clanring CRMod++ version 6.0 server, the match 
+timer will also show a countdown to match starts, will display "SD" for sudden
+death overtime, and will activate as soon as you connect to the server.  For 
+older versions of CRMod only the time remaining will be displayed, and the 
+feature may take a minute to kick in if you join a server with a match in 
+progress.  You can enable/disable this feature using the new console variable 
+'pq_timer'.
+
+Pings displayed in scoreboard
+-----------------------------
+
+ProQuake will display player ping times in the scoreboard to the left of 
+frags.  When you connect to a Clanring CRMod++ version 6.0 server, the ping 
+times are updated every second.  For all other servers the ping times are 
+updated every five seconds.  You can enable/disable this feature using the 
+new console variable 'pq_scoreboard_pings'.
+
+Sound volume reset to DosQuake levels
+-------------------------------------
+
+A little known fact of Quake is that you can hear more in DosQuake than you 
+can in WinQuake.  Sounds travel roughly 50% further in DosQuake, giving 
+DosQuake users a big advantage (the smart ones, anyways).  ProQuake returns 
+the sounds to their original DosQuake levels, so that everyone is once again 
+on equal footing.
+
+Synthetic lag
+-------------
+
+ProQuake allows you to introduce synthetic lag which, despite the term 
+"synthetic", is real, honest to god lag, and not a ping cheat.  "synthetic" 
+just means that the lag is introduced by the software as opposed to the 
+network.  Synthetic lag is useful for:
+
+- Raising your ping to participate in an all-HPB match
+- Practicing your HPB skills at home
+- Proving to that whiner that no, you're not just beating him because of 
+  your ping
+
+To raise your ping, type "ping +N" in the console, where N is the desired ping
+increase measured in milliseconds.  Alternately, you can set the console 
+variable pq_lag to the desired value.  To remove the synthetic lag type 
+"ping +0" or "pq_lag 0".  ProQuake cannot be used to reduce lag ;p
+
+Added r_waterwarp to GLPro
+--------------------------
+
+Thanks go to Radix (radix@planetquake.com) for this one.
+
+The console variable r_waterwarp has been added to GLPro, and allows you to 
+turn off the underwater warping effect (by setting it to 0).
+
+Crosshair adjustment
+--------------------
+
+Thanks go to the boys at Id Software for this one.
+
+The quake source was released with two new console variables, 'cl_crossx' and
+'cl_crossy', that allow you to fine-tune the position of your crosshair.  The 
+released source had this feature working for WinQuake; support for GLPro has 
+been added as well.
+
+Frames per second display
+-------------------------
+
+When pq_drawfps is set to 1 (default is 0), a number will appear in the top
+right hand corner of the screen showing the number of frames per second
+you are getting.  This value is updated once every second, allowing you
+to constantly monitor your graphics card's performance.
+
+Support for status, time, location and weapon binds
+---------------------------------------------------
+
+You can now use formatting strings to include extra information in your 
+teamplay binds.  The following formatting strings are supported in both
+say and say_team (works for messagemode and messagemode2 also):
+
+%h  -  health
+%a  -  armour
+%t  -  current time 
+%l  -  location
+%d  -  location that you died at
+%r  -  rocket launcher status
+%x  -  rockets
+%c  -  cells
+%p  -  powerups
+%w  -  weapons
+
+%l uses a .loc file which must have the same name as the current map and must
+exist in the id1/locs subdirectory (you need to create this subdirectory).  
+Proquake comes with dm3.loc; please refer to this file for an explanation of 
+the format.
+
+%r is replaced with one of three strings depending on your current status.  It
+is replaced with the string stored in pq_needrl if you don't have a rocket 
+launcher.  It is replaced with the string stored in pq_haverl if you have a 
+rocket launcher and at least five rockets.  It is replaced with the string 
+stored in pq_needrox if you have a rocket launcher but less than five rockets.
+You can change these console variables in your config file the same way you
+change any other console variable.  Their default values are as follows:
+
+pq_haverl   "I have RL"
+pq_needrl   "I need RL"
+pq_needrox  "I need rockets"
+
+%p is replaced by a list of the powerups you have (quad, pent and/or ring)
+separated by commas.  If you don't have any powerups, it prints nothing.
+The strings used for the powerups are stored in the console variable
+pq_quad, pq_pent and pq_ring whose default values are as follows:
+
+pq_quad     "quad"
+pq_pent     "pent"
+pq_ring     "eyes"
+
+%w is replaced by a comma-separated list of the weapons you have, not 
+including axe or shotgun.  You can customize the output by changing the
+pq_weapons string, which contains the weapon names separated by 
+commas.  Default is "SSG:NG:SNG:GL:RL:LG".  If there is a weapon you
+don't want included in your %w bind, don't put anything between the
+appropriate pair of commas, e.g.
+
+pq_weapons "SSG::SNG:GL:RL:LG"
+
+will prevent nailgun information from being displayed.  If there are
+no weapons to display, the string stored in pq_noweapons is displayed
+instead; default is "no weapons".
+
+CTRL+V pasting support for console/messagemode
+----------------------------------------------
+
+When CTRL+V is pressed in the console or in messagemode, the contents of the
+windows clipboard will be pasted.
+
+Translate +jump to +moveup underwater
+-------------------------------------
+
+When pq_moveup is set to 1, +jump will be translated to +moveup whenever you
+are underwater.  This allows you to move up faster and without making noise.
+
+Changed default zone size to 512
+--------------------------------
+
+You can get rid of -zone 512 from your command line.. 512 is now the default 
+size.
+
+"Use Mouse" menu option for X11
+-------------------------------
+
+For all those X11 users that like to play quake in a window... actually I 
+think Chris Ruvolo is the only one.  Thanks to Chris for adding this feature.
+
+Control over palette change underwater/with powerup
+---------------------------------------------------
+
+You can now control the amount by which your screen colour changes when you 
+are underwater or when you have a powerup using the following console 
+variables:
+
+pq_waterblend
+pq_quadblend
+pq_pentblend
+pq_ringblend
+pq_suitblend
+
+Each of these should be a value between 0.0 and 1.0, where 1.0 is the default
+colour change and 0.0 is no colour change.  This feature works both in 
+WinQuake and GLQuake.  It's similar to using the r_polyblend console variable, 
+but it gives you a lot more control.  For a good time, set pq_waterblend to
+-0.5 and jump in the pool.
+
+Aim straight up or down
+-----------------------
+
+If pq_fullpitch is set to 1, you will be able to aim straight up and down.  
+This feature is dangerously close to breaking my #1 rule of not changing 
+gameplay, and if it was up to me I would not have implemented it.  
+Unfortunately, it has already been added to QuakePro+, and providing a level 
+playing field is more important than keeping gameplay the same.
+(.. up to a point, of course!  I would never consider adding a cheat in order 
+to "level the playing field".  Real players don't need or want cheats, and 
+cheaters will never know the feeling of developing true proficiency in Quake.)
+
+Fortunately, for those who (like myself) wish that this feature had never
+been conceived of, it is possible to disable it on the server side.. see the
+server side feature list.
+
+Timestamp other players' binds during match
+-------------------------------------------
+
+With ProQuake 1.04, you could put the time in your binds so that your 
+teammates would know, for example, exactly when quad was picked up.  Great if 
+you use ProQuake, not so great if your teammates don't.  Now you can timestamp 
+your teammates' messages that don't already include the time.  pq_timestamp 1
+timestamps messages with minutes and seconds; pq_timestamp 2 timestamps 
+messages with seconds only.
+
+Filter out "you got" messages from console
+------------------------------------------
+
+When you're scolling up in the console, it doesn't help to see "you got 
+nails".  Set pq_confilter to 1 to filter out these messages; they will still 
+be temporarily displayed but will not appear in the console.  All health/item
+pickup messages will be removed, as well as "not enough ammo" and "no weapon". 
+Thanks to Tovi Grossman for suggesting this feature.
+
+Autorepeat for Page Up, Page Down, TAB in console
+-------------------------------------------------
+
+Page Up, Page Down and TAB will now autorepeat in the console, making it 
+easier to scroll up/down or cycle through commands.
+
+Improved command completion
+---------------------------
+
+Cycling through commands using TAB now includes aliases.  More importantly, 
+now it works.  It will cycle through all commands/aliases/console variables
+in alphabetical order, starting over at the beginning after it reaches the 
+end.
+
+Automatic ip logging / player identification
+--------------------------------------------
+
+ProQuake maintains a database of player names/ip addresses.  When you are 
+connected to a server, the other players are added to the database every time
+you check scores.  There are three ways to see the list of aliases associated 
+with a player's ip address:
+
+1) Use the "status" command to determine the player's number, e.g.
+
+#3 iPimpU
+
+then type identify <player number>, e.g.
+
+identify 3
+
+2) Use the first three fields of an ip address, e.g.
+
+identify 198.168.1
+
+3) Use a substring of the player's name, e.g.
+
+identify beatnik
+
+ProQuake un-funs the names before comparing them, so the above example will
+correctly find a player named [tog].b34tn1k.
+
+Note that to save typing you can just type "i" and then hit TAB.  Use the 
+"ipdump" command to dump all database entries to the file "iplog.txt" in 
+your game directory.  In order to enable ip logging, you must use the command
+line option -iplog [size], where size is the maximum number of entries.  
+You can omit size in which case it defaults to 65,536.
+
+Every time you quit quake, the ip information is stored in the iplog.dat file
+which is in your game directory (/id1, unless you have specified a game
+directory with the -game command line parameter).  To import another
+ip log and merge its contents with your own log, use the command 
+
+ipmerge <filename>
+
+Filenames are relative to your quake directory, so for example you can put
+beatnik_iplog.dat in your quake directory and use the command
+
+ipmerge beatnik_iplog.dat
+
+If quake is having trouble finding the file, try specifying the full pathname,
+e.g.
+
+ipmerge c:\games\quake\beatnik_iplog.dat
+
+Thanks to Klas "Blaps" Nyblom for suggesting the ipmerge command.
+
+At most 64 entries will be stored for a given IP address to prevent a 
+single player from filling your log by changing their name repeatedly.
+
+Record demos after connecting to server
+---------------------------------------
+
+Finally, you can start recording a demo after you've connected to the server!
+Just type
+
+record <name>
+
+as usual at any time to start recording.
+
+Set the maximum frames per second
+---------------------------------
+
+By default quake renders frames no faster than 72 frames per second.  You can 
+now raise this by changing pq_maxfps.  Play around with it to find a value 
+that works well for you; use pq_drawfps to see the framerate that you're 
+actually getting.  You probably want pq_maxfps to be a bit slower than your
+monitor refresh rate to avoid shearing effects.
+
+Fast connections
+----------------
+
+When the client first connects to a server, it does a reverse DNS lookup on 
+the server IP address.  This serves no purpose, takes up to 20 seconds in
+some cases, and can prevent certain clients from connecting to certain 
+servers altogether.  The code has simply been commented out, resulting in
+MUCH faster connect times.
+
+rcon - remote console protocol
+------------------------------
+
+The rcon command can be used to remotely administer a server.  To use it,
+do the following:
+
+- set "rcon_server" to server:port ('server' can be an IP address or DNS name)
+- set "rcon_password" to the server rcon_password
+- send a command to the server as follows:
+
+rcon <command>
+
+The command will be executed from the server console.  If rcon_server is not
+set, the command will be sent to the server you are connected to.  For more 
+information,  see the description of rcon in the list of server-side features.
+
+Fixed buffer overrun problem with NVidia 5.16 drivers
+-----------------------------------------------------
+
+GLQuake would crash with some video drivers (e.g. NVidia 5.16) because the
+list of extensions was too long and causing a buffer to overflow.  This
+has been fixed.
+
+Put [] around your score in the scoreboard
+------------------------------------------
+
+Your frag count in the scoreboard now has brackets around it.
+
+Fixed test/test2 commands
+-------------------------
+
+Error messages have been added to the test/test2 commands to avoid silent
+failures.  Additionally, an infinite-loop bug in test2 has been fixed.
+
+Fixed spelling of gl_doubleeyes
+-------------------------------
+
+The gl_doubleeyes console variable makes the eyes model a bit bigger in GL
+so that it looks the same as in WinQuake.  The variable was already there,
+but the boyz at Id didn't know how to spell.
+
+Gamma correction for glpro
+--------------------------
+
+glpro now supports gamma correction using the command-line argument
+
+-gamma <value>
+
+You *must* supply this value on the command line; it cannot be changed once
+glpro has started.  Note that this really is gamma correction; unlike
+virtually every other mod, I haven't just added a hack that brightens
+the screen and screws up the colours and called it "gamma correction".
+The value supplied should be between 0 and 1; lower is brighter.
+
+Gamma correction for wqpro screenshots
+--------------------------------------
+
+The WinQuake source would use the standard palette (not the gamma corrected 
+palette) for screenshots.  This has been fixed.
+
+Remove '\r' from console output
+-------------------------------
+
+The carriage return ('\r') character can be used in player names and binds to 
+mess up your console.  This character is now filtered out by the ProQuake 
+client.  If you don't want it to be filtered out, set pq_removecr to 0.
+
+Recognizes ip_address:port notation
+-----------------------------------
+
+You no longer have to use the port command every time you wish to connect to
+a server or use the test/test2 commands.  You can just type connect ip:port,
+e.g.
+
+connect elohim.ai.mit.edu:27000
+
+If you omit the port number, then the current port will be used.
+
+Fullbright shaft in glpro
+-------------------------
+
+The lightning gun bolt model in glquake was subject to environmental
+lighting, even though the winquake model was not.  This has been fixed - 
+the shaft now looks the same in both programs.
+
+r_polyblend in wqpro (same as gl_polyblend in glpro)
+----------------------------------------------------
+
+Set r_polyblend to 0 to completely eliminate colour changes due to damage,
+item pickups and powerups.
+
+Support for more graphics modes in glpro
+----------------------------------------
+
+Users of some newer graphics cards were running into the limit of 30 video
+modes supported by glquake.  This number has been increased to 64.
+
+Extended mouse support
+----------------------
+
+ProQuake now supports both mouse wheels and four button mice.  I don't have
+a lot of mice to test with, so if it works with your mouse then great, but
+if not I can't help you.  Try to find someone else who got it working and
+find out what they did right.
+
+QuakePro+ "bestweapon" command
+------------------------------
+
+Use this command to select your best weapon for which you have ammo.  "Best"
+is defined by supplying a list of weapon numbers, where AXE = 1 and LG = 8.
+ProQuake will select the first weapon in the list that you have and that you
+have ammo for.  For example:
+
+bestweapon 7 8 6 3 5 4 2 1
+
+will switch to your best loaded weapon, where "best" means RL, LG, GL, SSG,
+SNG, NG, SG, AXE in that order.
+
+Connect to 3.40 servers through routers/NAT/IP Masquerading
+-----------------------------------------------------------
+
+NetQuake is notorious for its inability to connect through a wide range of
+routers/NAT/IP Masquerading schemes.  I finally sat down and fixed this..
+no more connecting through FAQproxy chains or manually editing the 
+port numbers in ip_mask_quake.c on your linux gateway.
+
+
+============================================
+Detailed Description of Server Side Features
+============================================
+
+Allows multiple connections from a single IP address
+----------------------------------------------------
+
+At long last, ProQuake fixes the single biggest mistake that Id Software made 
+when they released what was otherwise the best network game ever created.  
+Specifically, they made the assumption that if a duplicate IP address tries to
+connect to a server, then both IP addresses are the same person.  The server 
+therefore assumes that the person got disconnected somehow, and kicks their 
+"ghost" from the server.  This severe error in judgement gave rise to Qkick, 
+a linux program that can kick any player off of any server by sending spoofed 
+packets to the server (the packets would look like a connect request from that
+player's IP).  ProQuake has corrected this, and allows a single IP to connect
+to the server arbitrarily many times.  In addition to foiling Qkick, this also
+allows multiple clients sitting behind a linux box running IP masquerading to 
+connect to the same server.
+
+Precise aim for ProQuake clients
+--------------------------------
+
+See the list of client side features for an explanation of precise aim.
+
+( ) in mm2
+----------
+
+unixded has the nice feature that when a player says something in messagemode
+2, their name appears in parentheses so that you can tell what messagemode 
+they are using, and whether or not everyone on the server can see the message.
+This feature has been added to ProQuake.
+
+Named console logs with auto-increment
+--------------------------------------
+
+Quake allows you to create a console log using the -condebug command line 
+option.  Unfortunately, you can't specify the name of the log; it is always 
+qconsole.log in the game directory.  So, for example, if you run multiple 
+servers on the same machine, you can only create a console log for one of 
+them.
+
+ProQuake allows you to name your console logs using the command line option 
+-condebug <logname>.  ".log" is automatically appended to the end of the 
+filename, so for example -condebug port26000 will create the log file 
+port26000.log.  Filenames cannot begin with '-' or '+'.  You can also have 
+the filename auto-increment by including %d in the filename; %d will be 
+replaced with the smallest positive integer that can be used without 
+overwriting the previous logs.  So, for example, if you run a server with 
+-condebug mylog%d in the command line, then successive server restarts will 
+create the log files mylog1.log, mylog2.lgo, mylog3.log, etc.  If -condebug
+is used without specifying a filename, then the default filename qconsole.log
+will be used.
+
+Timestamps in console logs
+--------------------------
+
+A timestamp (day, date, time, year) is written to the console log file when 
+it is created and every time a new level is started in order to help you 
+determine when something in the log actually happened.
+
+Disabled tell
+-------------
+
+The 'tell' command can be used to cheat in a match, as it allows an observer 
+to pass information directly to a player in the game about his opponents' 
+whereabouts.  It has therefore been disabled in ProQuake.
+
+Muted console variables
+-----------------------
+
+By default, server variables such as timelimit and fraglimit are echoed to 
+all players' consoles every time they change.  ProQuake allows the QuakeC 
+code to disable this feature to reduce the amount of unnecessary crud that 
+players see.
+
+Added -ip command line parameter to linux binary
+------------------------------------------------
+
+You can specify your ip address in sqpro with
+
+-ip <my_ip>
+
+This is useful if your linux box has multiple IP addresses or if its hostname
+is not set up correctly (which will cause unixded to core dump).
+
+Fixed disable-server security hole
+----------------------------------
+
+Hard to believe that such a serious security flaw went undetected for so long.
+It was only in October 2000, around five years after quake was released,
+that someone stumbled on a way to stop servers from accepting new connections.
+This security hole has been closed.
+
+Spam protection
+---------------
+
+Spam protection is controlled using the console variables pq_spam_rate and
+pq_spam_grace.  pq_spam_rate is the maximum number of messages per second
+(mm1 or mm2) that a player is allowed.  If at any time this average is
+exceeded by more than pq_spam_grace, the player's messages are silenced.
+By default, pq_spam_rate is 1 and pq_spam_grace is 10.
+
+Details (for those who want them):
+
+Each player has a 'volume' which is initially pq_spam_grace.  Every time the
+player says something in mm1 or mm2, their volume is decreased by 1.  Also,
+every second their volume is increased by pq_spam_rate, but it is never 
+allowed to exceed pq_spam_grace.  If a player's volume is negative when
+they try to speak, their message is dropped.  The more you spam, the lower
+your volume gets, and the longer you have to wait before it is positive again.
+
+Changed default zone size to 512
+--------------------------------
+
+You can get rid of -zone 512 from your command line.. 512 is now the default 
+size.
+
+Automatic ip logging / player identification
+--------------------------------------------
+
+See documentation for client-side features.. it works the same way from the 
+server console.  Multiple concurrent servers are supported; all servers
+using the same game directory will share the same iplog file, and their
+logs will be automatically merged.
+
+qflood protection
+-----------------
+
+Fake clients generated by qflood are automatically disconnected after 10 
+seconds.  This time can be changed using the net_connecttimeout console 
+variable.  If someone is unable to connect to your server with qflood 
+protection enabled, chances are they are using an older client that has 
+connection time problems (see client side features).  Get them to switch 
+to the latest version of ProQuake.  If they can't or won't, and you want 
+to accomodate them, raise net_connecttimeout to 30 which will give them 
+longer to connect (and will also make a qflood attack last longer).
+
+Plain text console output
+-------------------------
+
+Setting pq_dequake to 1 causes all dedicated console output to be "dequaked",
+for example all names will appear as plain text.
+
+Fullpitch correction
+--------------------
+
+Players will only be allowed to aim straight up and down if pq_fullpitch is 1.
+Otherwise, their aiming angle will be restricted as usual.
+
+** Cheat Protection **
+----------------------
+
+Adding +pq_cheatfree 1 to the start of the command line will cause ProQuake
+to run in cheat-protection mode.  Only genuine ProQuake 3.20 (or above) 
+clients with unmodified maps and models will be allowed to connect.  Maps and
+models are compared against those in the server's id1 directory so.... 
+
+MAKE SURE YOU HAVE THE ORIGINAL PAK FILES ON THE CHEAT-FREE SERVER!!!
+
+The server will always check client models against what it has in the id1
+directory.  If you wish to use modified maps on your server and you don't
+want players to have to download them, place them in a separate game directory
+and start the server with -game <dir> in the command line.  That way the 
+server will use the modified maps, but will still compare client maps to the 
+originals in the id1 directory.
+
+Note that by "put the maps in the directory" I mean either put a pak file
+containing the maps in the directory or make a maps subdirectory and
+put the actual .bsp files there.
+
+You can change the pq_cheatfree console variable at any time, but the change
+will have no effect until the next time the server is reset using the "map"
+command (e.g. map dm3), which kicks all clients and restarts the server.
+
+In version 3.30 and above, clients are allowed to connect to a cheatfree 
+server if they don't have the current map.  This is to allow them to warp 
+the server to a map that they *do* have if the server is empty.
+
+Password-protected servers
+--------------------------
+
+If you wish to password-protect your server, set the pq_password console
+variable to a 7-digit password.  Clients must set their own pq_password
+console variable to the correct password before connecting to the server.
+If pq_password is 0 (default), the server is not password-protected.
+
+rcon - remote console protocol
+------------------------------
+
+To set up a server for remote administration, simply set the rcon_password
+console variable to an arbitrary string that *does not* contain spaces or
+special characters (e.g. " or ').  The server can then be administered
+using the rcon command as described in the list of client-side features
+(this works from a server console also).  Setting rcon_password to ""
+disables remote administration.
+
+For those wishing to create a standalone rcon program, the protocol is
+as follows:
+
+client->server:
+
+MSG_WriteByte(0x05);
+MSG_WriteString(rcon_password);
+MSG_WriteString(command);
+
+server->client:
+
+MSG_WriteByte(0x86);
+MSG_WriteString(reply);
+
+Players can't say/say_team immediately after changing name/colour
+-----------------------------------------------------------------
+
+Players can make a nuisance of themselves by quickly changing their name
+or colour, saying something, then changing back.  This can, in fact, be used
+to cheat in team games.  ProQuake now prevents this by default.  To disable
+this feature, set pq_tempmute to 0.
+
+Fixed win2k compatibility problem
+---------------------------------
+
+Many servers running under win2k/XP would stop listening for new connections
+if no-one connected for five minutes or so.  This has been fixed.
+
+QSmack support for cheat-free servers
+-------------------------------------
+
+Since the qsmack client isn't a cheat-free ProQuake client, a cheat-free 
+server would ordinarily not allow it to connect.  To fix this, add
+
+-qsmack <ipaddress>
+
+to the command line, where <ipaddress> is the IP address of the QSmack 
+bot that you want to allow to connect to the server.
+
+Remove '\n' and '\r' from player names
+--------------------------------------
+
+The carriage return and line feed characters in names generally makes life 
+bad.  They are now automatically removed.
+
+Fixed incoming message buffer overflow (q1crash)
+------------------------------------------------
+
+An old program (circa 1997) was brought to my attention that can crash any
+quake server by causing a buffer to overflow.  This has been fixed.
+
+Optionally log player binds to log file
+---------------------------------------
+
+By default, player binds will appear in the server console by they will not
+be saved to the log file.  If you wish to save them, set pq_logbinds to 1.
+
+3.40 clients can connect through routers/NAT/IP Masquerading 
+------------------------------------------------------------
+
+See description in client-side feature list.

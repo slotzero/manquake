@@ -1,0 +1,226 @@
+ProQuake change log
+
+V3.50-2
+
+- Server messages show "console" instead of hostname.string.
+- Prevent "unconnected" messages.
+- Fix linux compiler error in net_udp.c.
+- Added pq_wallhackprotect to prevent wall hack.
+- Memory overwrite protection for Sys_Printf.
+- Piped output of a dedicated server not written immediately fix.
+- Packet overflow message changed from print to dprint.
+- Added edict to signon and signoff messages.
+- Added sin(), cos(), and sqrt().
+- Increase 'text' in Sys_Printf (sys_linux.c) to 4096.
+- Dequake ASCII character 138.
+- Added Observer Say.
+- Added pq_ipmask (0-2).
+- Packet overflow reports classname.
+- Added new effects, EF_ZERO_VELOCITY and EF_MAYBE_DRAW.
+- Added new flags, FL_OBSERVER, and FL_LOW_BANDWIDTH_CLIENT.
+- Mute spamming client (pq_mute_spam_client).
+- Read string data in QuakeC.
+- Added '\n' to SZ_GetSpace() error.
+- Put [ ] brackets around frags in status.
+- Client connected changed from dprint to print.
+
+V3.50-1
+
+- Added built-in function (#5) strftime.
+- Toggle PackFile: messages with pq_show_packfile.
+- Added build version.
+- IPs are masked except when viewed by privileged, qsmack, and console.
+- IPLog_Dump() creates iplog.dat.
+- Host_Kill_f() dead player (zombie) fix.
+- Host_WriteConfiguration() logical fix.
+- PF_ftos() precision fix.
+- PF_objerror() doesn't kill server.
+- The test <server> command replaces the ip address with "private".
+- Added ip_visible, ip_visible2, ip_hidden, ip_hidden2.
+- Fixed linux compiler warning (r_local.h, security.c).
+
+V3.50
+
+- Fixed cheat-free connection lag
+- added cheatfree status command
+- added "cheat-free" to status message
+- added (cheat-free) to host hame
+- don't send fullpitch messages to qsmack clients
+- allow tell for qsmack clients
+- use current server if rcon_server is not set
+
+V3.40
+
+- Fixed NAT!
+
+V3.30
+
+- iplog supports multiple servers; logs are automatically merged
+- limit of 64 entries with a single IP address
+- fullbright shaft
+- upped Sys_Printf buffer from 1024 to 2048
+- check for !cls.netcon in Con_Printf
+- upped MAX_MODE_LIST from 30 to 64 in GL
+- extended wheel support
+- 4 button mouse support
+- r_polyblend
+- bestweapon
+- can connect to cheat free server without map
+
+V3.20
+
+- Fixed incoming message buffer overflow error
+- added pq_tempmute
+- added pq_cheatfree
+- removed -cheatfree command-line argument
+- added pq_removecr
+- added pq_logbinds
+- added %d
+- recognize ip:port
+- commented out slist if connect fails
+- better connection error messages
+- fixed parsing of pqc_team messages to prevent team scores from dropping to 0 in crmod 6.3
+- use original game directory for file verification
+
+V3.11
+
+- fixed auto ping when there's a gap in client numbers
+- added pq_showedict for Slot Zero
+- early exit from Host_Color_f if colour isn't actually changing
+
+V3.02 = V3.1
+
+- fixed spelling of gl_doubleeys
+- removed gl_eyes BS!!
+- support for qsmack
+- fixed GL memory leak
+- gamma correction!
+- chase_active fix
+- remove '\n' from names
+- fixed "allways"
+- fixed winquake screenshot gamma correction
+
+- fixed "c:\quake\glpro.exe" not found bug
+- fixed "server is full" bug
+- fixed listen server bug
+- fixed autorepeat
+- fixed rcon buffer overflow
+- added rcon_server
+- made auto-ping checking more robust ("unconnected" and '\n' doesn't mess it up)
+
+V3.00
+
+- CSR -ip patch
+- fixed buffer overrun problem for NVidia 5.16 drivers
+- put [] around score in scoreboard
+- added %w (weapons)
+- don't print "I have" if you're dead!
+- don't allow say or say_team immediately after changing name/colour
+- ipmerge (Klas Nyblom)
+- identify <name>
+- fixed win2k compatability
+- added poll counter to test2!
+- added error messages to test, test2
+- rcon!!
+- fixed consecutive demo bug
+- CHEAT FREE!!!
+- changed pq_spam_rate to 1.5
+- "known aliases for <15 chars mas>"
+- added pq_smoothcam for Slot Zero
+
+V2.01
+
+- commented out reverse lookup code
+- server side fullpitch correction
+- net_connecttimeout
+
+V1.05
+
+- added pq_moveup
+- changed default zone size to 512K
+- added menu option for changing _windowed_mouse under X11
+- pq_waterblend, pq_quadblend, pq_ringblend, pq_pentblend, pq_suitblend
+- pq_fullpitch
+- pq_timestamp
+- pq_confilter
+- PGUP, PGDOWN, TAB autorepeat (only in console!!)
+- improved location logic (nearest rectangle)
+- qflood protection
+- fixed command completion (includes aliases)
+- added lg, gl to dm3.loc
+- translation to plain text in dedicated server console
+- ip logging!
+- demo recording!!
+- pq_maxfps
+
+V1.04
+
+- added spam protection
+	- pq_spam_rate
+	- pq_spam_grace
+- added %x (rockets), %c (cells)
+- added pq_haverl, pq_needrl, pq_needrox
+- added %p
+	- pq_quad
+	- pq_pent
+	- pq_ring
+- fixed -ip parameter for sqpro
+
+V1.03
+
+- added say, say_team formatting: %a, %h, %r, %l (with location files)
+	- credit: Ramirez, http://nqctf.gamepoint.net/
+- added pasting to console and messagemode
+	- credit: FricaC, www.quakesource.org
+- fixed stupid bug in call to Con_Debuglog, in Con_Printf (forgot "%s"!!!)
+- removed coop 0 from demos
+
+V1.02
+
+- added pq_drawfps
+- fixed 0 packet size bug
+- added -ip for linux
+
+V1.00
+
+Client:
+
+- precise aim for ProQuake connection
+- ProQuake message on connect
+- ProQuake version
+- Auto-smooth for camera/chasecam/eyecam
+- longer mm1, mm2 messages
+- (say): for messagemode2
+- support for mods in qsocket (EXPLAIN - byte after accept server->client; byte after connect client->server)
+- fixed losing backscroll on print
+- fixed HOME and END in console
+- Added proquake commands to CL_Parse
+- pq_teamscores: teamscores in status bar!!!
+- pq_timer: timer in status bar!!
+- put sound back to DOSquake levels!
+- added ping to scoreboard
+- added ProQuake help page
+- added cl_crossx, cl_crossy for GL
+- queries server for pings if not connected to crmod6.0 server
+- added pq_lag - synthetic lag!
+- recognizes ping +N
+- grab match time from crmod 4.0-5.1
+- added r_waterwarp to GL
+
+Server:
+
+- disabled tell
+- () in mm2 (server side)
+- Allow multiple connects from any IP (server side)
+- precise aim for ProQuake connection
+- added hook for QuakeC to turn off server flag in cvars
+- Added ProQuake console variable (so mods can detect it)
+- can set logfile name; can use %d for multiple logs
+- log file header
+- dprint(proquake client connected) if proquake client detected
+
+
+Other:
+- removed "backup past 0"
+- removed "stuck", "unstuck" messages
+- restored old winquake icon
