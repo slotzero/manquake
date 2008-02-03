@@ -69,12 +69,12 @@ DO_GL_AS=$(CC) $(CFLAGS) $(GLCFLAGS) -DELF -x assembler-with-cpp -o $@ -c $<
 # SETUP AND BUILD
 #############################################################################
 
-TARGETS=$(BUILDDIR)/bin/squake 
+TARGETS=$(BUILDDIR)/bin/squake
 	# $(BUILDDIR)/bin/quake.x11 \
 	# $(BUILDDIR)/bin/glquake \
 	# $(BUILDDIR)/bin/glquake.glx \
 	# $(BUILDDIR)/bin/glquake.3dfxgl \
-	# $(BUILDDIR)/bin/quake.x11 
+	# $(BUILDDIR)/bin/quake.x11
 	# $(BUILDDIR)/bin/unixded
 
 build_debug:
@@ -105,7 +105,6 @@ targets: $(TARGETS)
 #############################################################################
 
 SQUAKE_OBJS = \
-	$(BUILDDIR)/squake/cl_demo.o \
 	$(BUILDDIR)/squake/cl_input.o \
 	$(BUILDDIR)/squake/cl_main.o \
 	$(BUILDDIR)/squake/cl_parse.o \
@@ -205,9 +204,6 @@ $(BUILDDIR)/bin/squake : $(SQUAKE_OBJS)
 	$(CC) $(CFLAGS) -o $@ $(SQUAKE_OBJS) $(SVGALDFLAGS) $(LDFLAGS)
 
 ####
-
-$(BUILDDIR)/squake/cl_demo.o :  $(MOUNT_DIR)/cl_demo.c
-	$(DO_CC)
 
 $(BUILDDIR)/squake/cl_input.o : $(MOUNT_DIR)/cl_input.c
 	$(DO_CC)
@@ -1292,4 +1288,3 @@ clean-release:
 clean2:
 	-rm -f $(SQUAKE_OBJS) $(X11_OBJS) $(GLQUAKE_OBJS) $(GLSVGA_OBJS) \
 		$(GLX_OBJS)
-
