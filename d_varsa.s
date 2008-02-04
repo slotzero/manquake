@@ -159,7 +159,7 @@ DP_Pix:			.long	0
 	.extern DP_4x4
 #endif
 
-DP_EntryTable:	.long	DP_1x1, DP_2x2, DP_3x3, DP_4x4
+DP_EntryTable:	.long	0
 
 //
 // advancetable is 8 bytes, but points to the middle of that range so negative

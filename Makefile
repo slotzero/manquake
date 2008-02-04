@@ -170,10 +170,8 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/vid_svgalib.o \
 	$(BUILDDIR)/squake/snd_dma.o \
 	$(BUILDDIR)/squake/snd_mem.o \
-	$(BUILDDIR)/squake/snd_mix.o \
 	$(BUILDDIR)/squake/snd_linux.o \
 	$(BUILDDIR)/squake/d_copy.o \
-	$(BUILDDIR)/squake/d_parta.o \
 	$(BUILDDIR)/squake/d_polysa.o \
 	$(BUILDDIR)/squake/d_scana.o \
 	$(BUILDDIR)/squake/d_spr8.o \
@@ -187,7 +185,6 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/surf8.o \
 	$(BUILDDIR)/squake/worlda.o \
 	$(BUILDDIR)/squake/r_aclipa.o \
-	$(BUILDDIR)/squake/snd_mixa.o \
 	$(BUILDDIR)/squake/sys_dosa.o
 
 $(BUILDDIR)/bin/squake : $(SQUAKE_OBJS)
@@ -393,16 +390,10 @@ $(BUILDDIR)/squake/snd_dma.o :  $(MOUNT_DIR)/snd_dma.c
 $(BUILDDIR)/squake/snd_mem.o :  $(MOUNT_DIR)/snd_mem.c
 	$(DO_CC)
 
-$(BUILDDIR)/squake/snd_mix.o :  $(MOUNT_DIR)/snd_mix.c
-	$(DO_CC)
-
 $(BUILDDIR)/squake/snd_linux.o :$(MOUNT_DIR)/snd_linux.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/d_copy.o :   $(MOUNT_DIR)/d_copy.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/d_parta.o :  $(MOUNT_DIR)/d_parta.s
 	$(DO_AS)
 
 $(BUILDDIR)/squake/d_polysa.o : $(MOUNT_DIR)/d_polysa.s
@@ -442,9 +433,6 @@ $(BUILDDIR)/squake/worlda.o :   $(MOUNT_DIR)/worlda.s
 	$(DO_AS)
 
 $(BUILDDIR)/squake/r_aclipa.o : $(MOUNT_DIR)/r_aclipa.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/snd_mixa.o : $(MOUNT_DIR)/snd_mixa.s
 	$(DO_AS)
 
 $(BUILDDIR)/squake/sys_dosa.o : $(MOUNT_DIR)/sys_dosa.s
