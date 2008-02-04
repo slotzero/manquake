@@ -1,4 +1,4 @@
-/* $Id: sv_main.c,v 1.1 2008/02/03 08:28:03 slotzero Exp $
+/* $Id: sv_main.c,v 1.2 2008/02/04 08:50:35 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -108,6 +108,9 @@ void SV_StartParticle (vec3_t org, vec3_t dir, int color, int count)
 	MSG_WriteByte (&sv.datagram, count);
 	MSG_WriteByte (&sv.datagram, color);
 }
+
+#define DEFAULT_SOUND_PACKET_VOLUME 255
+#define DEFAULT_SOUND_PACKET_ATTENUATION 1.0
 
 /*
 ==================

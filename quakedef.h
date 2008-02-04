@@ -1,4 +1,4 @@
-/* $Id: quakedef.h,v 1.3 2008/02/03 21:15:52 slotzero Exp $
+/* $Id: quakedef.h,v 1.4 2008/02/04 08:50:35 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -238,19 +238,12 @@ typedef struct
 #include "protocol.h"
 #include "cmd.h"
 #include "sbar.h"
-#include "sound.h"
 #include "render.h"
 #include "client.h"
 #include "progs.h"
 #include "server.h"
-
-#ifdef GLQUAKE
-#include "gl_model.h"
-#else
 #include "model.h"
 #include "d_iface.h"
-#endif
-
 #include "input.h"
 #include "world.h"
 #include "keys.h"
@@ -258,11 +251,6 @@ typedef struct
 #include "view.h"
 #include "menu.h"
 #include "crc.h"
-
-#ifdef GLQUAKE
-#include "glquake.h"
-#endif
-
 #include "location.h"	// JPG - for %l formatting speficier
 #include "iplog.h"		// JPG 1.05 - ip address logging
 
