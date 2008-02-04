@@ -95,8 +95,6 @@ void CL_ClearState (void)
 	memset (cl_entities, 0, sizeof(cl_entities));
 	memset (cl_dlights, 0, sizeof(cl_dlights));
 	memset (cl_lightstyle, 0, sizeof(cl_lightstyle));
-	memset (cl_temp_entities, 0, sizeof(cl_temp_entities));
-	memset (cl_beams, 0, sizeof(cl_beams));
 
 //
 // allocate the efrags and chain together into a free list
@@ -772,14 +770,12 @@ int CL_ReadFromServer (void)
 			break;
 
 		cl.last_received_message = realtime;
-		CL_ParseServerMessage ();
 	} while (ret && cls.state == ca_connected);
 
 	if (cl_shownet.value)
 		Con_Printf ("\n");
 
 	CL_RelinkEntities ();
-	CL_UpdateTEnts ();
 
 //
 // bring the links up to date
@@ -844,7 +840,6 @@ void CL_Init (void)
 	SZ_Alloc (&cls.message, 1024);
 
 	CL_InitInput ();
-	CL_InitTEnts ();
 
 //
 // register our commands

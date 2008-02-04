@@ -95,18 +95,17 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=.\cl_input.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\cl_main.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cl_parse.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cl_tent.c
 # End Source File
 # Begin Source File
 
@@ -932,18 +931,6 @@ SOURCE=.\draw.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\gl_model.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\gl_warp_sin.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\glquake.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\input.h
 # End Source File
 # Begin Source File
@@ -1053,10 +1040,6 @@ SOURCE=.\security.h
 # Begin Source File
 
 SOURCE=.\server.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\sound.h
 # End Source File
 # Begin Source File
 

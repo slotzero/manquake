@@ -107,8 +107,6 @@ targets: $(TARGETS)
 SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/cl_input.o \
 	$(BUILDDIR)/squake/cl_main.o \
-	$(BUILDDIR)/squake/cl_parse.o \
-	$(BUILDDIR)/squake/cl_tent.o \
 	$(BUILDDIR)/squake/cmd.o \
 	$(BUILDDIR)/squake/common.o \
 	$(BUILDDIR)/squake/console.o \
@@ -193,12 +191,6 @@ $(BUILDDIR)/squake/cl_input.o : $(MOUNT_DIR)/cl_input.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/cl_main.o :  $(MOUNT_DIR)/cl_main.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/cl_parse.o : $(MOUNT_DIR)/cl_parse.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/cl_tent.o :  $(MOUNT_DIR)/cl_tent.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/cmd.o :      $(MOUNT_DIR)/cmd.c

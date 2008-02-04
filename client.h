@@ -347,10 +347,6 @@ void CL_InitInput (void);
 void CL_SendCmd (void);
 void CL_SendMove (usercmd_t *cmd);
 void CL_SendLagMove (void); // JPG - synthetic lag
-
-void CL_ParseTEnt (void);
-void CL_UpdateTEnts (void);
-
 void CL_ClearState (void);
 
 
@@ -379,10 +375,3 @@ void V_UpdatePalette (void);
 void V_Register (void);
 void V_ParseDamage (void);
 void V_SetContentsColor (int contents);
-
-
-//
-// cl_tent
-//
-void CL_InitTEnts (void);
-void CL_SignonReply (void);
