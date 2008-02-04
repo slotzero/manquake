@@ -153,15 +153,11 @@ void D_DrawPoly (void);
 void D_DrawSprite (void);
 void D_DrawSurfaces (void);
 void D_EnableBackBufferAccess (void);
-void D_EndParticles (void);
 void D_Init (void);
 void D_ViewChanged (void);
 void D_SetupFrame (void);
-void D_StartParticles (void);
 void D_TurnZOn (void);
 void D_WarpScreen (void);
-
-void D_FillRect (vrect_t *vrect, int color);
 void D_DrawRect (void);
 void D_UpdateRects (vrect_t *prect);
 

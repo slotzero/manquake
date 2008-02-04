@@ -138,10 +138,7 @@ reciprocal_table_16:	.long	0x40000000, 0x2aaaaaaa, 0x20000000
 	.extern Entry16_16
 #endif
 
-entryvec_table_16:	.long	0, Entry2_16, Entry3_16, Entry4_16
-					.long	Entry5_16, Entry6_16, Entry7_16, Entry8_16
-					.long	Entry9_16, Entry10_16, Entry11_16, Entry12_16
-					.long	Entry13_16, Entry14_16, Entry15_16, Entry16_16
+entryvec_table_16:	.long	0
 
 //-------------------------------------------------------
 // local variables for d_parta.s

@@ -116,10 +116,8 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/cvar.o \
 	$(BUILDDIR)/squake/draw.o \
 	$(BUILDDIR)/squake/d_edge.o \
-	$(BUILDDIR)/squake/d_fill.o \
 	$(BUILDDIR)/squake/d_init.o \
 	$(BUILDDIR)/squake/d_modech.o \
-	$(BUILDDIR)/squake/d_part.o \
 	$(BUILDDIR)/squake/d_polyse.o \
 	$(BUILDDIR)/squake/d_scan.o \
 	$(BUILDDIR)/squake/d_sprite.o \
@@ -175,7 +173,6 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/snd_mix.o \
 	$(BUILDDIR)/squake/snd_linux.o \
 	$(BUILDDIR)/squake/d_copy.o \
-	$(BUILDDIR)/squake/d_draw16.o \
 	$(BUILDDIR)/squake/d_parta.o \
 	$(BUILDDIR)/squake/d_polysa.o \
 	$(BUILDDIR)/squake/d_scana.o \
@@ -231,16 +228,10 @@ $(BUILDDIR)/squake/draw.o :     $(MOUNT_DIR)/draw.c
 $(BUILDDIR)/squake/d_edge.o :   $(MOUNT_DIR)/d_edge.c
 	$(DO_CC)
 
-$(BUILDDIR)/squake/d_fill.o :   $(MOUNT_DIR)/d_fill.c
-	$(DO_CC)
-
 $(BUILDDIR)/squake/d_init.o :   $(MOUNT_DIR)/d_init.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/d_modech.o : $(MOUNT_DIR)/d_modech.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/d_part.o :   $(MOUNT_DIR)/d_part.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/d_polyse.o : $(MOUNT_DIR)/d_polyse.c
@@ -411,9 +402,6 @@ $(BUILDDIR)/squake/snd_linux.o :$(MOUNT_DIR)/snd_linux.c
 $(BUILDDIR)/squake/d_copy.o :   $(MOUNT_DIR)/d_copy.s
 	$(DO_AS)
 
-$(BUILDDIR)/squake/d_draw16.o : $(MOUNT_DIR)/d_draw16.s
-	$(DO_AS)
-
 $(BUILDDIR)/squake/d_parta.o :  $(MOUNT_DIR)/d_parta.s
 	$(DO_AS)
 
@@ -480,7 +468,6 @@ X11_OBJS = \
 	$(BUILDDIR)/x11/cvar.o \
 	$(BUILDDIR)/x11/draw.o \
 	$(BUILDDIR)/x11/d_edge.o \
-	$(BUILDDIR)/x11/d_fill.o \
 	$(BUILDDIR)/x11/d_init.o \
 	$(BUILDDIR)/x11/d_modech.o \
 	$(BUILDDIR)/x11/d_part.o \
@@ -604,9 +591,6 @@ $(BUILDDIR)/x11/draw.o :     $(MOUNT_DIR)/draw.c
 	$(DO_X11_CC)
 
 $(BUILDDIR)/x11/d_edge.o :   $(MOUNT_DIR)/d_edge.c
-	$(DO_X11_CC)
-
-$(BUILDDIR)/x11/d_fill.o :   $(MOUNT_DIR)/d_fill.c
 	$(DO_X11_CC)
 
 $(BUILDDIR)/x11/d_init.o :   $(MOUNT_DIR)/d_init.c

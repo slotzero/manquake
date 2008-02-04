@@ -134,48 +134,14 @@ SOURCE=.\cvar.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\d_draw16.s
+SOURCE=.\d_edge.c
 
 !IF  "$(CFG)" == "winquake - Win32 Release"
 
-# Begin Custom Build - mycoolbuild
-OutDir=.\Release
-InputPath=.\d_draw16.s
-InputName=d_draw16
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm\debug\gas2masm < $(OUTDIR)\$(InputName).spp >                                                                                                                                                                                                    $(OUTDIR)\$(InputName).asm 
-	ml /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi                                                                                                                                                                                                    $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
 !ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-# Begin Custom Build - mycoolbuild
-OutDir=.\Debug
-InputPath=.\d_draw16.s
-InputName=d_draw16
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm\debug\gas2masm < $(OUTDIR)\$(InputName).spp >                                                                                                                                                                                                    $(OUTDIR)\$(InputName).asm 
-	ml /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi                                                                                                                                                                                                    $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=.\d_edge.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\d_fill.c
 # End Source File
 # Begin Source File
 
@@ -184,10 +150,26 @@ SOURCE=.\d_init.c
 # Begin Source File
 
 SOURCE=.\d_modech.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_part.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
