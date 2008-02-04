@@ -134,43 +134,6 @@ SOURCE=.\cvar.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\d_draw.s
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-# Begin Custom Build - mycoolbuild
-OutDir=.\Release
-InputPath=.\d_draw.s
-InputName=d_draw
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm\release\gas2masm < $(OUTDIR)\$(InputName).spp >                                                                                                                                                                                                    $(OUTDIR)\$(InputName).asm 
-	ml /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi                                                                                                                                                                                                    $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-# Begin Custom Build - mycoolbuild
-OutDir=.\Debug
-InputPath=.\d_draw.s
-InputName=d_draw
-
-"$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	cl /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
-	gas2masm\debug\gas2masm < $(OUTDIR)\$(InputName).spp >                                                                                                                                                                                                    $(OUTDIR)\$(InputName).asm 
-	ml /c /Cp /coff /Fo$(OUTDIR)\$(InputName).obj /Zm /Zi                                                                                                                                                                                                    $(OUTDIR)\$(InputName).asm 
-	del $(OUTDIR)\$(InputName).spp 
-	
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\d_draw16.s
 
 !IF  "$(CFG)" == "winquake - Win32 Release"
@@ -209,57 +172,22 @@ InputName=d_draw16
 # Begin Source File
 
 SOURCE=.\d_edge.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_fill.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_init.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_modech.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_part.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -338,24 +266,10 @@ InputName=d_polysa
 # Begin Source File
 
 SOURCE=.\d_polyse.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_scan.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -390,17 +304,6 @@ InputName=d_scana
 	del $(OUTDIR)\$(InputName).spp 
 	
 # End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\d_sky.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
 
 !ENDIF 
 
@@ -445,35 +348,14 @@ InputName=d_spr8
 # Begin Source File
 
 SOURCE=.\d_sprite.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_surf.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\d_vars.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -508,17 +390,6 @@ InputName=d_varsa
 	del $(OUTDIR)\$(InputName).spp 
 	
 # End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\d_zpoint.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
 
 !ENDIF 
 

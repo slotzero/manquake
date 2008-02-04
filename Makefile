@@ -122,11 +122,9 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/d_part.o \
 	$(BUILDDIR)/squake/d_polyse.o \
 	$(BUILDDIR)/squake/d_scan.o \
-	$(BUILDDIR)/squake/d_sky.o \
 	$(BUILDDIR)/squake/d_sprite.o \
 	$(BUILDDIR)/squake/d_surf.o \
 	$(BUILDDIR)/squake/d_vars.o \
-	$(BUILDDIR)/squake/d_zpoint.o \
 	$(BUILDDIR)/squake/host.o \
 	$(BUILDDIR)/squake/host_cmd.o \
 	$(BUILDDIR)/squake/iplog.o \
@@ -176,9 +174,7 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/snd_mem.o \
 	$(BUILDDIR)/squake/snd_mix.o \
 	$(BUILDDIR)/squake/snd_linux.o \
-	\
 	$(BUILDDIR)/squake/d_copy.o \
-	$(BUILDDIR)/squake/d_draw.o \
 	$(BUILDDIR)/squake/d_draw16.o \
 	$(BUILDDIR)/squake/d_parta.o \
 	$(BUILDDIR)/squake/d_polysa.o \
@@ -263,9 +259,6 @@ $(BUILDDIR)/squake/d_surf.o :   $(MOUNT_DIR)/d_surf.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/d_vars.o :   $(MOUNT_DIR)/d_vars.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/d_zpoint.o : $(MOUNT_DIR)/d_zpoint.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/host.o :     $(MOUNT_DIR)/host.c
@@ -415,12 +408,7 @@ $(BUILDDIR)/squake/snd_mix.o :  $(MOUNT_DIR)/snd_mix.c
 $(BUILDDIR)/squake/snd_linux.o :$(MOUNT_DIR)/snd_linux.c
 	$(DO_CC)
 
-#####
-
 $(BUILDDIR)/squake/d_copy.o :   $(MOUNT_DIR)/d_copy.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/d_draw.o :   $(MOUNT_DIR)/d_draw.s
 	$(DO_AS)
 
 $(BUILDDIR)/squake/d_draw16.o : $(MOUNT_DIR)/d_draw16.s

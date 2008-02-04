@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -85,7 +85,7 @@ void D_DrawSolidSurface (surf_t *surf, int color)
 	espan_t	*span;
 	byte	*pdest;
 	int		u, u2, pix;
-	
+
 	pix = (color<<24) | (color<<16) | (color<<8) | color;
 	for (span=surf->spans ; span ; span=span->pnext)
 	{
@@ -196,7 +196,6 @@ void D_DrawSurfaces (void)
 			d_ziorigin = s->d_ziorigin;
 
 			D_DrawSolidSurface (s, (int)s->data & 0xFF);
-			D_DrawZSpans (s->spans);
 		}
 	}
 	else
@@ -219,8 +218,6 @@ void D_DrawSurfaces (void)
 					R_MakeSky ();
 				}
 
-				D_DrawSkyScans8 (s->spans);
-				D_DrawZSpans (s->spans);
 			}
 			else if (s->flags & SURF_DRAWBACKGROUND)
 			{
@@ -231,7 +228,6 @@ void D_DrawSurfaces (void)
 				d_ziorigin = -0.9;
 
 				D_DrawSolidSurface (s, (int)r_clearcolor.value & 0xFF);
-				D_DrawZSpans (s->spans);
 			}
 			else if (s->flags & SURF_DRAWTURB)
 			{
@@ -258,7 +254,6 @@ void D_DrawSurfaces (void)
 
 				D_CalcGradients (pface);
 				Turbulent8 (s->spans);
-				D_DrawZSpans (s->spans);
 
 				if (s->insubmodel)
 				{
@@ -306,7 +301,6 @@ void D_DrawSurfaces (void)
 
 				(*d_drawspans) (s->spans);
 
-				D_DrawZSpans (s->spans);
 
 				if (s->insubmodel)
 				{
@@ -328,4 +322,3 @@ void D_DrawSurfaces (void)
 		}
 	}
 }
-

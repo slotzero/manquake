@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -72,11 +72,9 @@ fixed16_t	bbextents, bbextentt;
 
 void D_DrawSpans8 (espan_t *pspans);
 void D_DrawSpans16 (espan_t *pspans);
-void D_DrawZSpans (espan_t *pspans);
 void Turbulent8 (espan_t *pspan);
 void D_SpriteDrawSpans (sspan_t *pspan);
 
-void D_DrawSkyScans8 (espan_t *pspan);
 void D_DrawSkyScans16 (espan_t *pspan);
 
 void R_ShowSubDiv (void);
@@ -108,4 +106,3 @@ extern int		d_minmip;
 extern float	d_scalemip[3];
 
 extern void (*d_drawspans) (espan_t *pspan);
-

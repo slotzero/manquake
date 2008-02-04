@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -192,8 +192,7 @@ reciprocal_table:	.long	0x40000000, 0x2aaaaaaa, 0x20000000
 	.extern Entry8_8
 #endif
 
-entryvec_table:	.long	0, Entry2_8, Entry3_8, Entry4_8
-				.long	Entry5_8, Entry6_8, Entry7_8, Entry8_8
+entryvec_table:	.long	0
 
 #ifndef NeXT
 	.extern Spr8Entry2_8
@@ -204,10 +203,9 @@ entryvec_table:	.long	0, Entry2_8, Entry3_8, Entry4_8
 	.extern Spr8Entry7_8
 	.extern Spr8Entry8_8
 #endif
-	
+
 .globl spr8entryvec_table
 spr8entryvec_table:	.long	0, Spr8Entry2_8, Spr8Entry3_8, Spr8Entry4_8
 					.long	Spr8Entry5_8, Spr8Entry6_8, Spr8Entry7_8, Spr8Entry8_8
 
 #endif	// id386
-
