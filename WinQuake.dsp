@@ -684,18 +684,6 @@ SOURCE=.\security.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\snd_dma.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\snd_mem.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\snd_win.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\surf16.s
 
 !IF  "$(CFG)" == "winquake - Win32 Release"

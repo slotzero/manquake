@@ -1,4 +1,4 @@
-/* $Id: host.c,v 1.4 2008/02/03 20:24:06 slotzero Exp $
+/* $Id: host.c,v 1.5 2008/02/04 08:09:03 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -815,11 +815,8 @@ void _Host_Frame (float time)
 // update audio
 	if (cls.signon == SIGNONS)
 	{
-		S_Update (r_origin, vpn, vright, vup);
 		CL_DecayLights ();
 	}
-	else
-		S_Update (vec3_origin, vec3_origin, vec3_origin, vec3_origin);
 
 	if (host_speeds.value)
 	{
@@ -1062,7 +1059,6 @@ void Host_Shutdown(void)
 	IPLog_WriteLog ();	// JPG 1.05 - ip loggging
 
 	NET_Shutdown ();
-	S_Shutdown();
 	IN_Shutdown ();
 
 	if (cls.state != ca_dedicated)

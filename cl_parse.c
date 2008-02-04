@@ -131,8 +131,6 @@ void CL_ParseStartSoundPacket(void)
 
 	for (i=0 ; i<3 ; i++)
 		pos[i] = MSG_ReadCoord ();
-
-    S_StartSound (ent, channel, cl.sound_precache[sound_num], pos, volume/255.0, attenuation);
 }
 
 /*
@@ -279,7 +277,6 @@ void CL_ParseServerInfo (void)
 			return;
 		}
 		strcpy (sound_precache[numsounds], str);
-		S_TouchSound (str);
 	}
 
 //
@@ -297,13 +294,10 @@ void CL_ParseServerInfo (void)
 		CL_KeepaliveMessage ();
 	}
 
-	S_BeginPrecaching ();
 	for (i=1 ; i<numsounds ; i++)
 	{
-		cl.sound_precache[i] = S_PrecacheSound (sound_precache[i]);
 		CL_KeepaliveMessage ();
 	}
-	S_EndPrecaching ();
 
 
 // local state
@@ -710,8 +704,6 @@ void CL_ParseStaticSound (void)
 	sound_num = MSG_ReadByte ();
 	vol = MSG_ReadByte ();
 	atten = MSG_ReadByte ();
-
-	S_StaticSound (cl.sound_precache[sound_num], org, vol, atten);
 }
 
 // JPG - added this
@@ -1115,7 +1107,6 @@ void CL_ParseServerMessage (void)
 
 		case svc_stopsound:
 			i = MSG_ReadShort();
-			S_StopSound(i>>3, i&7);
 			break;
 
 		case svc_updatename:

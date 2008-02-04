@@ -117,9 +117,6 @@ This is also called on Host_Error, so it shouldn't cause any errors
 */
 void CL_Disconnect (void)
 {
-// stop sounds (especially looping!)
-	S_StopAllSounds (true);
-
 // bring the console down and fade the colors back to normal
 //	SCR_BringDownConsole ();
 

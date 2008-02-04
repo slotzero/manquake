@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -110,7 +110,7 @@ Sys_GetLock
 void Sys_GetLock (void)
 {
 	int i;
-	
+
 	for (i = 0 ; i < 10 ; i++)
 	{
 		hlock = _open(va("%s/lock.dat",com_gamedir), _O_CREAT | _O_EXCL, _S_IREAD | _S_IWRITE);
@@ -148,7 +148,7 @@ FILE	*sys_handles[MAX_HANDLES];
 int		findhandle (void)
 {
 	int		i;
-	
+
 	for (i=1 ; i<MAX_HANDLES ; i++)
 		if (!sys_handles[i])
 			return i;
@@ -215,14 +215,14 @@ int Sys_FileOpenWrite (char *path)
 	int		t;
 
 	t = VID_ForceUnlockedAndReturnState ();
-	
+
 	i = findhandle ();
 
 	f = fopen(path, "wb");
 	if (!f)
 		Sys_Error ("Error opening %s: %s", path,strerror(errno));
 	sys_handles[i] = f;
-	
+
 	VID_ForceLockState (t);
 
 	return i;
@@ -273,7 +273,7 @@ int	Sys_FileTime (char *path)
 	int		t, retval;
 
 	t = VID_ForceUnlockedAndReturnState ();
-	
+
 	f = fopen(path, "rb");
 
 	if (f)
@@ -285,7 +285,7 @@ int	Sys_FileTime (char *path)
 	{
 		retval = -1;
 	}
-	
+
 	VID_ForceLockState (t);
 	return retval;
 }
@@ -476,7 +476,7 @@ void Sys_Printf (char *fmt, ...)
 	va_list		argptr;
 	char		text[2048];	// JPG - changed this from 1024 to 2048
 	DWORD		dummy;
-	
+
 	if (isDedicated)
 	{
 		va_start (argptr,fmt);
@@ -656,7 +656,7 @@ char *Sys_ConsoleInput (void)
 				switch (ch)
 				{
 					case '\r':
-						WriteFile(houtput, "\r\n", 2, &dummy, NULL);	
+						WriteFile(houtput, "\r\n", 2, &dummy, NULL);
 
 						if (len)
 						{
@@ -675,7 +675,7 @@ char *Sys_ConsoleInput (void)
 						break;
 
 					case '\b':
-						WriteFile(houtput, "\b \b", 3, &dummy, NULL);	
+						WriteFile(houtput, "\b \b", 3, &dummy, NULL);
 						if (len)
 						{
 							len--;
@@ -685,7 +685,7 @@ char *Sys_ConsoleInput (void)
 					default:
 						if (ch >= ' ')
 						{
-							WriteFile(houtput, &ch, 1, &dummy, NULL);	
+							WriteFile(houtput, &ch, 1, &dummy, NULL);
 							text[len] = ch;
 							len = (len + 1) & 0xff;
 						}
@@ -794,7 +794,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		argv[0]++;
 	if (ch = strchr(argv[0], '\"'))
 		*ch = 0;
-	
+
 
 	while (*lpCmdLine && (parms.argc < MAX_NUM_ARGVS))
 	{
@@ -814,7 +814,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 				*lpCmdLine = 0;
 				lpCmdLine++;
 			}
-			
+
 		}
 	}
 
@@ -900,13 +900,13 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			if (t < com_argc)
 				hFile = (HANDLE)Q_atoi (com_argv[t+1]);
 		}
-			
+
 		if ((t = COM_CheckParm ("-HPARENT")) > 0)
 		{
 			if (t < com_argc)
 				heventParent = (HANDLE)Q_atoi (com_argv[t+1]);
 		}
-			
+
 		if ((t = COM_CheckParm ("-HCHILD")) > 0)
 		{
 			if (t < com_argc)
@@ -917,10 +917,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	}
 
 	Sys_Init ();
-
-// because sound is off until we become active
-	S_BlockSound ();
-
 	Sys_Printf ("Host_Init\n");
 	Host_Init (&parms);
 
@@ -965,4 +961,3 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     /* return success of application */
     return TRUE;
 }
-

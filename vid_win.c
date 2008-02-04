@@ -314,9 +314,6 @@ int VID_Suspend (MGLDC *dc,m_int flags)
 			return MGL_NO_DEACTIVATE;
 		}
 
-		S_BlockSound ();
-		S_ClearBuffer ();
-
 		IN_RestoreOriginalMouseState ();
 
 	// keep WM_PAINT from trying to redraw
@@ -331,7 +328,6 @@ int VID_Suspend (MGLDC *dc,m_int flags)
 		IN_SetQuakeMouseState ();
 	// fix the leftover Alt from any Alt-Tab or the like that switched us away
 		ClearAllStates ();
-		S_UnblockSound ();
 
 		in_mode_set = false;
 
@@ -1595,8 +1591,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	scr_disabled_for_loading = true;
 	in_mode_set = true;
 
-	S_ClearBuffer ();
-
 	if (vid_modenum == NO_MODE)
 		original_mode = windowed_default;
 	else
@@ -2154,7 +2148,6 @@ void	VID_Init (unsigned char *palette)
 	hide_window = true;
 	VID_SetMode (MODE_WINDOWED, palette);
 	hide_window = false;
-	S_Init ();
 
 	vid_initialized = true;
 
@@ -2694,14 +2687,10 @@ void AppActivate(BOOL fActive, BOOL minimize)
 // enable/disable sound on focus gain/loss
 	if (!ActiveApp && sound_active)
 	{
-		S_BlockSound ();
-		S_ClearBuffer ();
 		sound_active = false;
 	}
 	else if (ActiveApp && !sound_active)
 	{
-		S_UnblockSound ();
-		S_ClearBuffer ();
 		sound_active = true;
 	}
 
@@ -2847,18 +2836,8 @@ LONG WINAPI MainWndProc (
 				// fall through windowed and allow the screen saver to start
 
 				default:
-					if (!in_mode_set)
-					{
-						S_BlockSound ();
-						S_ClearBuffer ();
-					}
 
 					lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
-
-					if (!in_mode_set)
-					{
-						S_UnblockSound ();
-					}
 			}
 			break;
 
@@ -3248,12 +3227,10 @@ void VID_MenuKey (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
-		S_LocalSound ("misc/menu1.wav");
 		M_Menu_Options_f ();
 		break;
 
 	case K_LEFTARROW:
-		S_LocalSound ("misc/menu1.wav");
 		vid_line = ((vid_line / VID_ROW_SIZE) * VID_ROW_SIZE) +
 				   ((vid_line + 2) % VID_ROW_SIZE);
 
@@ -3262,7 +3239,6 @@ void VID_MenuKey (int key)
 		break;
 
 	case K_RIGHTARROW:
-		S_LocalSound ("misc/menu1.wav");
 		vid_line = ((vid_line / VID_ROW_SIZE) * VID_ROW_SIZE) +
 				   ((vid_line + 4) % VID_ROW_SIZE);
 
@@ -3271,7 +3247,6 @@ void VID_MenuKey (int key)
 		break;
 
 	case K_UPARROW:
-		S_LocalSound ("misc/menu1.wav");
 		vid_line -= VID_ROW_SIZE;
 
 		if (vid_line < 0)
@@ -3285,7 +3260,6 @@ void VID_MenuKey (int key)
 		break;
 
 	case K_DOWNARROW:
-		S_LocalSound ("misc/menu1.wav");
 		vid_line += VID_ROW_SIZE;
 
 		if (vid_line >= vid_wmodes)
@@ -3299,13 +3273,11 @@ void VID_MenuKey (int key)
 		break;
 
 	case K_ENTER:
-		S_LocalSound ("misc/menu1.wav");
 		VID_SetMode (modedescs[vid_line].modenum, vid_curpal);
 		break;
 
 	case 'T':
 	case 't':
-		S_LocalSound ("misc/menu1.wav");
 	// have to set this before setting the mode because WM_PAINT
 	// happens during the mode set and does a VID_Update, which
 	// checks vid_testingmode
@@ -3320,7 +3292,6 @@ void VID_MenuKey (int key)
 
 	case 'D':
 	case 'd':
-		S_LocalSound ("misc/menu1.wav");
 		firstupdate = 0;
 		Cvar_SetValue ("_vid_default_mode_win", vid_modenum);
 		break;
