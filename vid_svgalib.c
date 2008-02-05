@@ -101,8 +101,6 @@ static byte     backingbuf[48*24];
 int		VGA_width, VGA_height, VGA_rowbytes, VGA_bufferrowbytes, VGA_planar;
 byte	*VGA_pagebase;
 
-void VGA_UpdatePlanarScreen (void *srcbuffer);
-
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 {
 	int i, j, k, plane, reps, repshift, offset, vidpage, off;
@@ -716,9 +714,6 @@ void VID_Update(vrect_t *rects)
 
 	if (vid_waitforrefresh.value)
 		vga_waitretrace();
-
-	if (VGA_planar)
-		VGA_UpdatePlanarScreen (vid.buffer);
 
 	else if (vid_redrawfull.value) {
 		int total = vid.rowbytes * vid.height;
