@@ -1,4 +1,4 @@
-/* $Id: model.c,v 1.1 2008/02/03 08:27:53 slotzero Exp $
+/* $Id: model.c,v 1.2 2008/02/05 09:01:11 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -397,9 +397,6 @@ void Mod_LoadTextures (lump_t *l)
 			tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
 		// the pixels immediately follow the structures
 		memcpy ( tx+1, mt+1, pixels);
-
-		if (!Q_strncmp(mt->name,"sky",3))
-			R_InitSky (tx);
 	}
 
 //
@@ -1939,4 +1936,3 @@ void Mod_Print (void)
 		Con_Printf ("\n");
 	}
 }
-

@@ -267,15 +267,12 @@ static void SCR_CalcRefdef (void)
 	vrect.width = vid.width;
 	vrect.height = vid.height;
 
-	R_SetVrect (&vrect, &scr_vrect, sb_lines);
 
 // guard against going from one mode to another that's less than half the
 // vertical resolution
 	if (scr_con_current > vid.height)
 		scr_con_current = vid.height;
 
-// notify the refresh of the change
-	R_ViewChanged (&vrect, sb_lines, vid.aspect);
 }
 
 
@@ -350,9 +347,6 @@ SCR_DrawRam
 void SCR_DrawRam (void)
 {
 	if (!scr_showram.value)
-		return;
-
-	if (!r_cache_thrash)
 		return;
 
 	Draw_Pic (scr_vrect.x+32, scr_vrect.y, scr_ram);
@@ -679,17 +673,12 @@ void SCR_ScreenShot_f (void)
 //
 // save the pcx file
 //
-	D_EnableBackBufferAccess ();	// enable direct drawing of console to back
-									//  buffer
 
 #ifdef WIN32
 	WritePCXfile (pcxname, vid.buffer, vid.width, vid.height, vid.rowbytes, vid_curpal); // JPG 3.02 host_basepal -> vid_curpal
 #else
 	WritePCXfile (pcxname, vid.buffer, vid.width, vid.height, vid.rowbytes, host_basepal);
 #endif
-
-	D_DisableBackBufferAccess ();	// for adapters that can't stay mapped in
-									//  for linear writes all the time
 
 	Con_Printf ("Wrote %s\n", pcxname);
 }
@@ -909,7 +898,6 @@ void SCR_UpdateScreen (void)
 //
 // do 3D refresh drawing, and then update the screen
 //
-	D_EnableBackBufferAccess ();	// of all overlay stuff if drawing directly
 
 	if (scr_fullupdate++ < vid.numpages)
 	{	// clear the entire screen
@@ -924,16 +912,12 @@ void SCR_UpdateScreen (void)
 	SCR_SetUpToDrawConsole ();
 	SCR_EraseCenterString ();
 
-	D_DisableBackBufferAccess ();	// for adapters that can't stay mapped in
-									//  for linear writes all the time
-
 	VID_LockBuffer ();
 
 	V_RenderView ();
 
 	VID_UnlockBuffer ();
 
-	D_EnableBackBufferAccess ();	// of all overlay stuff if drawing directly
 
 	if (scr_drawdialog)
 	{
@@ -971,13 +955,6 @@ void SCR_UpdateScreen (void)
 		Sbar_Draw ();
 		SCR_DrawConsole ();
 		M_Draw ();
-	}
-
-	D_DisableBackBufferAccess ();	// for adapters that can't stay mapped in
-									//  for linear writes all the time
-	if (pconupdate)
-	{
-		D_UpdateRects (pconupdate);
 	}
 
 	V_UpdatePalette ();

@@ -1033,8 +1033,6 @@ void V_RenderView (void)
 			V_CalcRefdef ();
 	}
 
-	R_PushDlights ();
-
 	if (lcd_x.value)
 	{
 		//
@@ -1048,16 +1046,12 @@ void V_RenderView (void)
 		r_refdef.viewangles[YAW] -= lcd_yaw.value;
 		for (i=0 ; i<3 ; i++)
 			r_refdef.vieworg[i] -= right[i]*lcd_x.value;
-		R_RenderView ();
 
 		vid.buffer += vid.rowbytes>>1;
-
-		R_PushDlights ();
 
 		r_refdef.viewangles[YAW] += lcd_yaw.value*2;
 		for (i=0 ; i<3 ; i++)
 			r_refdef.vieworg[i] += 2*right[i]*lcd_x.value;
-		R_RenderView ();
 
 		vid.buffer -= vid.rowbytes>>1;
 
@@ -1066,17 +1060,6 @@ void V_RenderView (void)
 		vid.rowbytes >>= 1;
 		vid.aspect *= 2;
 	}
-	else
-	{
-		R_RenderView ();
-	}
-
-#ifndef GLQUAKE
-	if (crosshair.value)
-		Draw_Character (scr_vrect.x + scr_vrect.width/2 + cl_crossx.value,
-			scr_vrect.y + scr_vrect.height/2 + cl_crossy.value, '+');
-#endif
-
 }
 
 //============================================================================
@@ -1137,4 +1120,3 @@ void V_Init (void)
 	Cvar_RegisterVariable (&r_polyblend);	// JPG 3.30 - winquake version of gl_polyblend
 #endif
 }
-

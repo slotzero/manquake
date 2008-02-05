@@ -1,4 +1,4 @@
-/* $Id: host.c,v 1.6 2008/02/04 08:17:31 slotzero Exp $
+/* $Id: host.c,v 1.7 2008/02/05 09:01:11 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -574,7 +574,6 @@ not reinitialize anything.
 void Host_ClearMemory (void)
 {
 	Con_DPrintf ("Clearing memory\n");
-	D_FlushCaches ();
 	Mod_ClearAll ();
 	if (host_hunklevel)
 		Hunk_FreeToLowMark (host_hunklevel);
@@ -1001,7 +1000,6 @@ void Host_Init (quakeparms_t *parms)
 		VID_Init (host_basepal);
 		Draw_Init ();
 		SCR_Init ();
-		R_Init ();
 		Sbar_Init ();
 		CL_Init ();
 #ifdef _WIN32 // on non win32, mouse comes before video for security reasons

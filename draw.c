@@ -166,7 +166,7 @@ void Draw_Character (int x, int y, int num)
 		drawline = 8;
 
 
-	if (r_pixbytes == 1)
+	if (0)
 	{
 		dest = vid.conbuffer + y*vid.conrowbytes + x;
 
@@ -302,7 +302,7 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 
 	source = pic->data;
 
-	if (r_pixbytes == 1)
+	if (0)
 	{
 		dest = vid.buffer + y * vid.rowbytes + x;
 
@@ -351,7 +351,7 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 
 	source = pic->data;
 
-	if (r_pixbytes == 1)
+	if (0)
 	{
 		dest = vid.buffer + y * vid.rowbytes + x;
 
@@ -438,7 +438,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 
 	source = pic->data;
 
-	if (r_pixbytes == 1)
+	if (0)
 	{
 		dest = vid.buffer + y * vid.rowbytes + x;
 
@@ -567,7 +567,7 @@ void Draw_ConsoleBackground (int lines)
 		Draw_CharToConback (ver[x], dest+(x<<3));
 
 // draw the pic
-	if (r_pixbytes == 1)
+	if (0)
 	{
 		dest = vid.conbuffer;
 
@@ -782,7 +782,7 @@ void Draw_TileClear (int x, int y, int w, int h)
 			psrc = r_rectdesc.ptexbytes +
 					(tileoffsety * r_rectdesc.rowbytes) + tileoffsetx;
 
-			if (r_pixbytes == 1)
+			if (0 == 1)
 			{
 				R_DrawRect8 (&vr, r_rectdesc.rowbytes, psrc, 0);
 			}
@@ -817,7 +817,7 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 	unsigned		uc;
 	int				u, v;
 
-	if (r_pixbytes == 1)
+	if (0 == 1)
 	{
 		dest = vid.buffer + y*vid.rowbytes + x;
 		for (v=0 ; v<h ; v++, dest += vid.rowbytes)

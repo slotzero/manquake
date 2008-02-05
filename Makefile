@@ -113,14 +113,6 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/crc.o \
 	$(BUILDDIR)/squake/cvar.o \
 	$(BUILDDIR)/squake/draw.o \
-	$(BUILDDIR)/squake/d_edge.o \
-	$(BUILDDIR)/squake/d_init.o \
-	$(BUILDDIR)/squake/d_modech.o \
-	$(BUILDDIR)/squake/d_polyse.o \
-	$(BUILDDIR)/squake/d_scan.o \
-	$(BUILDDIR)/squake/d_sprite.o \
-	$(BUILDDIR)/squake/d_surf.o \
-	$(BUILDDIR)/squake/d_vars.o \
 	$(BUILDDIR)/squake/host.o \
 	$(BUILDDIR)/squake/host_cmd.o \
 	$(BUILDDIR)/squake/iplog.o \
@@ -139,20 +131,7 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/pr_cmds.o \
 	$(BUILDDIR)/squake/pr_edict.o \
 	$(BUILDDIR)/squake/pr_exec.o \
-	$(BUILDDIR)/squake/r_aclip.o \
-	$(BUILDDIR)/squake/r_alias.o \
-	$(BUILDDIR)/squake/r_bsp.o \
-	$(BUILDDIR)/squake/r_light.o \
-	$(BUILDDIR)/squake/r_draw.o \
-	$(BUILDDIR)/squake/r_efrag.o \
-	$(BUILDDIR)/squake/r_edge.o \
-	$(BUILDDIR)/squake/r_misc.o \
 	$(BUILDDIR)/squake/r_main.o \
-	$(BUILDDIR)/squake/r_sky.o \
-	$(BUILDDIR)/squake/r_sprite.o \
-	$(BUILDDIR)/squake/r_surf.o \
-	$(BUILDDIR)/squake/r_part.o \
-	$(BUILDDIR)/squake/r_vars.o \
 	$(BUILDDIR)/squake/screen.o \
 	$(BUILDDIR)/squake/sbar.o \
 	$(BUILDDIR)/squake/security.o \
@@ -167,19 +146,8 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/sys_linux.o \
 	$(BUILDDIR)/squake/vid_svgalib.o \
 	$(BUILDDIR)/squake/d_copy.o \
-	$(BUILDDIR)/squake/d_polysa.o \
-	$(BUILDDIR)/squake/d_scana.o \
-	$(BUILDDIR)/squake/d_spr8.o \
-	$(BUILDDIR)/squake/d_varsa.o \
 	$(BUILDDIR)/squake/math.o \
-	$(BUILDDIR)/squake/r_aliasa.o \
-	$(BUILDDIR)/squake/r_drawa.o \
-	$(BUILDDIR)/squake/r_edgea.o \
-	$(BUILDDIR)/squake/r_varsa.o \
-	$(BUILDDIR)/squake/surf16.o \
-	$(BUILDDIR)/squake/surf8.o \
 	$(BUILDDIR)/squake/worlda.o \
-	$(BUILDDIR)/squake/r_aclipa.o \
 	$(BUILDDIR)/squake/sys_dosa.o
 
 $(BUILDDIR)/bin/squake : $(SQUAKE_OBJS)
@@ -209,33 +177,6 @@ $(BUILDDIR)/squake/cvar.o :     $(MOUNT_DIR)/cvar.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/draw.o :     $(MOUNT_DIR)/draw.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/d_edge.o :   $(MOUNT_DIR)/d_edge.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/d_init.o :   $(MOUNT_DIR)/d_init.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/d_modech.o : $(MOUNT_DIR)/d_modech.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/d_polyse.o : $(MOUNT_DIR)/d_polyse.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/d_scan.o :   $(MOUNT_DIR)/d_scan.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/d_sky.o :    $(MOUNT_DIR)/d_sky.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/d_sprite.o : $(MOUNT_DIR)/d_sprite.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/d_surf.o :   $(MOUNT_DIR)/d_surf.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/d_vars.o :   $(MOUNT_DIR)/d_vars.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/host.o :     $(MOUNT_DIR)/host.c
@@ -292,46 +233,7 @@ $(BUILDDIR)/squake/pr_edict.o : $(MOUNT_DIR)/pr_edict.c
 $(BUILDDIR)/squake/pr_exec.o :  $(MOUNT_DIR)/pr_exec.c
 	$(DO_CC)
 
-$(BUILDDIR)/squake/r_aclip.o :  $(MOUNT_DIR)/r_aclip.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/r_alias.o :  $(MOUNT_DIR)/r_alias.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/r_bsp.o :    $(MOUNT_DIR)/r_bsp.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/r_light.o :  $(MOUNT_DIR)/r_light.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/r_draw.o :   $(MOUNT_DIR)/r_draw.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/r_efrag.o :  $(MOUNT_DIR)/r_efrag.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/r_edge.o :   $(MOUNT_DIR)/r_edge.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/r_misc.o :   $(MOUNT_DIR)/r_misc.c
-	$(DO_CC)
-
 $(BUILDDIR)/squake/r_main.o :   $(MOUNT_DIR)/r_main.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/r_sky.o :    $(MOUNT_DIR)/r_sky.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/r_sprite.o : $(MOUNT_DIR)/r_sprite.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/r_surf.o :   $(MOUNT_DIR)/r_surf.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/r_part.o :   $(MOUNT_DIR)/r_part.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/r_vars.o :   $(MOUNT_DIR)/r_vars.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/screen.o :   $(MOUNT_DIR)/screen.c
@@ -355,10 +257,10 @@ $(BUILDDIR)/squake/sv_move.o :  $(MOUNT_DIR)/sv_move.c
 $(BUILDDIR)/squake/sv_user.o :  $(MOUNT_DIR)/sv_user.c
 	$(DO_CC)
 
-$(BUILDDIR)/squake/zone.o	:   $(MOUNT_DIR)/zone.c
+$(BUILDDIR)/squake/zone.o :	$(MOUNT_DIR)/zone.c
 	$(DO_CC)
 
-$(BUILDDIR)/squake/view.o	:   $(MOUNT_DIR)/view.c
+$(BUILDDIR)/squake/view.o :	$(MOUNT_DIR)/view.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/wad.o :      $(MOUNT_DIR)/wad.c
@@ -376,43 +278,10 @@ $(BUILDDIR)/squake/vid_svgalib.o:$(MOUNT_DIR)/vid_svgalib.c
 $(BUILDDIR)/squake/d_copy.o :   $(MOUNT_DIR)/d_copy.s
 	$(DO_AS)
 
-$(BUILDDIR)/squake/d_polysa.o : $(MOUNT_DIR)/d_polysa.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/d_scana.o :  $(MOUNT_DIR)/d_scana.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/d_spr8.o :   $(MOUNT_DIR)/d_spr8.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/d_varsa.o :  $(MOUNT_DIR)/d_varsa.s
-	$(DO_AS)
-
 $(BUILDDIR)/squake/math.o :     $(MOUNT_DIR)/math.s
 	$(DO_AS)
 
-$(BUILDDIR)/squake/r_aliasa.o : $(MOUNT_DIR)/r_aliasa.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/r_drawa.o :  $(MOUNT_DIR)/r_drawa.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/r_edgea.o :  $(MOUNT_DIR)/r_edgea.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/r_varsa.o :  $(MOUNT_DIR)/r_varsa.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/surf16.o :   $(MOUNT_DIR)/surf16.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/surf8.o :    $(MOUNT_DIR)/surf8.s
-	$(DO_AS)
-
 $(BUILDDIR)/squake/worlda.o :   $(MOUNT_DIR)/worlda.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/r_aclipa.o : $(MOUNT_DIR)/r_aclipa.s
 	$(DO_AS)
 
 $(BUILDDIR)/squake/sys_dosa.o : $(MOUNT_DIR)/sys_dosa.s

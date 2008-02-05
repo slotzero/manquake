@@ -233,20 +233,6 @@ VID_CheckAdequateMem
 */
 qboolean VID_CheckAdequateMem (int width, int height)
 {
-	int		tbuffersize;
-
-	tbuffersize = width * height * sizeof (*d_pzbuffer);
-
-	tbuffersize += D_SurfaceCacheForRes (width, height);
-
-// see if there's enough memory, allowing for the normal mode 0x13 pixel,
-// z, and surface buffers
-	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
-		 0x10000 * 3) < minimum_memory)
-	{
-		return false;		// not enough memory for mode
-	}
-
 	return true;
 }
 
@@ -258,39 +244,6 @@ VID_AllocBuffers
 */
 qboolean VID_AllocBuffers (int width, int height)
 {
-	int		tsize, tbuffersize;
-
-	tbuffersize = width * height * sizeof (*d_pzbuffer);
-
-	tsize = D_SurfaceCacheForRes (width, height);
-
-	tbuffersize += tsize;
-
-// see if there's enough memory, allowing for the normal mode 0x13 pixel,
-// z, and surface buffers
-	if ((host_parms.memsize - tbuffersize + SURFCACHE_SIZE_AT_320X200 +
-		 0x10000 * 3) < minimum_memory)
-	{
-		Con_SafePrintf ("Not enough memory for video mode\n");
-		return false;		// not enough memory for mode
-	}
-
-	vid_surfcachesize = tsize;
-
-	if (d_pzbuffer)
-	{
-		D_FlushCaches ();
-		Hunk_FreeToHighMark (VID_highhunkmark);
-		d_pzbuffer = NULL;
-	}
-
-	VID_highhunkmark = Hunk_HighMark ();
-
-	d_pzbuffer = Hunk_HighAllocName (tbuffersize, "video");
-
-	vid_surfcache = (byte *)d_pzbuffer +
-			width * height * sizeof (*d_pzbuffer);
-
 	return true;
 }
 
@@ -1670,7 +1623,6 @@ int VID_SetMode (int modenum, unsigned char *palette)
 		return false;
 	}
 
-	D_InitCaches (vid_surfcache, vid_surfcachesize);
 
 	while (PeekMessage (&msg, NULL, 0, 0, PM_REMOVE))
 	{
@@ -1729,10 +1681,7 @@ void VID_LockBuffer (void)
 		vid.rowbytes = vid.conrowbytes = mgldc->mi.bytesPerLine;
 	}
 
-	if (r_dowarp)
-		d_viewbuffer = r_warpbuffer;
-	else
-		d_viewbuffer = (void *)(byte *)vid.buffer;
+
 
 	if (r_dowarp)
 		screenwidth = WARP_WIDTH;
@@ -1760,7 +1709,7 @@ void VID_UnlockBuffer (void)
 	MGL_endDirectAccess();
 
 // to turn up any unlocked accesses
-	vid.buffer = vid.conbuffer = vid.direct = d_viewbuffer = NULL;
+	vid.buffer = vid.conbuffer = vid.direct = NULL;
 
 }
 

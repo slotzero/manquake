@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -77,7 +77,7 @@ int		mouserate = MOUSE_DEFAULTSAMPLERATE;
 cvar_t		vid_mode = {"vid_mode","5",false};
 cvar_t		vid_redrawfull = {"vid_redrawfull","0",false};
 cvar_t		vid_waitforrefresh = {"vid_waitforrefresh","0",true};
- 
+
 char	*framebuffer_ptr;
 
 cvar_t  mouse_button_commands[3] =
@@ -218,7 +218,7 @@ void D_EndDirectRect (int x, int y, int width, int height)
 					vidpage=offset / 0x10000;
 					vga_setpage(vidpage);
 				}
-				memcpy (vid.direct + off, 
+				memcpy (vid.direct + off,
 						&backingbuf[(i +j)*24],
 						width);
 			}
@@ -263,7 +263,7 @@ void VID_Gamma_f (void)
 void VID_DescribeMode_f (void)
 {
 	int modenum;
-	
+
 	modenum = Q_atoi (Cmd_Argv(1));
 	if ((modenum >= num_modes) || (modenum < 0 ) || !modes[modenum].width)
 		Con_Printf("Invalid video mode: %d!\n",modenum);
@@ -277,7 +277,7 @@ void VID_DescribeMode_f (void)
 void VID_DescribeModes_f (void)
 {
 	int i;
-	
+
 	for (i=0;i<num_modes;i++)
 		if (modes[i].width) {
 			Con_Printf("%d: %d x %d - ", i, modes[i].width,modes[i].height);
@@ -296,7 +296,7 @@ VID_NumModes
 int VID_NumModes ()
 {
 	int i,i1=0;
-	
+
 	for (i=0;i<num_modes;i++)
 		i1+=(modes[i].width?1:0);
 	return (i1);
@@ -338,7 +338,7 @@ void VID_InitModes(void)
 
 	for (i=0 ; i<num_modes ; i++)
 	{
-		if (modes[i].bytesperpixel != 1 && modes[i].colors != 256) 
+		if (modes[i].bytesperpixel != 1 && modes[i].colors != 256)
 			modes[i].width = 0;
 	}
 
@@ -414,7 +414,7 @@ void vtswitch(int newconsole)
 
 void keyhandler(int scancode, int state)
 {
-	
+
 	int sc;
 
 	sc = scancode & 0x7f;
@@ -476,14 +476,14 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	if ((modenum >= num_modes) || (modenum < 0) || !modes[modenum].width)
 	{
 		Cvar_SetValue ("vid_mode", (float)current_mode);
-		
+
 		Con_Printf("No such video mode: %d\n",modenum);
-		
+
 		return 0;
 	}
 
 	Cvar_SetValue ("vid_mode", (float)modenum);
-	
+
 	current_mode=modenum;
 
 	vid.width = modes[current_mode].width;
@@ -506,31 +506,18 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	vid.conwidth = vid.width;
 	vid.conheight = vid.height;
 	vid.numpages = 1;
-	
+
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
 
 	// alloc zbuffer and surface cache
-	if (d_pzbuffer) {
-		D_FlushCaches();
-		Hunk_FreeToHighMark (VID_highhunkmark);
-		d_pzbuffer = NULL;
-		vid_surfcache = NULL;
-	}
+
 
 	bsize = vid.rowbytes * vid.height;
-	tsize = D_SurfaceCacheForRes (vid.width, vid.height);
-	zsize = vid.width * vid.height * sizeof(*d_pzbuffer);
+
 
 	VID_highhunkmark = Hunk_HighMark ();
 
-	d_pzbuffer = Hunk_HighAllocName (bsize+tsize+zsize, "video");
-
-	vid_surfcache = ((byte *)d_pzbuffer) + zsize;
-
-	vid.conbuffer = vid.buffer = (pixel_t *)(((byte *)d_pzbuffer) + zsize + tsize);
-
-	D_InitCaches (vid_surfcache, tsize);
 
 // get goin'
 
@@ -572,7 +559,7 @@ void VID_Init(unsigned char *palette)
 		Cvar_RegisterVariable (&vid_mode);
 		Cvar_RegisterVariable (&vid_redrawfull);
 		Cvar_RegisterVariable (&vid_waitforrefresh);
-		
+
 		Cmd_AddCommand("vid_nummodes", VID_NumModes_f);
 		Cmd_AddCommand("vid_describemode", VID_DescribeMode_f);
 		Cmd_AddCommand("vid_describemodes", VID_DescribeModes_f);
@@ -605,7 +592,7 @@ void VID_Init(unsigned char *palette)
 		VID_SetPalette(palette);
 
 		// we do want to run in the background when switched away
-		vga_runinbackground(1);	
+		vga_runinbackground(1);
 	}
 
 	if (COM_CheckParm("-nokbd")) UseKeyboard = 0;
@@ -688,29 +675,29 @@ void VID_Init(unsigned char *palette)
 		scantokey[30] = 'a';
 		scantokey[48] = 'b';
 		scantokey[46] = 'c';
-        scantokey[32] = 'd';       
-        scantokey[18] = 'e';       
-        scantokey[33] = 'f';       
-        scantokey[34] = 'g';       
-        scantokey[35] = 'h';       
-        scantokey[23] = 'i';       
-        scantokey[36] = 'j';       
-        scantokey[37] = 'k';       
-        scantokey[38] = 'l';       
-        scantokey[50] = 'm';       
-        scantokey[49] = 'n';       
-        scantokey[24] = 'o';       
-        scantokey[25] = 'p';       
-        scantokey[16] = 'q';       
-        scantokey[19] = 'r';       
-        scantokey[31] = 's';       
-        scantokey[20] = 't';       
-        scantokey[22] = 'u';       
-        scantokey[47] = 'v';       
-        scantokey[17] = 'w';       
-        scantokey[45] = 'x';       
-        scantokey[21] = 'y';       
-        scantokey[44] = 'z';       
+        scantokey[32] = 'd';
+        scantokey[18] = 'e';
+        scantokey[33] = 'f';
+        scantokey[34] = 'g';
+        scantokey[35] = 'h';
+        scantokey[23] = 'i';
+        scantokey[36] = 'j';
+        scantokey[37] = 'k';
+        scantokey[38] = 'l';
+        scantokey[50] = 'm';
+        scantokey[49] = 'n';
+        scantokey[24] = 'o';
+        scantokey[25] = 'p';
+        scantokey[16] = 'q';
+        scantokey[19] = 'r';
+        scantokey[31] = 's';
+        scantokey[20] = 't';
+        scantokey[22] = 'u';
+        scantokey[47] = 'v';
+        scantokey[17] = 'w';
+        scantokey[45] = 'x';
+        scantokey[21] = 'y';
+        scantokey[44] = 'z';
 
 		if (keyboard_init())
 			Sys_Error("keyboard_init() failed");
@@ -757,30 +744,30 @@ void VID_Update(vrect_t *rects)
 			while (ycount--)
 			{
 				register int i = offset % 0x10000;
-	
+
 				if ((offset / 0x10000) != vidpage) {
 					vidpage=offset / 0x10000;
 					vga_setpage(vidpage);
 				}
 				if (rects->width + i > 0x10000) {
-					memcpy(framebuffer_ptr + i, 
-							vid.buffer + offset, 
+					memcpy(framebuffer_ptr + i,
+							vid.buffer + offset,
 							0x10000 - i);
 					vga_setpage(++vidpage);
 					memcpy(framebuffer_ptr,
-							vid.buffer + offset + 0x10000 - i, 
+							vid.buffer + offset + 0x10000 - i,
 							rects->width - 0x10000 + i);
 				} else
-					memcpy(framebuffer_ptr + i, 
-							vid.buffer + offset, 
+					memcpy(framebuffer_ptr + i,
+							vid.buffer + offset,
 							rects->width);
 				offset += vid.rowbytes;
 			}
-	
+
 			rects = rects->pnext;
 		}
 	}
-	
+
 	if (vid_mode.value != current_mode)
 		VID_SetMode ((int)vid_mode.value, vid_current_palette);
 }
@@ -952,10 +939,10 @@ void IN_MouseMove (usercmd_t *cmd)
 		cmd->sidemove += m_side.value * mouse_x;
 	else
 		cl.viewangles[YAW] -= m_yaw.value * mouse_x;
-	
+
 	if (in_mlook.state & 1)
 		V_StopPitchDrift ();
-		
+
 	if ( (in_mlook.state & 1) && !(in_strafe.state & 1))
 	{
 		cl.viewangles[PITCH] += m_pitch.value * mouse_y;
@@ -1012,4 +999,3 @@ char *VID_ModeInfo (int modenum)
 		return (badmodestr);
 	}
 }
-
