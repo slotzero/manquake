@@ -132,13 +132,7 @@ void Host_EndGame (char *message, ...)
 	if (cls.state == ca_dedicated)
 		Sys_Error ("Host_EndGame: %s\n",string);	// dedicated servers exit
 
-	if (cls.demonum != -1)
-	{
-		//CL_StopPlayback ();	// JPG 1.05 - patch by CSR to fix crash
-		CL_NextDemo ();
-	}
-	else
-		CL_Disconnect ();
+	CL_Disconnect ();
 
 	longjmp (host_abortserver, 1);
 }

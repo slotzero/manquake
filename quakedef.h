@@ -1,4 +1,4 @@
-/* $Id: quakedef.h,v 1.5 2008/02/06 02:41:10 slotzero Exp $
+/* $Id: quakedef.h,v 1.6 2008/02/06 06:47:20 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -250,7 +250,6 @@ typedef struct
 #include "view.h"
 #include "menu.h"
 #include "crc.h"
-#include "location.h"	// JPG - for %l formatting speficier
 #include "iplog.h"		// JPG 1.05 - ip address logging
 
 //=============================================================================

@@ -151,6 +151,15 @@ SOURCE=.\keys.c
 # Begin Source File
 
 SOURCE=.\location.c
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -196,13 +205,6 @@ SOURCE=.\mathlib.c
 # Begin Source File
 
 SOURCE=.\menu.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -449,6 +451,15 @@ SOURCE=.\keys.h
 # Begin Source File
 
 SOURCE=.\location.h
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
