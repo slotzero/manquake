@@ -1,4 +1,4 @@
-/* $Id: host.c,v 1.7 2008/02/05 09:01:11 slotzero Exp $
+/* $Id: host.c,v 1.8 2008/02/06 02:36:12 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -1000,7 +1000,6 @@ void Host_Init (quakeparms_t *parms)
 		VID_Init (host_basepal);
 		Draw_Init ();
 		SCR_Init ();
-		Sbar_Init ();
 		CL_Init ();
 #ifdef _WIN32 // on non win32, mouse comes before video for security reasons
 		IN_Init ();

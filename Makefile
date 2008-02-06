@@ -133,7 +133,6 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/pr_exec.o \
 	$(BUILDDIR)/squake/r_main.o \
 	$(BUILDDIR)/squake/screen.o \
-	$(BUILDDIR)/squake/sbar.o \
 	$(BUILDDIR)/squake/security.o \
 	$(BUILDDIR)/squake/sv_main.o \
 	$(BUILDDIR)/squake/sv_phys.o \
@@ -236,9 +235,6 @@ $(BUILDDIR)/squake/r_main.o :   $(MOUNT_DIR)/r_main.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/screen.o :   $(MOUNT_DIR)/screen.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/sbar.o :     $(MOUNT_DIR)/sbar.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/security.o : $(MOUNT_DIR)/security.c

@@ -227,9 +227,6 @@ static void SCR_CalcRefdef (void)
 	scr_fullupdate = 0;		// force a background redraw
 	vid.recalc_refdef = 0;
 
-// force the status bar to redraw
-	Sbar_Changed ();
-
 //========================================
 
 // bound viewsize
@@ -252,13 +249,6 @@ static void SCR_CalcRefdef (void)
 		size = 120;
 	else
 		size = scr_viewsize.value;
-
-	if (size >= 120)
-		sb_lines = 0;		// no status bar at all
-	else if (size >= 110)
-		sb_lines = 24;		// no inventory
-	else
-		sb_lines = 24+16+8;
 
 // these calculations mirror those in R_Init() for r_refdef, but take no
 // account of water warping
@@ -514,7 +504,6 @@ void SCR_SetUpToDrawConsole (void)
 	{
 		scr_copytop = 1;
 		Draw_TileClear (0,(int)scr_con_current,vid.width, vid.height - (int)scr_con_current);
-		Sbar_Changed ();
 	}
 	else if (clearnotify++ < vid.numpages)
 	{
@@ -707,7 +696,6 @@ void SCR_BeginLoadingPlaque (void)
 
 	scr_drawloading = true;
 	scr_fullupdate = 0;
-	Sbar_Changed ();
 	SCR_UpdateScreen ();
 	scr_drawloading = false;
 
@@ -903,7 +891,6 @@ void SCR_UpdateScreen (void)
 	{	// clear the entire screen
 		scr_copyeverything = 1;
 		Draw_TileClear (0,0,vid.width,vid.height);
-		Sbar_Changed ();
 	}
 
 	pconupdate = NULL;
@@ -921,7 +908,6 @@ void SCR_UpdateScreen (void)
 
 	if (scr_drawdialog)
 	{
-		Sbar_Draw ();
 		Draw_FadeScreen ();
 		SCR_DrawNotifyString ();
 		scr_copyeverything = true;
@@ -929,15 +915,9 @@ void SCR_UpdateScreen (void)
 	else if (scr_drawloading)
 	{
 		SCR_DrawLoading ();
-		Sbar_Draw ();
-	}
-	else if (cl.intermission == 1 && key_dest == key_game)
-	{
-		Sbar_IntermissionOverlay ();
 	}
 	else if (cl.intermission == 2 && key_dest == key_game)
 	{
-		Sbar_FinaleOverlay ();
 		SCR_CheckDrawCenterString ();
 	}
 	else if (cl.intermission == 3 && key_dest == key_game)
@@ -952,7 +932,6 @@ void SCR_UpdateScreen (void)
 		SCR_DrawPause ();
 		SCR_DrawFPS (); // JPG - draw FPS
 		SCR_CheckDrawCenterString ();
-		Sbar_Draw ();
 		SCR_DrawConsole ();
 		M_Draw ();
 	}
@@ -978,7 +957,6 @@ void SCR_UpdateScreen (void)
 		vrect.x = 0;
 		vrect.y = 0;
 		vrect.width = vid.width;
-		vrect.height = vid.height - sb_lines;
 		vrect.pnext = 0;
 
 		VID_Update (&vrect);
