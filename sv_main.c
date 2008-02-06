@@ -1,4 +1,4 @@
-/* $Id: sv_main.c,v 1.2 2008/02/04 08:50:35 slotzero Exp $
+/* $Id: sv_main.c,v 1.3 2008/02/06 10:14:17 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -1379,11 +1379,7 @@ This is called at the start of each level
 */
 extern float		scr_centertime_off;
 
-#ifdef QUAKE2
-void SV_SpawnServer (char *server, char *startspot)
-#else
 void SV_SpawnServer (char *server)
-#endif
 {
 	edict_t		*ent;
 	int			i;
@@ -1430,10 +1426,6 @@ void SV_SpawnServer (char *server)
 	memset (&sv, 0, sizeof(sv));
 
 	strcpy (sv.name, server);
-#ifdef QUAKE2
-	if (startspot)
-		strcpy(sv.startspot, startspot);
-#endif
 
 // load progs to get entity field count
 	PR_LoadProgs ();
@@ -1511,9 +1503,6 @@ void SV_SpawnServer (char *server)
 		pr_global_struct->deathmatch = deathmatch.value;
 
 	pr_global_struct->mapname = sv.name - pr_strings;
-#ifdef QUAKE2
-	pr_global_struct->startspot = sv.startspot - pr_strings;
-#endif
 
 // serverflags are for cross level information (sigils)
 	pr_global_struct->serverflags = svs.serverflags;

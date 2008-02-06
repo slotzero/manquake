@@ -258,14 +258,11 @@ void initFatalError(void)
 
 int VID_Suspend (MGLDC *dc,m_int flags)
 {
-
 	if (flags & MGL_DEACTIVATE)
 	{
 	// FIXME: this doesn't currently work on NT
 		if (block_switch.value && !WinNT)
-		{
 			return MGL_NO_DEACTIVATE;
-		}
 
 		IN_RestoreOriginalMouseState ();
 
@@ -290,7 +287,7 @@ int VID_Suspend (MGLDC *dc,m_int flags)
 
 		return MGL_NO_SUSPEND_APP;
 	}
-
+	return MGL_NO_DEACTIVATE;
 }
 
 
