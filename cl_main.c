@@ -119,13 +119,8 @@ void CL_Disconnect (void)
 //	SCR_BringDownConsole ();
 
 // if running a local server, shut it down
-	//if (cls.demoplayback)
-	//	CL_StopPlayback ();
 	if (cls.state == ca_connected)
 	{
-		//if (cls.demorecording)
-		//	CL_Stop_f ();
-
 		Con_DPrintf ("Sending clc_disconnect\n");
 		SZ_Clear (&cls.message);
 		MSG_WriteByte (&cls.message, clc_disconnect);
@@ -138,7 +133,6 @@ void CL_Disconnect (void)
 			Host_ShutdownServer(false);
 	}
 
-	cls.demoplayback = cls.timedemo = false;
 	cls.signon = 0;
 }
 
@@ -164,9 +158,6 @@ void CL_EstablishConnection (char *host)
 	if (cls.state == ca_dedicated)
 		return;
 
-	if (cls.demoplayback)
-		return;
-
 	CL_Disconnect ();
 
 	cls.netcon = NET_Connect (host);
@@ -182,7 +173,7 @@ void CL_EstablishConnection (char *host)
 		else
 			Con_Printf("%c%cConnected to ProQuake server%c\n", 1, 29, 31);
 	}
-	cls.demonum = -1;			// not in the demo loop now
+
 	cls.state = ca_connected;
 	cls.signon = 0;				// need all the signon messages before playing
 
@@ -332,28 +323,6 @@ Called to play the next demo in the demo loop
 */
 void CL_NextDemo (void)
 {
-	char	str[1024];
-
-	if (cls.demonum == -1)
-		return;		// don't play demos
-
-	SCR_BeginLoadingPlaque ();
-
-	if (!cls.demos[cls.demonum][0] || cls.demonum == MAX_DEMOS)
-	{
-		cls.demonum = 0;
-		if (!cls.demos[cls.demonum][0])
-		{
-			Con_Printf ("No demos listed with startdemos\n");
-			CL_Disconnect();	// JPG 1.05 - patch by CSR to fix crash
-			cls.demonum = -1;
-			return;
-		}
-	}
-
-	sprintf (str,"playdemo %s\n", cls.demos[cls.demonum]);
-	Cbuf_InsertText (str);
-	cls.demonum++;
 }
 
 /*
@@ -509,7 +478,7 @@ float	CL_LerpPoint (void)
 
 	f = cl.mtime[0] - cl.mtime[1];
 
-	if (!f || cl_nolerp.value || cls.timedemo || sv.active)
+	if (!f || cl_nolerp.value || sv.active)
 	{
 		cl.time = cl.mtime[0];
 		return 1;
@@ -620,12 +589,6 @@ void CL_SendCmd (void)
 
 	}
 
-	if (cls.demoplayback)
-	{
-		SZ_Clear (&cls.message);
-		return;
-	}
-
 // send the reliable message
 	if (!cls.message.cursize)
 		return;		// no message at all
@@ -677,14 +640,8 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&m_forward);
 	Cvar_RegisterVariable (&m_side);
 
-//	Cvar_RegisterVariable (&cl_autofire);
-
 	Cmd_AddCommand ("entities", CL_PrintEntities_f);
 	Cmd_AddCommand ("disconnect", CL_Disconnect_f);
-//	Cmd_AddCommand ("record", CL_Record_f);
-//	Cmd_AddCommand ("stop", CL_Stop_f);
-//	Cmd_AddCommand ("playdemo", CL_PlayDemo_f);
-//	Cmd_AddCommand ("timedemo", CL_TimeDemo_f);
 
 	// JPG - added these for %r formatting
 	Cvar_RegisterVariable (&pq_needrl);

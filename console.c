@@ -346,7 +346,7 @@ void Con_Print (char *txt)
 		txt++;
 
 		// JPG 1.05 - timestamp player binds during a match (unless the bind already has a time in it)
-		if (!cls.demoplayback && (!cls.netcon || cls.netcon->mod != MOD_PROQUAKE || *txt == '(') &&		// JPG 3.30 - fixed old bug hit by some servers
+		if ((!cls.netcon || cls.netcon->mod != MOD_PROQUAKE || *txt == '(') &&		// JPG 3.30 - fixed old bug hit by some servers
 			!con_x && pq_timestamp.value && (cl.minutes || cl.seconds) && cl.seconds < 128)
 		{
 			int minutes, seconds, match_time, msg_time;

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -91,7 +91,7 @@ void KeyDown (kbutton_t *b)
 
 	if (k == b->down[0] || k == b->down[1])
 		return;		// repeating key
-	
+
 	if (!b->down[0])
 		b->down[0] = k;
 	else if (!b->down[1])
@@ -101,7 +101,7 @@ void KeyDown (kbutton_t *b)
 		Con_Printf ("Three keys down for a button!\n");
 		return;
 	}
-	
+
 	if (b->state & 1)
 		return;		// still down
 	b->state |= 1 + 2;	// down + impulse down
@@ -111,7 +111,7 @@ void KeyUp (kbutton_t *b)
 {
 	int		k;
 	char	*c;
-	
+
 	c = Cmd_Argv(1);
 	if (c[0])
 		k = atoi(c);
@@ -208,7 +208,7 @@ void IN_BestWeapon (void)
 	for (i = 1 ; i < Cmd_Argc() ; i++)
 	{
 		impulse = Q_atoi(Cmd_Argv(i));
-		if (impulse > 0 && impulse < 9 && (impulse == 1 || 
+		if (impulse > 0 && impulse < 9 && (impulse == 1 ||
 			( (cl.items & (IT_SHOTGUN << (impulse - 2))) && cl.stats[weaponstat[impulse - 2]] )))
 		{
 			in_impulse = impulse;
@@ -232,12 +232,12 @@ float CL_KeyState (kbutton_t *key)
 {
 	float		val;
 	qboolean	impulsedown, impulseup, down;
-	
+
 	impulsedown = key->state & 2;
 	impulseup = key->state & 4;
 	down = key->state & 1;
 	val = 0;
-	
+
 	if (impulsedown && !impulseup)
 		if (down)
 			val = 0.5;	// pressed and held this frame
@@ -260,7 +260,7 @@ float CL_KeyState (kbutton_t *key)
 			val = 0.25;	// pressed and released this frame
 
 	key->state &= 1;		// clear impulses
-	
+
 	return val;
 }
 
@@ -295,7 +295,7 @@ void CL_AdjustAngles (void)
 {
 	float	speed;
 	float	up, down;
-	
+
 	if (in_speed.state & 1)
 		speed = host_frametime * cl_anglespeedkey.value;
 	else
@@ -313,10 +313,10 @@ void CL_AdjustAngles (void)
 		cl.viewangles[PITCH] -= speed*cl_pitchspeed.value * CL_KeyState (&in_forward);
 		cl.viewangles[PITCH] += speed*cl_pitchspeed.value * CL_KeyState (&in_back);
 	}
-	
+
 	up = CL_KeyState (&in_lookup);
 	down = CL_KeyState(&in_lookdown);
-	
+
 	cl.viewangles[PITCH] -= speed*cl_pitchspeed.value * up;
 	cl.viewangles[PITCH] += speed*cl_pitchspeed.value * down;
 
@@ -343,7 +343,7 @@ void CL_AdjustAngles (void)
 		cl.viewangles[ROLL] = 50;
 	if (cl.viewangles[ROLL] < -50)
 		cl.viewangles[ROLL] = -50;
-		
+
 }
 
 /*
@@ -354,14 +354,14 @@ Send the intended movement message to the server
 ================
 */
 void CL_BaseMove (usercmd_t *cmd)
-{	
+{
 	if (cls.signon != SIGNONS)
 		return;
-			
+
 	CL_AdjustAngles ();
-	
+
 	Q_memset (cmd, 0, sizeof(*cmd));
-	
+
 	if (in_strafe.state & 1)
 	{
 		cmd->sidemove += cl_sidespeed.value * CL_KeyState (&in_right);
@@ -375,10 +375,10 @@ void CL_BaseMove (usercmd_t *cmd)
 	cmd->upmove -= cl_upspeed.value * CL_KeyState (&in_down);
 
 	if (! (in_klook.state & 1) )
-	{	
+	{
 		cmd->forwardmove += cl_forwardspeed.value * CL_KeyState (&in_forward);
 		cmd->forwardmove -= cl_backspeed.value * CL_KeyState (&in_back);
-	}	
+	}
 
 //
 // adjust for speed key
@@ -389,10 +389,6 @@ void CL_BaseMove (usercmd_t *cmd)
 		cmd->sidemove *= cl_movespeedkey.value;
 		cmd->upmove *= cl_movespeedkey.value;
 	}
-
-#ifdef QUAKE2
-	cmd->lightlevel = cl.light_level;
-#endif
 }
 
 sizebuf_t lag_buff[32]; // JPG - support for synthetic lag
@@ -408,7 +404,7 @@ CL_SendLagMove
 */
 void CL_SendLagMove (void)
 {
-	if (cls.demoplayback || (cls.state != ca_connected) || (cls.signon != SIGNONS))
+	if ((cls.state != ca_connected) || (cls.signon != SIGNONS))
 		return;
 
 	while ((lag_tail < lag_head) && (lag_sendtime[lag_tail & 31] <= realtime))
@@ -419,7 +415,7 @@ void CL_SendLagMove (void)
 			lag_head = lag_tail = 0;  // JPG - hack: if cl.movemessages has been reset, we should reset these too
 			continue;	// return -> continue
 		}
-		
+
 		if (NET_SendUnreliableMessage (cls.netcon, &lag_buff[(lag_tail-1)&31]) == -1)
 		{
 			Con_Printf ("CL_SendMove: lost server connection\n");
@@ -445,7 +441,7 @@ void CL_SendMove (usercmd_t *cmd)
 	buf->cursize = 0;
 	buf->data = lag_data[lag_head & 31]; // JPG - added head index
 	lag_sendtime[lag_head++ & 31] = realtime + (pq_lag.value / 1000.0);
-	
+
 	cl.cmd = *cmd;
 
 //
@@ -455,17 +451,9 @@ void CL_SendMove (usercmd_t *cmd)
 
 	MSG_WriteFloat (buf, cl.mtime[0]);	// so server can get ping times
 
-	if (!cls.demoplayback && (cls.netcon->mod == MOD_PROQUAKE)) // JPG - precise aim for ProQuake!
-	{
-		for (i=0 ; i<3 ; i++)
+	for (i=0 ; i<3 ; i++)
 			MSG_WritePreciseAngle (buf, cl.viewangles[i]);
-	}
-	else
-	{
-		for (i=0 ; i<3 ; i++)
-			MSG_WriteAngle (buf, cl.viewangles[i]);
-	}
-	
+
     MSG_WriteShort (buf, cmd->forwardmove);
     MSG_WriteShort (buf, cmd->sidemove);
     MSG_WriteShort (buf, cmd->upmove);
@@ -474,32 +462,20 @@ void CL_SendMove (usercmd_t *cmd)
 // send button bits
 //
 	bits = 0;
-	
+
 	if ( in_attack.state & 3 )
 		bits |= 1;
 	in_attack.state &= ~2;
-	
+
 	if (in_jump.state & 3)
 		bits |= 2;
 	in_jump.state &= ~2;
-	
+
     MSG_WriteByte (buf, bits);
 
     MSG_WriteByte (buf, in_impulse);
 	in_impulse = 0;
 
-#ifdef QUAKE2
-//
-// light level
-//
-	MSG_WriteByte (buf, cmd->lightlevel);
-#endif
-
-//
-// deliver the message
-//
-	if (cls.demoplayback)
-		return;
 
 //
 // allways dump the first two message, because it may contain leftover inputs
@@ -510,7 +486,7 @@ void CL_SendMove (usercmd_t *cmd)
 	/*
 	if (++cl.movemessages <= 2)
 		return;
-	
+
 	if (NET_SendUnreliableMessage (cls.netcon, &buf) == -1)
 	{
 		Con_Printf ("CL_SendMove: lost server connection\n");
@@ -568,4 +544,3 @@ void CL_InitInput (void)
 	Cvar_RegisterVariable (&pq_lag); // JPG - synthetic lag
 	Cvar_RegisterVariable (&cl_fullpitch); // JPG 2.01 - get rid of "unknown command"
 }
-

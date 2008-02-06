@@ -240,7 +240,6 @@ void M_DrawTextBox (int x, int y, int width, int lines)
 
 //=============================================================================
 
-int m_save_demonum;
 
 /*
 ================
@@ -282,11 +281,6 @@ int	m_main_cursor;
 
 void M_Menu_Main_f (void)
 {
-	if (key_dest != key_menu)
-	{
-		m_save_demonum = cls.demonum;
-		cls.demonum = -1;
-	}
 	key_dest = key_menu;
 	m_state = m_main;
 	m_entersound = true;
@@ -316,9 +310,6 @@ void M_Main_Key (int key)
 	case K_ESCAPE:
 		key_dest = key_game;
 		m_state = m_none;
-		cls.demonum = m_save_demonum;
-		if (cls.demonum != -1 && !cls.demoplayback && cls.state != ca_connected)
-			CL_NextDemo ();
 		break;
 
 	case K_DOWNARROW:
