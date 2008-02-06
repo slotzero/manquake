@@ -27,6 +27,9 @@ typedef struct
 	float	forwardmove;
 	float	sidemove;
 	float	upmove;
+#ifdef QUAKE2
+	byte	lightlevel;
+#endif
 } usercmd_t;
 
 typedef struct
@@ -83,6 +86,9 @@ typedef struct
 	float	decay;				// drop this each second
 	float	minlight;			// don't add when contributing less
 	int		key;
+#ifdef QUAKE2
+	qboolean	dark;			// subtracts light instead of adding
+#endif
 } dlight_t;
 
 
@@ -98,6 +104,8 @@ typedef struct
 #define	MAX_EFRAGS		640
 
 #define	MAX_MAPSTRING	2048
+#define	MAX_DEMOS		8
+#define	MAX_DEMONAME	16
 
 typedef enum {
 ca_dedicated, 		// a dedicated server with no ability to start a client
@@ -116,6 +124,21 @@ typedef struct
 // personalization data sent to server
 	char		mapstring[MAX_QPATH];
 	char		spawnparms[MAX_MAPSTRING];	// to restart a level
+
+// demo loop control
+	int			demonum;		// -1 = don't play demos
+	char		demos[MAX_DEMOS][MAX_DEMONAME];		// when not playing
+
+// demo recording info must be here, because record is started before
+// entering a map (and clearing client_state_t)
+	qboolean	demorecording;
+	qboolean	demoplayback;
+	qboolean	timedemo;
+	int			forcetrack;			// -1 = use normal cd track
+	FILE		*demofile;
+	int			td_lastframe;		// to meter out one message a frame
+	int			td_startframe;		// host_framecount at start
+	float		td_starttime;		// realtime at second frame of timedemo
 
 
 // connection information
@@ -223,6 +246,13 @@ typedef struct
 	double			match_pause_time;	// JPG - time that match was paused (or 0)
 	vec3_t			lerpangles;			// JPG - angles now used by view.c so that smooth chasecam doesn't fuck up demos
 	vec3_t			death_location;		// JPG 3.20 - used for %d formatting
+
+#ifdef QUAKE2
+// light level at player's position including dlights
+// this is sent back to the server each frame
+// architectually ugly but it works
+	int			light_level;
+#endif
 } client_state_t;
 
 
@@ -259,6 +289,8 @@ extern	cvar_t	m_yaw;
 extern	cvar_t	m_forward;
 extern	cvar_t	m_side;
 
+
+#define	MAX_TEMP_ENTITIES	64			// lightning bolts, etc
 #define	MAX_STATIC_ENTITIES	128			// torches, etc
 
 extern	client_state_t	cl;
@@ -269,6 +301,8 @@ extern	entity_t		cl_entities[MAX_EDICTS];
 extern	entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 extern	lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
 extern	dlight_t		cl_dlights[MAX_DLIGHTS];
+extern	entity_t		cl_temp_entities[MAX_TEMP_ENTITIES];
+extern	beam_t			cl_beams[MAX_BEAMS];
 
 //=============================================================================
 
@@ -288,6 +322,7 @@ void CL_Signon4 (void);
 
 void CL_Disconnect (void);
 void CL_Disconnect_f (void);
+void CL_NextDemo (void);
 
 #define			MAX_VISEDICTS	256
 extern	int				cl_numvisedicts;
@@ -323,6 +358,11 @@ void CL_BaseMove (usercmd_t *cmd);
 float CL_KeyState (kbutton_t *key);
 char *Key_KeynumToString (int keynum);
 
+//
+// cl_parse.c
+//
+void CL_ParseServerMessage (void);
+void CL_NewTranslation (int slot);
 
 //
 // view

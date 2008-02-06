@@ -1,4 +1,4 @@
-/* $Id: host_cmd.c,v 1.3 2008/02/06 05:01:52 slotzero Exp $
+/*
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -328,6 +328,8 @@ void Host_Map_f (void)
 	if (cmd_source != src_command)
 		return;
 
+	cls.demonum = -1;		// stop demo loop in case this fails
+
 	CL_Disconnect ();
 	Host_ShutdownServer(false);
 
@@ -390,7 +392,7 @@ void Host_Changelevel_f (void)
 		Con_Printf ("changelevel <levelname> : continue game on a new level\n");
 		return;
 	}
-	if (!sv.active)
+	if (!sv.active || cls.demoplayback)
 	{
 		Con_Printf ("Only the server may changelevel\n");
 		return;
@@ -415,7 +417,7 @@ void Host_Changelevel_f (void)
 		Con_Printf ("changelevel <levelname> : continue game on a new level\n");
 		return;
 	}
-	if (!sv.active)
+	if (!sv.active || cls.demoplayback)
 	{
 		Con_Printf ("Only the server may changelevel\n");
 		return;
@@ -440,7 +442,7 @@ void Host_Restart_f (void)
 	char	startspot[MAX_QPATH];
 #endif
 
-	if (!sv.active)
+	if (cls.demoplayback || !sv.active)
 		return;
 
 	if (cmd_source != src_command)
@@ -482,6 +484,12 @@ void Host_Connect_f (void)
 {
 	char	name[MAX_QPATH];
 
+	cls.demonum = -1;		// stop demo loop in case this fails
+	if (cls.demoplayback)
+	{
+		//CL_StopPlayback ();
+		CL_Disconnect ();
+	}
 	strcpy (name, Cmd_Argv(1));
 	CL_EstablishConnection (name);
 	Host_Reconnect_f ();
@@ -647,6 +655,8 @@ void Host_Loadgame_f (void)
 		Con_Printf ("load <savename> : load a game\n");
 		return;
 	}
+
+	cls.demonum = -1;		// stop demo loop in case this fails
 
 	sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
 	COM_DefaultExtension (name, ".sav");
@@ -939,7 +949,7 @@ void Host_Changelevel2_f (void)
 		Con_Printf ("changelevel2 <levelname> : continue game on a new level in the unit\n");
 		return;
 	}
-	if (!sv.active)
+	if (!sv.active || cls.demoplayback)
 	{
 		Con_Printf ("Only the server may changelevel\n");
 		return;
@@ -2010,6 +2020,85 @@ void Host_Viewprev_f (void)
 	PrintFrameName (m, e->v.frame);
 }
 
+/*
+===============================================================================
+
+DEMO LOOP CONTROL
+
+===============================================================================
+*/
+
+
+/*
+==================
+Host_Startdemos_f
+==================
+*/
+void Host_Startdemos_f (void)
+{
+	int		i, c;
+
+	if (cls.state == ca_dedicated)
+	{
+		if (!sv.active)
+			Cbuf_AddText ("map start\n");
+		return;
+	}
+
+	c = Cmd_Argc() - 1;
+	if (c > MAX_DEMOS)
+	{
+		Con_Printf ("Max %i demos in demoloop\n", MAX_DEMOS);
+		c = MAX_DEMOS;
+	}
+	Con_Printf ("%i demo(s) in loop\n", c);
+
+	for (i=1 ; i<c+1 ; i++)
+		strncpy (cls.demos[i-1], Cmd_Argv(i), sizeof(cls.demos[0])-1);
+
+	if (!sv.active && cls.demonum != -1 && !cls.demoplayback)
+	{
+		cls.demonum = 0;
+		CL_NextDemo ();
+	}
+	else
+		cls.demonum = -1;
+}
+
+
+/*
+==================
+Host_Demos_f
+
+Return to looping demos
+==================
+*/
+void Host_Demos_f (void)
+{
+	if (cls.state == ca_dedicated)
+		return;
+	if (cls.demonum == -1)
+		cls.demonum = 1;
+	CL_Disconnect_f ();
+	CL_NextDemo ();
+}
+
+/*
+==================
+Host_Stopdemo_f
+
+Return to looping demos
+==================
+*/
+void Host_Stopdemo_f (void)
+{
+	if (cls.state == ca_dedicated)
+		return;
+	if (!cls.demoplayback)
+		return;
+	//CL_StopPlayback ();
+	CL_Disconnect ();
+}
 
 /*
 ===============================================================================
@@ -2244,6 +2333,10 @@ void Host_InitCommands (void)
 	Cmd_AddCommand ("load", Host_Loadgame_f);
 	Cmd_AddCommand ("save", Host_Savegame_f);
 	Cmd_AddCommand ("give", Host_Give_f);
+
+	Cmd_AddCommand ("startdemos", Host_Startdemos_f);
+	Cmd_AddCommand ("demos", Host_Demos_f);
+	Cmd_AddCommand ("stopdemo", Host_Stopdemo_f);
 
 	Cmd_AddCommand ("viewmodel", Host_Viewmodel_f);
 	Cmd_AddCommand ("viewframe", Host_Viewframe_f);

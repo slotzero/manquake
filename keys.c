@@ -806,6 +806,15 @@ void Key_Event (int key, qboolean down)
 	}
 
 //
+// during demo playback, most keys bring up the main menu
+//
+	if (cls.demoplayback && down && consolekeys[key] && key_dest == key_game)
+	{
+		M_ToggleMenu_f ();
+		return;
+	}
+
+//
 // if not a consolekey, send to the interpreter no matter what mode is
 //
 	if ( (key_dest == key_menu && menubound[key])

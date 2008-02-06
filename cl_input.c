@@ -389,6 +389,10 @@ void CL_BaseMove (usercmd_t *cmd)
 		cmd->sidemove *= cl_movespeedkey.value;
 		cmd->upmove *= cl_movespeedkey.value;
 	}
+
+#ifdef QUAKE2
+	cmd->lightlevel = cl.light_level;
+#endif
 }
 
 sizebuf_t lag_buff[32]; // JPG - support for synthetic lag
@@ -404,7 +408,7 @@ CL_SendLagMove
 */
 void CL_SendLagMove (void)
 {
-	if ((cls.state != ca_connected) || (cls.signon != SIGNONS))
+	if (cls.demoplayback || (cls.state != ca_connected) || (cls.signon != SIGNONS))
 		return;
 
 	while ((lag_tail < lag_head) && (lag_sendtime[lag_tail & 31] <= realtime))
@@ -451,8 +455,16 @@ void CL_SendMove (usercmd_t *cmd)
 
 	MSG_WriteFloat (buf, cl.mtime[0]);	// so server can get ping times
 
-	for (i=0 ; i<3 ; i++)
+	if (!cls.demoplayback && (cls.netcon->mod == MOD_PROQUAKE)) // JPG - precise aim for ProQuake!
+	{
+		for (i=0 ; i<3 ; i++)
 			MSG_WritePreciseAngle (buf, cl.viewangles[i]);
+	}
+	else
+	{
+		for (i=0 ; i<3 ; i++)
+			MSG_WriteAngle (buf, cl.viewangles[i]);
+	}
 
     MSG_WriteShort (buf, cmd->forwardmove);
     MSG_WriteShort (buf, cmd->sidemove);
@@ -476,6 +488,18 @@ void CL_SendMove (usercmd_t *cmd)
     MSG_WriteByte (buf, in_impulse);
 	in_impulse = 0;
 
+#ifdef QUAKE2
+//
+// light level
+//
+	MSG_WriteByte (buf, cmd->lightlevel);
+#endif
+
+//
+// deliver the message
+//
+	if (cls.demoplayback)
+		return;
 
 //
 // allways dump the first two message, because it may contain leftover inputs

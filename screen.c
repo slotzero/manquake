@@ -376,6 +376,8 @@ void SCR_DrawNet (void)
 {
 	if (realtime - cl.last_received_message < 0.3)
 		return;
+	if (cls.demoplayback)
+		return;
 
 	Draw_Pic (scr_vrect.x+64, scr_vrect.y, scr_net);
 }

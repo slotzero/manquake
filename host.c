@@ -1,4 +1,4 @@
-/* $Id: host.c,v 1.9 2008/02/06 05:01:52 slotzero Exp $
+/*
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -132,7 +132,13 @@ void Host_EndGame (char *message, ...)
 	if (cls.state == ca_dedicated)
 		Sys_Error ("Host_EndGame: %s\n",string);	// dedicated servers exit
 
-	CL_Disconnect ();
+	if (cls.demonum != -1)
+	{
+		//CL_StopPlayback ();	// JPG 1.05 - patch by CSR to fix crash
+		CL_NextDemo ();
+	}
+	else
+		CL_Disconnect ();
 
 	longjmp (host_abortserver, 1);
 }
@@ -168,6 +174,7 @@ void Host_Error (char *error, ...)
 		Sys_Error ("Host_Error: %s\n",string);	// dedicated servers exit
 
 	CL_Disconnect ();
+	cls.demonum = -1;
 
 	inerror = false;
 
@@ -591,7 +598,7 @@ qboolean Host_FilterTime (float time)
 {
 	realtime += time;
 
-	if (realtime - oldrealtime < 1.0 / pq_maxfps.value)
+	if (!cls.timedemo && realtime - oldrealtime < 1.0 / pq_maxfps.value)
 		return false;		// framerate is too high
 
 	host_frametime = realtime - oldrealtime;
