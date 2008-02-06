@@ -45,7 +45,7 @@ static double		pfreq;
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
 static int			lowshift;
-qboolean			isDedicated;
+qboolean			isDedicated = true;
 static qboolean		sc_return_on_enter = false;
 HANDLE				hinput, houtput;
 
@@ -824,8 +824,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	parms.argc = com_argc;
 	parms.argv = com_argv;
-
-	isDedicated = (COM_CheckParm ("-dedicated") != 0);
 
 	if (!isDedicated)
 	{

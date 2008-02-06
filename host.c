@@ -198,18 +198,15 @@ void Host_FindMaxClients (void)
 			svs.maxclients = 8;
 	}
 	else
-		cls.state = ca_disconnected;
+	{
+		cls.state = ca_dedicated;
+		svs.maxclients = 8;
+	}
 
 	i = COM_CheckParm ("-listen");
 	if (i)
-	{
-		if (cls.state == ca_dedicated)
-			Sys_Error ("Only one of -dedicated or -listen can be specified");
-		if (i != (com_argc - 1))
-			svs.maxclients = Q_atoi (com_argv[i+1]);
-		else
-			svs.maxclients = 8;
-	}
+		Sys_Error ("Only -dedicated can be specified");
+
 	if (svs.maxclients < 1)
 		svs.maxclients = 8;
 	else if (svs.maxclients > MAX_SCOREBOARD)

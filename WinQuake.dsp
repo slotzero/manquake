@@ -150,19 +150,6 @@ SOURCE=.\keys.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\location.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\math.s
 
 !IF  "$(CFG)" == "winquake - Win32 Release"
@@ -447,19 +434,6 @@ SOURCE=.\iplog.h
 # Begin Source File
 
 SOURCE=.\keys.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\location.h
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
