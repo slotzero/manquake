@@ -105,7 +105,6 @@ targets: $(TARGETS)
 #############################################################################
 
 SQUAKE_OBJS = \
-	$(BUILDDIR)/squake/cl_input.o \
 	$(BUILDDIR)/squake/cl_main.o \
 	$(BUILDDIR)/squake/cmd.o \
 	$(BUILDDIR)/squake/common.o \
@@ -151,9 +150,6 @@ $(BUILDDIR)/bin/squake : $(SQUAKE_OBJS)
 	$(CC) $(CFLAGS) -o $@ $(SQUAKE_OBJS) $(SVGALDFLAGS) $(LDFLAGS)
 
 ####
-
-$(BUILDDIR)/squake/cl_input.o : $(MOUNT_DIR)/cl_input.c
-	$(DO_CC)
 
 $(BUILDDIR)/squake/cl_main.o :  $(MOUNT_DIR)/cl_main.c
 	$(DO_CC)

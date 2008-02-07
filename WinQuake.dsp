@@ -94,10 +94,6 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\cl_input.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\cl_main.c
 # End Source File
 # Begin Source File
@@ -382,13 +378,6 @@ SOURCE=.\anorms.h
 # Begin Source File
 
 SOURCE=.\bspfile.h
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 

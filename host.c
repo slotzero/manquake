@@ -735,12 +735,7 @@ void _Host_Frame (float time)
 
 // decide the simulation time
 	if (!Host_FilterTime (time))
-	{
-		// JPG - if we're not doing a frame, still check for lagged moves to send
-		if (!sv.active && (cl.movemessages > 2))
-			CL_SendLagMove();
 		return;			// don't run too fast, or packets will flood out
-	}
 
 // get new key events
 	Sys_SendKeyEvents ();
@@ -752,10 +747,6 @@ void _Host_Frame (float time)
 	Cbuf_Execute ();
 
 	NET_Poll();
-
-// if running the server locally, make intentions now
-	if (sv.active)
-		CL_SendCmd ();
 
 //-------------------
 //
@@ -775,18 +766,7 @@ void _Host_Frame (float time)
 //
 //-------------------
 
-// if running the server remotely, send intentions now after
-// the incoming messages have been read
-	if (!sv.active)
-		CL_SendCmd ();
-
 	host_time += host_frametime;
-
-// fetch results from server
-	if (cls.state == ca_connected)
-	{
-		CL_ReadFromServer ();
-	}
 
 // update video
 	if (host_speeds.value)

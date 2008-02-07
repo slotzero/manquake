@@ -263,9 +263,6 @@ extern	cvar_t	cl_anglespeedkey;
 
 extern	cvar_t	cl_autofire;
 
-extern	cvar_t	cl_shownet;
-extern	cvar_t	cl_nolerp;
-
 extern	cvar_t	cl_pitchdriftspeed;
 extern	cvar_t	lookspring;
 extern	cvar_t	lookstrafe;
@@ -282,10 +279,8 @@ extern	cvar_t	m_side;
 extern	client_state_t	cl;
 
 // FIXME, allocate dynamically
-extern	efrag_t			cl_efrags[MAX_EFRAGS];
 extern	entity_t		cl_entities[MAX_EDICTS];
 extern	entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
-extern	lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
 extern	dlight_t		cl_dlights[MAX_DLIGHTS];
 
 //=============================================================================
@@ -293,10 +288,9 @@ extern	dlight_t		cl_dlights[MAX_DLIGHTS];
 //
 // cl_main
 //
-dlight_t *CL_AllocDlight (int key);
+
 void	CL_DecayLights (void);
 
-void CL_EstablishConnection (char *host);
 void CL_Signon1 (void);
 void CL_Signon2 (void);
 void CL_Signon3 (void);
@@ -305,9 +299,6 @@ void CL_Signon4 (void);
 void CL_Disconnect (void);
 void CL_Disconnect_f (void);
 
-#define			MAX_VISEDICTS	256
-extern	int				cl_numvisedicts;
-extern	entity_t		*cl_visedicts[MAX_VISEDICTS];
 
 //
 // cl_input
@@ -324,18 +315,6 @@ extern 	kbutton_t 	in_speed;
 extern	kbutton_t	in_attack; // JPG - added this for completeness
 
 
-void CL_SendCmd (void);
-void CL_SendMove (usercmd_t *cmd);
-void CL_SendLagMove (void); // JPG - synthetic lag
-void CL_ClearState (void);
-
-
-int  CL_ReadFromServer (void);
-void CL_WriteToServer (usercmd_t *cmd);
-void CL_BaseMove (usercmd_t *cmd);
-
-
-float CL_KeyState (kbutton_t *key);
 char *Key_KeynumToString (int keynum);
 
 

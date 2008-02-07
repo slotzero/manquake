@@ -452,7 +452,6 @@ void Host_Connect_f (void)
 		CL_Disconnect ();
 	}
 	strcpy (name, Cmd_Argv(1));
-	CL_EstablishConnection (name);
 	Host_Reconnect_f ();
 
 	strcpy(server_name, name);	// JPG 3.50
@@ -728,10 +727,7 @@ void Host_Loadgame_f (void)
 		svs.clients->spawn_parms[i] = spawn_parms[i];
 
 	if (cls.state != ca_dedicated)
-	{
-		CL_EstablishConnection ("local");
 		Host_Reconnect_f ();
-	}
 }
 
 //============================================================================
@@ -1815,10 +1811,7 @@ void Host_Startdemos_f (void)
 		strncpy (cls.demos[i-1], Cmd_Argv(i), sizeof(cls.demos[0])-1);
 
 	if (!sv.active && cls.demonum != -1 && !cls.demoplayback)
-	{
 		cls.demonum = 0;
-		CL_NextDemo ();
-	}
 	else
 		cls.demonum = -1;
 }
@@ -1838,7 +1831,6 @@ void Host_Demos_f (void)
 	if (cls.demonum == -1)
 		cls.demonum = 1;
 	CL_Disconnect_f ();
-	CL_NextDemo ();
 }
 
 /*
