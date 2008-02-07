@@ -296,8 +296,6 @@ extern	dlight_t		cl_dlights[MAX_DLIGHTS];
 dlight_t *CL_AllocDlight (int key);
 void	CL_DecayLights (void);
 
-void CL_Init (void);
-
 void CL_EstablishConnection (char *host);
 void CL_Signon1 (void);
 void CL_Signon2 (void);
@@ -326,7 +324,6 @@ extern 	kbutton_t 	in_speed;
 extern	kbutton_t	in_attack; // JPG - added this for completeness
 
 
-void CL_InitInput (void);
 void CL_SendCmd (void);
 void CL_SendMove (usercmd_t *cmd);
 void CL_SendLagMove (void); // JPG - synthetic lag

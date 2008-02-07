@@ -309,13 +309,6 @@ InputName=sys_wina
 # Begin Source File
 
 SOURCE=.\vid_win.c
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -389,6 +382,13 @@ SOURCE=.\anorms.h
 # Begin Source File
 
 SOURCE=.\bspfile.h
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

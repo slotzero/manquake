@@ -54,170 +54,6 @@ kbutton_t	in_up, in_down;
 
 int			in_impulse;
 
-// JPG 1.05 - translate +jump to +moveup under water
-extern cvar_t	pq_moveup;
-
-void KeyDown (kbutton_t *b)
-{
-	int		k;
-	char	*c;
-
-	c = Cmd_Argv(1);
-	if (c[0])
-		k = atoi(c);
-	else
-		k = -1;		// typed manually at the console for continuous down
-
-	// JPG 1.05 - if jump is pressed underwater, translate it to a moveup
-	if (b == &in_jump && pq_moveup.value && cl.stats[STAT_HEALTH] > 0 && cl.inwater)
-		b = &in_up;
-
-	/* FIXME - remove this if the other code works
-	if (b == &in_jump && pq_moveup.value && cl.stats[STAT_HEALTH] > 0)
-	{
-		int	cont;
-
-		if (cl_entities[0].model)
-		{
-			cont = SV_HullPointContents (&cl_entities[0].model->hulls[0], 0, cl_entities[cl.viewentity].origin);
-			if (cont <= CONTENTS_CURRENT_0 && cont >= CONTENTS_CURRENT_DOWN)
-				cont = CONTENTS_WATER;
-
-			if (cont == CONTENTS_WATER)
-				b = &in_up;
-		}
-	}
-	*/
-
-	if (k == b->down[0] || k == b->down[1])
-		return;		// repeating key
-
-	if (!b->down[0])
-		b->down[0] = k;
-	else if (!b->down[1])
-		b->down[1] = k;
-	else
-	{
-		Con_Printf ("Three keys down for a button!\n");
-		return;
-	}
-
-	if (b->state & 1)
-		return;		// still down
-	b->state |= 1 + 2;	// down + impulse down
-}
-
-void KeyUp (kbutton_t *b)
-{
-	int		k;
-	char	*c;
-
-	c = Cmd_Argv(1);
-	if (c[0])
-		k = atoi(c);
-	else
-	{ // typed manually at the console, assume for unsticking, so clear all
-		b->down[0] = b->down[1] = 0;
-		b->state = 4;	// impulse up
-		return;
-	}
-
-	// JPG 1.05 - check to see if we need to translate -jump to -moveup
-	if (b == &in_jump && pq_moveup.value)
-	{
-		if (k == in_up.down[0] || k == in_up.down[1])
-			b = &in_up;
-		else
-		{
-			// in case a -moveup got lost somewhere
-			in_up.down[0] = in_up.down[1] = 0;
-			in_up.state = 4;
-		}
-	}
-
-	if (b->down[0] == k)
-		b->down[0] = 0;
-	else if (b->down[1] == k)
-		b->down[1] = 0;
-	else
-		return;		// key up without coresponding down (menu pass through)
-	if (b->down[0] || b->down[1])
-		return;		// some other key is still holding it down
-
-	if (!(b->state & 1))
-		return;		// still up (this should not happen)
-	b->state &= ~1;		// now up
-	b->state |= 4; 		// impulse up
-}
-
-void IN_KLookDown (void) {KeyDown(&in_klook);}
-void IN_KLookUp (void) {KeyUp(&in_klook);}
-void IN_MLookDown (void) {KeyDown(&in_mlook);}
-void IN_MLookUp (void) {
-KeyUp(&in_mlook);
-if ( !(in_mlook.state&1) &&  lookspring.value)
-	V_StartPitchDrift();
-}
-void IN_UpDown(void) {KeyDown(&in_up);}
-void IN_UpUp(void) {KeyUp(&in_up);}
-void IN_DownDown(void) {KeyDown(&in_down);}
-void IN_DownUp(void) {KeyUp(&in_down);}
-void IN_LeftDown(void) {KeyDown(&in_left);}
-void IN_LeftUp(void) {KeyUp(&in_left);}
-void IN_RightDown(void) {KeyDown(&in_right);}
-void IN_RightUp(void) {KeyUp(&in_right);}
-void IN_ForwardDown(void) {KeyDown(&in_forward);}
-void IN_ForwardUp(void) {KeyUp(&in_forward);}
-void IN_BackDown(void) {KeyDown(&in_back);}
-void IN_BackUp(void) {KeyUp(&in_back);}
-void IN_LookupDown(void) {KeyDown(&in_lookup);}
-void IN_LookupUp(void) {KeyUp(&in_lookup);}
-void IN_LookdownDown(void) {KeyDown(&in_lookdown);}
-void IN_LookdownUp(void) {KeyUp(&in_lookdown);}
-void IN_MoveleftDown(void) {KeyDown(&in_moveleft);}
-void IN_MoveleftUp(void) {KeyUp(&in_moveleft);}
-void IN_MoverightDown(void) {KeyDown(&in_moveright);}
-void IN_MoverightUp(void) {KeyUp(&in_moveright);}
-
-void IN_SpeedDown(void) {KeyDown(&in_speed);}
-void IN_SpeedUp(void) {KeyUp(&in_speed);}
-void IN_StrafeDown(void) {KeyDown(&in_strafe);}
-void IN_StrafeUp(void) {KeyUp(&in_strafe);}
-
-void IN_AttackDown(void) {KeyDown(&in_attack);}
-void IN_AttackUp(void) {KeyUp(&in_attack);}
-
-void IN_UseDown (void) {KeyDown(&in_use);}
-void IN_UseUp (void) {KeyUp(&in_use);}
-void IN_JumpDown (void) {KeyDown(&in_jump);}
-void IN_JumpUp (void) {KeyUp(&in_jump);}
-
-void IN_Impulse (void) {in_impulse=Q_atoi(Cmd_Argv(1));}
-
-int weaponstat[7] = {STAT_SHELLS, STAT_SHELLS, STAT_NAILS, STAT_NAILS, STAT_ROCKETS, STAT_ROCKETS, STAT_CELLS};
-
-/* JPG 3.30 - bestweapon from QuakePro+
-===============
-IN_BestWeapon
-===============
-*/
-void IN_BestWeapon (void)
-{
-	int i, impulse, bit;
-
-	for (i = 1 ; i < Cmd_Argc() ; i++)
-	{
-		impulse = Q_atoi(Cmd_Argv(i));
-		if (impulse > 0 && impulse < 9 && (impulse == 1 ||
-			( (cl.items & (IT_SHOTGUN << (impulse - 2))) && cl.stats[weaponstat[impulse - 2]] )))
-		{
-			in_impulse = impulse;
-			break;
-		}
-	}
-}
-
-
 /*
 ===============
 CL_KeyState
@@ -389,10 +225,6 @@ void CL_BaseMove (usercmd_t *cmd)
 		cmd->sidemove *= cl_movespeedkey.value;
 		cmd->upmove *= cl_movespeedkey.value;
 	}
-
-#ifdef QUAKE2
-	cmd->lightlevel = cl.light_level;
-#endif
 }
 
 sizebuf_t lag_buff[32]; // JPG - support for synthetic lag
@@ -488,13 +320,6 @@ void CL_SendMove (usercmd_t *cmd)
     MSG_WriteByte (buf, in_impulse);
 	in_impulse = 0;
 
-#ifdef QUAKE2
-//
-// light level
-//
-	MSG_WriteByte (buf, cmd->lightlevel);
-#endif
-
 //
 // deliver the message
 //
@@ -518,53 +343,4 @@ void CL_SendMove (usercmd_t *cmd)
 	}
 	*/
 	CL_SendLagMove();
-}
-
-/*
-============
-CL_InitInput
-============
-*/
-void CL_InitInput (void)
-{
-	Cmd_AddCommand ("+moveup",IN_UpDown);
-	Cmd_AddCommand ("-moveup",IN_UpUp);
-	Cmd_AddCommand ("+movedown",IN_DownDown);
-	Cmd_AddCommand ("-movedown",IN_DownUp);
-	Cmd_AddCommand ("+left",IN_LeftDown);
-	Cmd_AddCommand ("-left",IN_LeftUp);
-	Cmd_AddCommand ("+right",IN_RightDown);
-	Cmd_AddCommand ("-right",IN_RightUp);
-	Cmd_AddCommand ("+forward",IN_ForwardDown);
-	Cmd_AddCommand ("-forward",IN_ForwardUp);
-	Cmd_AddCommand ("+back",IN_BackDown);
-	Cmd_AddCommand ("-back",IN_BackUp);
-	Cmd_AddCommand ("+lookup", IN_LookupDown);
-	Cmd_AddCommand ("-lookup", IN_LookupUp);
-	Cmd_AddCommand ("+lookdown", IN_LookdownDown);
-	Cmd_AddCommand ("-lookdown", IN_LookdownUp);
-	Cmd_AddCommand ("+strafe", IN_StrafeDown);
-	Cmd_AddCommand ("-strafe", IN_StrafeUp);
-	Cmd_AddCommand ("+moveleft", IN_MoveleftDown);
-	Cmd_AddCommand ("-moveleft", IN_MoveleftUp);
-	Cmd_AddCommand ("+moveright", IN_MoverightDown);
-	Cmd_AddCommand ("-moveright", IN_MoverightUp);
-	Cmd_AddCommand ("+speed", IN_SpeedDown);
-	Cmd_AddCommand ("-speed", IN_SpeedUp);
-	Cmd_AddCommand ("+attack", IN_AttackDown);
-	Cmd_AddCommand ("-attack", IN_AttackUp);
-	Cmd_AddCommand ("+use", IN_UseDown);
-	Cmd_AddCommand ("-use", IN_UseUp);
-	Cmd_AddCommand ("+jump", IN_JumpDown);
-	Cmd_AddCommand ("-jump", IN_JumpUp);
-	Cmd_AddCommand ("impulse", IN_Impulse);
-	Cmd_AddCommand ("+klook", IN_KLookDown);
-	Cmd_AddCommand ("-klook", IN_KLookUp);
-	Cmd_AddCommand ("+mlook", IN_MLookDown);
-	Cmd_AddCommand ("-mlook", IN_MLookUp);
-
-	Cmd_AddCommand ("bestweapon", IN_BestWeapon);	// JPG 3.30 - bestweapon from QuakePro+
-
-	Cvar_RegisterVariable (&pq_lag); // JPG - synthetic lag
-	Cvar_RegisterVariable (&cl_fullpitch); // JPG 2.01 - get rid of "unknown command"
 }

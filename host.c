@@ -727,7 +727,7 @@ void _Host_Frame (float time)
 	static double		time3 = 0;
 	int			pass1, pass2, pass3;
 
-	if (setjmp (host_abortserver) )
+	if (setjmp (host_abortserver))
 		return;			// something bad happened, or the server disconnected
 
 // keep the random time dependent
@@ -986,7 +986,6 @@ void Host_Init (quakeparms_t *parms)
 		VID_Init (host_basepal);
 		Draw_Init ();
 		SCR_Init ();
-		CL_Init ();
 #ifdef _WIN32 // on non win32, mouse comes before video for security reasons
 		IN_Init ();
 #endif
