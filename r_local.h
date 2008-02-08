@@ -1,4 +1,4 @@
-/* $Id: r_local.h,v 1.1 2008/02/03 08:27:59 slotzero Exp $
+/* $Id: r_local.h,v 1.2 2008/02/08 03:10:17 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -268,7 +268,6 @@ extern	edge_t	edge_head;
 extern	edge_t	edge_tail;
 extern	edge_t	edge_aftertail;
 extern int		r_bmodelactive;
-extern vrect_t	*pconupdate;
 
 extern float		aliasxscale, aliasyscale, aliasxcenter, aliasycenter;
 extern float		r_aliastransition, r_resfudge;

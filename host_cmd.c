@@ -334,7 +334,6 @@ void Host_Map_f (void)
 	Host_ShutdownServer(false);
 
 	key_dest = key_game;			// remove console or menu
-	SCR_BeginLoadingPlaque ();
 
 	cls.mapstring[0] = 0;
 	for (i=0 ; i<Cmd_Argc() ; i++)
@@ -428,7 +427,6 @@ This is sent just before a server changes levels
 */
 void Host_Reconnect_f (void)
 {
-	SCR_BeginLoadingPlaque ();
 	cls.signon = 0;		// need new connection messages
 }
 
@@ -620,10 +618,6 @@ void Host_Loadgame_f (void)
 
 	sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
 	COM_DefaultExtension (name, ".sav");
-
-// we can't call SCR_BeginLoadingPlaque, because too much stack space has
-// been used.  The menu calls it before stuffing loadgame command
-//	SCR_BeginLoadingPlaque ();
 
 	Con_Printf ("Loading game from %s...\n", name);
 	f = fopen (name, "r");

@@ -1,4 +1,4 @@
-/* $Id: sv_main.c,v 1.3 2008/02/06 10:14:17 slotzero Exp $
+/* $Id: sv_main.c,v 1.4 2008/02/08 03:10:17 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -1392,7 +1392,6 @@ void SV_SpawnServer (char *server)
 	// let's not have any servers with no name
 	if (hostname.string[0] == 0)
 		Cvar_Set ("hostname", "UNNAMED");
-	scr_centertime_off = 0;
 
 	Con_DPrintf ("SpawnServer: %s\n",server);
 	svs.changelevel_issued = false;		// now safe to issue another

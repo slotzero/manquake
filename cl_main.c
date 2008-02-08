@@ -80,9 +80,6 @@ This is also called on Host_Error, so it shouldn't cause any errors
 */
 void CL_Disconnect (void)
 {
-// bring the console down and fade the colors back to normal
-//	SCR_BringDownConsole ();
-
 // if running a local server, shut it down
 	//if (cls.demoplayback)
 	//	CL_StopPlayback ();

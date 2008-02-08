@@ -98,7 +98,6 @@ void Con_ToggleConsole_f (void)
 		con_backscroll = 0; // JPG - don't want to enter console with backscroll
 	}
 
-	SCR_EndLoadingPlaque ();
 	memset (con_times, 0, sizeof(con_times));
 }
 

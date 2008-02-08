@@ -149,8 +149,6 @@ void Host_Error (char *error, ...)
 		Sys_Error ("Host_Error: recursively entered");
 	inerror = true;
 
-	SCR_EndLoadingPlaque ();		// reenable screen updates
-
 	va_start (argptr,error);
 	vsprintf (string,error,argptr);
 	va_end (argptr);
@@ -958,7 +956,6 @@ void Host_Init (quakeparms_t *parms)
 			Sys_Error ("Couldn't load gfx/colormap.lmp");
 
 		Draw_Init ();
-		SCR_Init ();
 	}
 
 	Cbuf_InsertText ("exec quake.rc\n");
