@@ -37,11 +37,6 @@ cvar_t	m_yaw = {"m_yaw","0.022", true};
 cvar_t	m_forward = {"m_forward","1", true};
 cvar_t	m_side = {"m_side","0.8", true};
 
-// JPG - added these for %p formatting
-cvar_t	pq_quad = {"pq_quad", "quad", true};
-cvar_t	pq_pent = {"pq_pent", "pent", true};
-cvar_t	pq_ring = {"pq_ring", "eyes", true};
-
 client_static_t	cls;
 client_state_t	cl;
 
@@ -51,10 +46,7 @@ entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 dlight_t		cl_dlights[MAX_DLIGHTS];
 
 kbutton_t	in_mlook, in_klook;
-kbutton_t	in_left, in_right, in_forward, in_back;
-kbutton_t	in_lookup, in_lookdown, in_moveleft, in_moveright;
-kbutton_t	in_strafe, in_speed, in_use, in_jump, in_attack;
-kbutton_t	in_up, in_down;
+kbutton_t	in_strafe, in_speed;
 
 //==========================================================================
 
@@ -81,13 +73,8 @@ This is also called on Host_Error, so it shouldn't cause any errors
 void CL_Disconnect (void)
 {
 // if running a local server, shut it down
-	//if (cls.demoplayback)
-	//	CL_StopPlayback ();
 	if (cls.state == ca_connected)
 	{
-		//if (cls.demorecording)
-		//	CL_Stop_f ();
-
 		Con_DPrintf ("Sending clc_disconnect\n");
 		SZ_Clear (&cls.message);
 		MSG_WriteByte (&cls.message, clc_disconnect);
@@ -103,6 +90,7 @@ void CL_Disconnect (void)
 	cls.demoplayback = cls.timedemo = false;
 	cls.signon = 0;
 }
+
 
 void CL_Disconnect_f (void)
 {

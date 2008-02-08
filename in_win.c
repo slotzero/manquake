@@ -671,9 +671,6 @@ void IN_MouseMove (usercmd_t *cmd)
 	else
 		cl.viewangles[YAW] -= m_yaw.value * mouse_x;
 
-	if (in_mlook.state & 1)
-		V_StopPitchDrift ();
-
 	if ( (in_mlook.state & 1) && !(in_strafe.state & 1))
 	{
 		cl.viewangles[PITCH] += m_pitch.value * mouse_y;
@@ -1037,16 +1034,6 @@ void IN_JoyMove (usercmd_t *cmd)
 					{
 						cl.viewangles[PITCH] += (fAxisValue * joy_pitchsensitivity.value) * aspeed * cl_pitchspeed.value;
 					}
-					V_StopPitchDrift();
-				}
-				else
-				{
-					// no pitch movement
-					// disable pitch return-to-center unless requested by user
-					// *** this code can be removed when the lookspring bug is fixed
-					// *** the bug always has the lookspring feature on
-					if(lookspring.value == 0.0)
-						V_StopPitchDrift();
 				}
 			}
 			else
@@ -1107,16 +1094,6 @@ void IN_JoyMove (usercmd_t *cmd)
 					{
 						cl.viewangles[PITCH] += (fAxisValue * joy_pitchsensitivity.value) * speed * 180.0;
 					}
-					V_StopPitchDrift();
-				}
-				else
-				{
-					// no pitch movement
-					// disable pitch return-to-center unless requested by user
-					// *** this code can be removed when the lookspring bug is fixed
-					// *** the bug always has the lookspring feature on
-					if(lookspring.value == 0.0)
-						V_StopPitchDrift();
 				}
 			}
 			break;

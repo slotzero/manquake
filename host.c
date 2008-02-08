@@ -303,36 +303,6 @@ void Host_InitLocal (void)
 	Host_InitDeQuake();	// JPG 1.05 - initialize dequake array
 }
 
-/*
-===============
-Host_WriteConfiguration
-
-Writes key bindings and archived cvars to config.cfg
-===============
-*/
-void Host_WriteConfiguration (void)
-{
-	FILE	*f;
-
-// dedicated servers initialize the host but don't parse and set the
-// config.cfg cvars
-	// Slot Zero 3.50-1  Quake Info Pool's logical fix.
-	if (host_initialized && !isDedicated)	// Slot Zero 3.50-1  Changed & to &&.
-	{
-		f = fopen (va("%s/config.cfg",com_gamedir), "w");
-		if (!f)
-		{
-			Con_Printf ("Couldn't write config.cfg.\n");
-			return;
-		}
-
-		Key_WriteBindings (f);
-		Cvar_WriteVariables (f);
-
-		fclose (f);
-	}
-}
-
 
 /*
 =================
@@ -925,7 +895,7 @@ void Host_Init (quakeparms_t *parms)
 	Memory_Init (parms->membase, parms->memsize);
 	Cbuf_Init ();
 	Cmd_Init ();
-	V_Init ();
+	Cvar_Init ();
 	Host_InitVCR (parms);
 	COM_Init (parms->basedir);
 	Host_InitLocal ();
@@ -978,9 +948,7 @@ void Host_Shutdown(void)
 // keep Con_Printf from trying to update the screen
 	scr_disabled_for_loading = true;
 
-	Host_WriteConfiguration ();
 	IPLog_WriteLog ();	// JPG 1.05 - ip loggging
-
 	NET_Shutdown ();
 	IN_Shutdown ();
 }

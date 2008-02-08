@@ -404,7 +404,7 @@ void SV_ClientThink (void)
 	angles = sv_player->v.angles;
 
 	VectorAdd (sv_player->v.v_angle, sv_player->v.punchangle, v_angle);
-	angles[ROLL] = V_CalcRoll (sv_player->v.angles, sv_player->v.velocity)*4;
+	angles[ROLL] = SV_CalcRoll (sv_player->v.angles, sv_player->v.velocity)*4;
 	if (!sv_player->v.fixangle)
 	{
 		angles[PITCH] = -v_angle[PITCH]/3;
@@ -643,4 +643,38 @@ void SV_RunClients (void)
 		if (!sv.paused && (svs.maxclients > 1 || key_dest == key_game) )
 			SV_ClientThink ();
 	}
+}
+
+
+/*
+===============
+SV_CalcRoll
+
+Used by sv_user
+===============
+*/
+float SV_CalcRoll (vec3_t angles, vec3_t velocity)
+{
+	float	sign;
+	float	side;
+	float	value_speed, value_angle;
+
+	AngleVectors (angles, forward, right, up);
+	side = DotProduct (velocity, right);
+	sign = side < 0 ? -1 : 1;
+	side = fabs(side);
+
+	// default values from cl_rollspeed/cl_rollangle
+	value_speed = 200;
+	value_angle = 2;
+
+//	if (cl.inwater)
+//		value *= 6;
+
+	if (side < value_speed)
+		side = side * value_angle / value_speed;
+	else
+		side = value_angle;
+
+	return side*sign;
 }

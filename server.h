@@ -273,14 +273,10 @@ qboolean SV_CheckBottom (edict_t *ent);
 qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink);
 
 void SV_WriteClientdataToMessage (edict_t *ent, sizebuf_t *msg);
-
 void SV_MoveToGoal (void);
-
 void SV_CheckForNewClients (void);
 void SV_RunClients (void);
 void SV_SaveSpawnparms ();
-#ifdef QUAKE2
-void SV_SpawnServer (char *server, char *startspot);
-#else
 void SV_SpawnServer (char *server);
-#endif
+
+float SV_CalcRoll (vec3_t angles, vec3_t velocity);

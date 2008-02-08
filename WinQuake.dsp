@@ -308,10 +308,6 @@ SOURCE=.\vid_win.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\view.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\wad.c
 # End Source File
 # Begin Source File
@@ -534,10 +530,6 @@ SOURCE=.\sys.h
 # Begin Source File
 
 SOURCE=.\vid.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\view.h
 # End Source File
 # Begin Source File
 

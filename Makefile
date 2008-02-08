@@ -137,7 +137,6 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/sv_move.o \
 	$(BUILDDIR)/squake/sv_user.o \
 	$(BUILDDIR)/squake/zone.o \
-	$(BUILDDIR)/squake/view.o \
 	$(BUILDDIR)/squake/wad.o \
 	$(BUILDDIR)/squake/world.o \
 	$(BUILDDIR)/squake/sys_linux.o \
@@ -245,9 +244,6 @@ $(BUILDDIR)/squake/sv_user.o :  $(MOUNT_DIR)/sv_user.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/zone.o :	$(MOUNT_DIR)/zone.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/view.o :	$(MOUNT_DIR)/view.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/wad.o :      $(MOUNT_DIR)/wad.c
