@@ -101,28 +101,6 @@ qpic_t	*Draw_CachePic (char *path)
 }
 
 
-
-/*
-===============
-Draw_Init
-===============
-*/
-void Draw_Init (void)
-{
-	int		i;
-
-	draw_chars = W_GetLumpName ("conchars");
-	draw_disc = W_GetLumpName ("disc");
-	draw_backtile = W_GetLumpName ("backtile");
-
-	r_rectdesc.width = draw_backtile->width;
-	r_rectdesc.height = draw_backtile->height;
-	r_rectdesc.ptexbytes = draw_backtile->data;
-	r_rectdesc.rowbytes = draw_backtile->width;
-}
-
-
-
 /*
 ================
 Draw_Character

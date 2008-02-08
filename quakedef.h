@@ -1,4 +1,4 @@
-/* $Id: quakedef.h,v 1.6 2008/02/06 06:47:20 slotzero Exp $
+/* $Id: quakedef.h,v 1.7 2008/02/08 03:53:40 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -287,7 +287,6 @@ extern	cvar_t		developer;
 
 extern	qboolean	host_initialized;		// true if into command execution
 extern	double		host_frametime;
-extern	byte		*host_basepal;
 extern	byte		*host_colormap;
 extern	int			host_framecount;	// incremented every frame, never reset
 extern	double		realtime;			// not bounded in any way, changed at

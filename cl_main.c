@@ -130,7 +130,7 @@ void SetPal (int i)
 	old = i;
 
 	if (i==0)
-		VID_SetPalette (host_basepal);
+		VID_SetPalette (pal);
 	else if (i==1)
 	{
 		for (c=0 ; c<768 ; c+=3)
