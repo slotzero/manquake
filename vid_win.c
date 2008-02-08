@@ -139,10 +139,6 @@ static vmode_t	badmode;
 
 static byte	backingbuf[48*24];
 
-void VID_MenuDraw (void);
-void VID_MenuKey (int key);
-
-LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void AppActivate(BOOL fActive, BOOL minimize);
 
 /*
@@ -555,93 +551,6 @@ MGLDC *createDisplayDC(int forcemem)
 		waitVRT = false;
 
 	return dc;
-}
-
-
-void VID_InitMGLDIB (HINSTANCE hInstance)
-{
-	WNDCLASS		wc;
-	HDC				hdc;
-	int				i;
-
-	hIcon = LoadIcon (hInstance, MAKEINTRESOURCE (IDI_ICON3)); // JPG - changed from 2 to 3 (old winquake icon)
-
-	/* Register the frame class */
-    wc.style         = 0;
-    wc.lpfnWndProc   = (WNDPROC)MainWndProc;
-    wc.cbClsExtra    = 0;
-    wc.cbWndExtra    = 0;
-    wc.hInstance     = hInstance;
-    wc.hIcon         = 0;
-    wc.hCursor       = LoadCursor (NULL,IDC_ARROW);
-	wc.hbrBackground = NULL;
-    wc.lpszMenuName  = 0;
-    wc.lpszClassName = "WinQuake";
-
-    if (!RegisterClass (&wc) )
-		Sys_Error ("Couldn't register window class");
-
-	/* Find the size for the DIB window */
-	/* Initialise the MGL for windowed operation */
-	MGL_setAppInstance(hInstance);
-	registerAllMemDrivers();
-	MGL_initWindowed("");
-
-	modelist[0].type = MS_WINDOWED;
-	modelist[0].width = 320;
-	modelist[0].height = 240;
-	strcpy (modelist[0].modedesc, "320x240");
-	modelist[0].mode13 = 0;
-	modelist[0].modenum = MODE_WINDOWED;
-	modelist[0].stretched = 0;
-	modelist[0].dib = 1;
-	modelist[0].fullscreen = 0;
-	modelist[0].halfscreen = 0;
-	modelist[0].bpp = 8;
-
-	modelist[1].type = MS_WINDOWED;
-	modelist[1].width = 640;
-	modelist[1].height = 480;
-	strcpy (modelist[1].modedesc, "640x480");
-	modelist[1].mode13 = 0;
-	modelist[1].modenum = MODE_WINDOWED + 1;
-	modelist[1].stretched = 1;
-	modelist[1].dib = 1;
-	modelist[1].fullscreen = 0;
-	modelist[1].halfscreen = 0;
-	modelist[1].bpp = 8;
-
-	modelist[2].type = MS_WINDOWED;
-	modelist[2].width = 800;
-	modelist[2].height = 600;
-	strcpy (modelist[2].modedesc, "800x600");
-	modelist[2].mode13 = 0;
-	modelist[2].modenum = MODE_WINDOWED + 2;
-	modelist[2].stretched = 1;
-	modelist[2].dib = 1;
-	modelist[2].fullscreen = 0;
-	modelist[2].halfscreen = 0;
-	modelist[2].bpp = 8;
-
-// automatically stretch the default mode up if > 640x480 desktop resolution
-	hdc = GetDC(NULL);
-
-	if ((GetDeviceCaps(hdc, HORZRES) > 640) && !COM_CheckParm("-noautostretch"))
-	{
-		vid_default = MODE_WINDOWED + 1;
-	}
-	else
-	{
-		vid_default = MODE_WINDOWED;
-	}
-
-	windowed_default = vid_default;
-
-	ReleaseDC(NULL,hdc);
-
-	nummodes = 3;	// reserve space for windowed mode
-
-	DDActive = 0;
 }
 
 
@@ -1155,6 +1064,11 @@ void DestroyFullDIBWindow (void)
 }
 
 
+/*
+=================
+VID_SetWindowedMode
+=================
+*/
 qboolean VID_SetWindowedMode (int modenum)
 {
 	HDC				hdc;
@@ -1310,6 +1224,11 @@ qboolean VID_SetWindowedMode (int modenum)
 }
 
 
+/*
+=================
+VID_SetFullscreenMode
+=================
+*/
 qboolean VID_SetFullscreenMode (int modenum)
 {
 
@@ -1362,6 +1281,11 @@ qboolean VID_SetFullscreenMode (int modenum)
 }
 
 
+/*
+=================
+VID_SetFullDIBMode
+=================
+*/
 qboolean VID_SetFullDIBMode (int modenum)
 {
 	HDC				hdc;
@@ -1504,6 +1428,11 @@ void VID_SetDefaultMode (void)
 }
 
 
+/*
+=================
+VID_SetMode
+=================
+*/
 int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int				original_mode, temp, dummy;
@@ -1652,6 +1581,12 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	return true;
 }
 
+
+/*
+=================
+VID_LockBuffer
+=================
+*/
 void VID_LockBuffer (void)
 {
 
@@ -1690,6 +1625,11 @@ void VID_LockBuffer (void)
 }
 
 
+/*
+=================
+VID_UnlockBuffer
+=================
+*/
 void VID_UnlockBuffer (void)
 {
 	if (dibdc)
@@ -1711,6 +1651,11 @@ void VID_UnlockBuffer (void)
 }
 
 
+/*
+=================
+VID_ForceUnlockedAndReturnState
+=================
+*/
 int VID_ForceUnlockedAndReturnState (void)
 {
 	int	lk;
@@ -1734,6 +1679,11 @@ int VID_ForceUnlockedAndReturnState (void)
 }
 
 
+/*
+=================
+VID_ForceLockState
+=================
+*/
 void VID_ForceLockState (int lk)
 {
 
@@ -1747,7 +1697,12 @@ void VID_ForceLockState (int lk)
 }
 
 
-void	VID_SetPalette (unsigned char *palette)
+/*
+=================
+VID_SetPalette
+=================
+*/
+void VID_SetPalette (unsigned char *palette)
 {
 	INT			i;
 	palette_t	pal[256];
@@ -1817,89 +1772,14 @@ void	VID_SetPalette (unsigned char *palette)
 }
 
 
-void	VID_ShiftPalette (unsigned char *palette)
+/*
+=================
+VID_ShiftPalette
+=================
+*/
+void VID_ShiftPalette (unsigned char *palette)
 {
 	VID_SetPalette (palette);
-}
-
-
-/*
-=================
-VID_DescribeCurrentMode_f
-=================
-*/
-void VID_DescribeCurrentMode_f (void)
-{
-	Con_Printf ("%s\n", VID_GetExtModeDescription (vid_modenum));
-}
-
-
-/*
-=================
-VID_NumModes_f
-=================
-*/
-void VID_NumModes_f (void)
-{
-
-	if (nummodes == 1)
-		Con_Printf ("%d video mode is available\n", nummodes);
-	else
-		Con_Printf ("%d video modes are available\n", nummodes);
-}
-
-
-/*
-=================
-VID_DescribeMode_f
-=================
-*/
-void VID_DescribeMode_f (void)
-{
-	int		modenum;
-
-	modenum = Q_atoi (Cmd_Argv(1));
-
-	Con_Printf ("%s\n", VID_GetExtModeDescription (modenum));
-}
-
-
-/*
-=================
-VID_DescribeModes_f
-=================
-*/
-void VID_DescribeModes_f (void)
-{
-	int			i, lnummodes;
-	char		*pinfo;
-	qboolean	na;
-	vmode_t		*pv;
-
-	na = false;
-
-	lnummodes = VID_NumModes ();
-
-	for (i=0 ; i<lnummodes ; i++)
-	{
-		pv = VID_GetModePtr (i);
-		pinfo = VID_GetExtModeDescription (i);
-
-		if (VID_CheckAdequateMem (pv->width, pv->height))
-		{
-			Con_Printf ("%2d: %s\n", i, pinfo);
-		}
-		else
-		{
-			Con_Printf ("**: %s\n", pinfo);
-			na = true;
-		}
-	}
-
-	if (na)
-	{
-		Con_Printf ("\n[**: not enough system RAM for mode]\n");
-	}
 }
 
 
@@ -1936,7 +1816,6 @@ VID_Windowed_f
 */
 void VID_Windowed_f (void)
 {
-
 	VID_SetMode ((int)vid_windowed_mode.value, vid_curpal);
 }
 
@@ -1948,7 +1827,6 @@ VID_Fullscreen_f
 */
 void VID_Fullscreen_f (void)
 {
-
 	VID_SetMode ((int)vid_fullscreen_mode.value, vid_curpal);
 }
 
@@ -1960,13 +1838,11 @@ VID_Minimize_f
 */
 void VID_Minimize_f (void)
 {
-
 // we only support minimizing windows; if you're fullscreen,
 // switch to windowed first
 	if (modestate == MS_WINDOWED)
 		ShowWindow (mainwindow, SW_MINIMIZE);
 }
-
 
 
 /*
@@ -1986,158 +1862,6 @@ void VID_ForceMode_f (void)
 		force_mode_set = 1;
 		VID_SetMode (modenum, vid_curpal);
 		force_mode_set = 0;
-	}
-}
-
-
-void	VID_Init (unsigned char *palette)
-{
-	int		i, bestmatch, bestmatchmetric, t, dr, dg, db;
-	int		basenummodes;
-	byte	*ptmp;
-
-	Cvar_RegisterVariable (&vid_mode);
-	Cvar_RegisterVariable (&vid_wait);
-	Cvar_RegisterVariable (&vid_nopageflip);
-	Cvar_RegisterVariable (&_vid_wait_override);
-	Cvar_RegisterVariable (&_vid_default_mode);
-	Cvar_RegisterVariable (&_vid_default_mode_win);
-	Cvar_RegisterVariable (&vid_config_x);
-	Cvar_RegisterVariable (&vid_config_y);
-	Cvar_RegisterVariable (&vid_stretch_by_2);
-	Cvar_RegisterVariable (&_windowed_mouse);
-	Cvar_RegisterVariable (&vid_fullscreen_mode);
-	Cvar_RegisterVariable (&vid_windowed_mode);
-	Cvar_RegisterVariable (&block_switch);
-	Cvar_RegisterVariable (&vid_window_x);
-	Cvar_RegisterVariable (&vid_window_y);
-
-	Cmd_AddCommand ("vid_testmode", VID_TestMode_f);
-	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
-	Cmd_AddCommand ("vid_describecurrentmode", VID_DescribeCurrentMode_f);
-	Cmd_AddCommand ("vid_describemode", VID_DescribeMode_f);
-	Cmd_AddCommand ("vid_describemodes", VID_DescribeModes_f);
-	Cmd_AddCommand ("vid_forcemode", VID_ForceMode_f);
-	Cmd_AddCommand ("vid_windowed", VID_Windowed_f);
-	Cmd_AddCommand ("vid_fullscreen", VID_Fullscreen_f);
-	Cmd_AddCommand ("vid_minimize", VID_Minimize_f);
-
-	if (COM_CheckParm ("-dibonly"))
-		dibonly = true;
-
-	VID_InitMGLDIB (global_hInstance);
-
-	basenummodes = nummodes;
-
-	if (!dibonly)
-		VID_InitMGLFull (global_hInstance);
-
-// if there are no non-windowed modes, or only windowed and mode 0x13, then use
-// fullscreen DIBs as well
-	if (((nummodes == basenummodes) ||
-		 ((nummodes == (basenummodes + 1)) && is_mode0x13)) &&
-		!COM_CheckParm ("-nofulldib"))
-
-	{
-		VID_InitFullDIB (global_hInstance);
-	}
-
-	vid.maxwarpwidth = WARP_WIDTH;
-	vid.maxwarpheight = WARP_HEIGHT;
-	vid.colormap = host_colormap;
-	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
-	vid_testingmode = 0;
-
-// GDI doesn't let us remap palette index 0, so we'll remap color
-// mappings from that black to another one
-	bestmatchmetric = 256*256*3;
-
-	for (i=1 ; i<256 ; i++)
-	{
-		dr = palette[0] - palette[i*3];
-		dg = palette[1] - palette[i*3+1];
-		db = palette[2] - palette[i*3+2];
-
-		t = (dr * dr) + (dg * dg) + (db * db);
-
-		if (t < bestmatchmetric)
-		{
-			bestmatchmetric = t;
-			bestmatch = i;
-
-			if (t == 0)
-				break;
-		}
-	}
-
-	for (i=0, ptmp = vid.colormap ; i<(1<<(VID_CBITS+8)) ; i++, ptmp++)
-	{
-		if (*ptmp == 0)
-			*ptmp = bestmatch;
-	}
-
-	if (COM_CheckParm("-startwindowed"))
-	{
-		startwindowed = 1;
-		vid_default = windowed_default;
-	}
-
-	if (hwnd_dialog)
-		DestroyWindow (hwnd_dialog);
-
-// sound initialization has to go here, preceded by a windowed mode set,
-// so there's a window for DirectSound to work with but we're not yet
-// fullscreen so the "hardware already in use" dialog is visible if it
-// gets displayed
-
-// keep the window minimized until we're ready for the first real mode set
-	hide_window = true;
-	VID_SetMode (MODE_WINDOWED, palette);
-	hide_window = false;
-
-	vid_initialized = true;
-
-	force_mode_set = true;
-	VID_SetMode (vid_default, palette);
-	force_mode_set = false;
-
-	vid_realmode = vid_modenum;
-
-	VID_SetPalette (palette);
-
-	vid_menudrawfn = VID_MenuDraw;
-	vid_menukeyfn = VID_MenuKey;
-
-	strcpy (badmode.modedesc, "Bad mode");
-}
-
-
-void	VID_Shutdown (void)
-{
-	HDC				hdc;
-	int				dummy;
-
-	if (vid_initialized)
-	{
-		if (modestate == MS_FULLDIB)
-			ChangeDisplaySettings (NULL, CDS_FULLSCREEN);
-		PostMessage (HWND_BROADCAST, WM_PALETTECHANGED, (WPARAM)mainwindow, (LPARAM)0);
-		PostMessage (HWND_BROADCAST, WM_SYSCOLORCHANGE, (WPARAM)0, (LPARAM)0);
-		AppActivate(false, false);
-		DestroyDIBWindow ();
-		DestroyFullscreenWindow ();
-		DestroyFullDIBWindow ();
-
-		if (hwnd_dialog)
-			DestroyWindow (hwnd_dialog);
-
-		if (mainwindow)
-			DestroyWindow(mainwindow);
-
-		MGL_exit();
-
-		vid_testingmode = 0;
-		vid_initialized = 0;
 	}
 }
 
@@ -2234,7 +1958,12 @@ void FlipScreen(vrect_t *rects)
 }
 
 
-void	VID_Update (vrect_t *rects)
+/*
+=================
+VID_Update
+=================
+*/
+void VID_Update (vrect_t *rects)
 {
 	vrect_t	rect;
 	RECT	trect;
@@ -2523,43 +2252,6 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 //==========================================================================
 
-byte        scantokey[128] =
-					{
-//  0           1       2       3       4       5       6       7
-//  8           9       A       B       C       D       E       F
-	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6',
-	'7',    '8',    '9',    '0',    '-',    '=',    K_BACKSPACE, 9, // 0
-	'q',    'w',    'e',    'r',    't',    'y',    'u',    'i',
-	'o',    'p',    '[',    ']',    13 ,    K_CTRL,'a',  's',      // 1
-	'd',    'f',    'g',    'h',    'j',    'k',    'l',    ';',
-	'\'' ,    '`',    K_SHIFT,'\\',  'z',    'x',    'c',    'v',      // 2
-	'b',    'n',    'm',    ',',    '.',    '/',    K_SHIFT,'*',
-	K_ALT,' ',   0  ,    K_F1, K_F2, K_F3, K_F4, K_F5,   // 3
-	K_F6, K_F7, K_F8, K_F9, K_F10,  K_PAUSE,    0  , K_HOME,
-	K_UPARROW,K_PGUP,'-',K_LEFTARROW,'5',K_RIGHTARROW,'+',K_END, //4
-	K_DOWNARROW,K_PGDN,K_INS,K_DEL,0,0,             0,              K_F11,
-	K_F12,0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 5
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,        // 6
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0,
-	0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0  ,    0         // 7
-};
-
-/*
-=======
-MapKey
-
-Map from windows to quake keynums
-=======
-*/
-int MapKey (int key)
-{
-	key = (key>>16)&255;
-	if (key > 127)
-		return 0;
-
-	return scantokey[key];
-}
 
 void AppActivate(BOOL fActive, BOOL minimize)
 /****************************************************************************
@@ -2698,551 +2390,5 @@ void AppActivate(BOOL fActive, BOOL minimize)
 				IN_ShowMouse ();
 			}
 		}
-	}
-}
-
-
-/*
-================
-VID_HandlePause
-================
-*/
-void VID_HandlePause (qboolean pause)
-{
-
-	if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
-	{
-		if (pause)
-		{
-			IN_DeactivateMouse ();
-			IN_ShowMouse ();
-		}
-		else
-		{
-			IN_ActivateMouse ();
-			IN_HideMouse ();
-		}
-	}
-}
-
-
-/*
-===================================================================
-
-MAIN WINDOW
-
-===================================================================
-*/
-
-/* main window procedure */
-LONG WINAPI MainWndProc (
-    HWND    hWnd,
-    UINT    uMsg,
-    WPARAM  wParam,
-    LPARAM  lParam)
-{
-	LONG			lRet = 0;
-	int				fwKeys, xPos, yPos, fActive, fMinimized, temp;
-	HDC				hdc;
-	PAINTSTRUCT		ps;
-	static int		recursiveflag;
-
-	switch (uMsg)
-	{
-		case WM_CREATE:
-			break;
-
-		case WM_SYSCOMMAND:
-
-		// Check for maximize being hit
-			switch (wParam & ~0x0F)
-			{
-				case SC_MAXIMIZE:
-				// if minimized, bring up as a window before going fullscreen,
-				// so MGL will have the right state to restore
-					if (Minimized)
-					{
-						force_mode_set = true;
-						VID_SetMode (vid_modenum, vid_curpal);
-						force_mode_set = false;
-					}
-
-					VID_SetMode ((int)vid_fullscreen_mode.value, vid_curpal);
-					break;
-
-                case SC_SCREENSAVE:
-                case SC_MONITORPOWER:
-					if (modestate != MS_WINDOWED)
-					{
-					// don't call DefWindowProc() because we don't want to start
-					// the screen saver fullscreen
-						break;
-					}
-
-				// fall through windowed and allow the screen saver to start
-
-				default:
-
-					lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
-			}
-			break;
-
-		case WM_MOVE:
-			window_x = (int) LOWORD(lParam);
-			window_y = (int) HIWORD(lParam);
-			VID_UpdateWindowStatus ();
-
-			if ((modestate == MS_WINDOWED) && !in_mode_set && !Minimized)
-				VID_RememberWindowPos ();
-
-			break;
-
-		case WM_SIZE:
-			Minimized = false;
-
-			if (!(wParam & SIZE_RESTORED))
-			{
-				if (wParam & SIZE_MINIMIZED)
-					Minimized = true;
-			}
-			break;
-
-		case WM_SYSCHAR:
-		// keep Alt-Space from happening
-			break;
-
-		case WM_ACTIVATE:
-			fActive = LOWORD(wParam);
-			fMinimized = (BOOL) HIWORD(wParam);
-			AppActivate(!(fActive == WA_INACTIVE), fMinimized);
-
-		// fix the leftover Alt from any Alt-Tab or the like that switched us away
-			ClearAllStates ();
-
-			if (!in_mode_set)
-			{
-				if (windc)
-					MGL_activatePalette(windc,true);
-
-				VID_SetPalette(vid_curpal);
-			}
-
-			break;
-
-		case WM_PAINT:
-			hdc = BeginPaint(hWnd, &ps);
-
-			if (!in_mode_set && host_initialized)
-				SCR_UpdateWholeScreen ();
-
-			EndPaint(hWnd, &ps);
-			break;
-
-		case WM_KEYDOWN:
-		case WM_SYSKEYDOWN:
-			if (!in_mode_set)
-				Key_Event (MapKey(lParam), true);
-			break;
-
-		case WM_KEYUP:
-		case WM_SYSKEYUP:
-			if (!in_mode_set)
-				Key_Event (MapKey(lParam), false);
-			break;
-
-	// this is complicated because Win32 seems to pack multiple mouse events into
-	// one update sometimes, so we always check all states and look for events
-		case WM_LBUTTONDOWN:
-		case WM_LBUTTONUP:
-		case WM_RBUTTONDOWN:
-		case WM_RBUTTONUP:
-		case WM_MBUTTONDOWN:
-		case WM_MBUTTONUP:
-		case WM_MOUSEMOVE:
-			if (!in_mode_set)
-			{
-				temp = 0;
-
-				if (wParam & MK_LBUTTON)
-					temp |= 1;
-
-				if (wParam & MK_RBUTTON)
-					temp |= 2;
-
-				if (wParam & MK_MBUTTON)
-					temp |= 4;
-
-				IN_MouseEvent (temp);
-			}
-			break;
-
-		// JACK: This is the mouse wheel with the Intellimouse
-		// Its delta is either positive or neg, and we generate the proper
-		// Event.
-		case WM_MOUSEWHEEL:
-			if ((short) HIWORD(wParam) > 0) {
-				Key_Event(K_MWHEELUP, true);
-				Key_Event(K_MWHEELUP, false);
-			} else {
-				Key_Event(K_MWHEELDOWN, true);
-				Key_Event(K_MWHEELDOWN, false);
-			}
-			break;
-		// KJB: Added these new palette functions
-		case WM_PALETTECHANGED:
-			if ((HWND)wParam == hWnd)
-				break;
-			/* Fall through to WM_QUERYNEWPALETTE */
-		case WM_QUERYNEWPALETTE:
-			hdc = GetDC(NULL);
-
-			if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
-				vid_palettized = true;
-			else
-				vid_palettized = false;
-
-			ReleaseDC(NULL,hdc);
-
-			scr_fullupdate = 0;
-
-			if (vid_initialized && !in_mode_set && windc && MGL_activatePalette(windc,false) && !Minimized)
-			{
-				VID_SetPalette (vid_curpal);
-				InvalidateRect (mainwindow, NULL, false);
-
-			// specifically required if WM_QUERYNEWPALETTE realizes a new palette
-				lRet = TRUE;
-			}
-			break;
-
-		case WM_DISPLAYCHANGE:
-			if (!in_mode_set && (modestate == MS_WINDOWED) && !vid_fulldib_on_focus_mode)
-			{
-				force_mode_set = true;
-				VID_SetMode (vid_modenum, vid_curpal);
-				force_mode_set = false;
-			}
-			break;
-
-   	    case WM_CLOSE:
-		// this causes Close in the right-click task bar menu not to work, but right
-		// now bad things happen if Close is handled in that case (garbage and a
-		// crash on Win95)
-			if (!in_mode_set)
-			{
-				if (MessageBox (mainwindow, "Are you sure you want to quit?", "Confirm Exit",
-							MB_YESNO | MB_SETFOREGROUND | MB_ICONQUESTION) == IDYES)
-				{
-					Sys_Quit ();
-				}
-			}
-			break;
-
-		case MM_MCINOTIFY:
-            lRet = 1;
-			break;
-
-		default:
-            /* pass all unhandled messages to DefWindowProc */
-            lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
-	        break;
-    }
-
-    /* return 0 if handled message, 1 if not */
-    return lRet;
-}
-
-
-extern void M_Menu_Options_f (void);
-extern void M_Print (int cx, int cy, char *str);
-extern void M_PrintWhite (int cx, int cy, char *str);
-extern void M_DrawCharacter (int cx, int line, int num);
-extern void M_DrawTransPic (int x, int y, qpic_t *pic);
-extern void M_DrawPic (int x, int y, qpic_t *pic);
-
-static int	vid_line, vid_wmodes;
-
-typedef struct
-{
-	int		modenum;
-	char	*desc;
-	int		iscur;
-	int		ismode13;
-	int		width;
-} modedesc_t;
-
-#define MAX_COLUMN_SIZE		5
-#define MODE_AREA_HEIGHT	(MAX_COLUMN_SIZE + 6)
-#define MAX_MODEDESCS		(MAX_COLUMN_SIZE*3)
-
-static modedesc_t	modedescs[MAX_MODEDESCS];
-
-/*
-================
-VID_MenuDraw
-================
-*/
-void VID_MenuDraw (void)
-{
-	qpic_t		*p;
-	char		*ptr;
-	int			lnummodes, i, j, k, column, row, dup, dupmode;
-	char		temp[100];
-	vmode_t		*pv;
-	modedesc_t	tmodedesc;
-
-	p = Draw_CachePic ("gfx/vidmodes.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
-
-	for (i=0 ; i<3 ; i++)
-	{
-		ptr = VID_GetModeDescriptionMemCheck (i);
-		modedescs[i].modenum = modelist[i].modenum;
-		modedescs[i].desc = ptr;
-		modedescs[i].ismode13 = 0;
-		modedescs[i].iscur = 0;
-
-		if (vid_modenum == i)
-			modedescs[i].iscur = 1;
-	}
-
-	vid_wmodes = 3;
-	lnummodes = VID_NumModes ();
-
-	for (i=3 ; i<lnummodes ; i++)
-	{
-		ptr = VID_GetModeDescriptionMemCheck (i);
-		pv = VID_GetModePtr (i);
-
-	// we only have room for 15 fullscreen modes, so don't allow
-	// 360-wide modes, because if there are 5 320-wide modes and
-	// 5 360-wide modes, we'll run out of space
-		if (ptr && ((pv->width != 360) || COM_CheckParm("-allow360")))
-		{
-			dup = 0;
-
-			for (j=3 ; j<vid_wmodes ; j++)
-			{
-				if (!strcmp (modedescs[j].desc, ptr))
-				{
-					dup = 1;
-					dupmode = j;
-					break;
-				}
-			}
-
-			if (dup || (vid_wmodes < MAX_MODEDESCS))
-			{
-				if (!dup || !modedescs[dupmode].ismode13 || COM_CheckParm("-noforcevga"))
-				{
-					if (dup)
-					{
-						k = dupmode;
-					}
-					else
-					{
-						k = vid_wmodes;
-					}
-
-					modedescs[k].modenum = i;
-					modedescs[k].desc = ptr;
-					modedescs[k].ismode13 = pv->mode13;
-					modedescs[k].iscur = 0;
-					modedescs[k].width = pv->width;
-
-					if (i == vid_modenum)
-						modedescs[k].iscur = 1;
-
-					if (!dup)
-						vid_wmodes++;
-				}
-			}
-		}
-	}
-
-// sort the modes on width (to handle picking up oddball dibonly modes
-// after all the others)
-	for (i=3 ; i<(vid_wmodes-1) ; i++)
-	{
-		for (j=(i+1) ; j<vid_wmodes ; j++)
-		{
-			if (modedescs[i].width > modedescs[j].width)
-			{
-				tmodedesc = modedescs[i];
-				modedescs[i] = modedescs[j];
-				modedescs[j] = tmodedesc;
-			}
-		}
-	}
-
-
-	M_Print (13*8, 36, "Windowed Modes");
-
-	column = 16;
-	row = 36+2*8;
-
-	for (i=0 ; i<3; i++)
-	{
-		if (modedescs[i].iscur)
-			M_PrintWhite (column, row, modedescs[i].desc);
-		else
-			M_Print (column, row, modedescs[i].desc);
-
-		column += 13*8;
-	}
-
-	if (vid_wmodes > 3)
-	{
-		M_Print (12*8, 36+4*8, "Fullscreen Modes");
-
-		column = 16;
-		row = 36+6*8;
-
-		for (i=3 ; i<vid_wmodes ; i++)
-		{
-			if (modedescs[i].iscur)
-				M_PrintWhite (column, row, modedescs[i].desc);
-			else
-				M_Print (column, row, modedescs[i].desc);
-
-			column += 13*8;
-
-			if (((i - 3) % VID_ROW_SIZE) == (VID_ROW_SIZE - 1))
-			{
-				column = 16;
-				row += 8;
-			}
-		}
-	}
-
-// line cursor
-	if (vid_testingmode)
-	{
-		sprintf (temp, "TESTING %s",
-				modedescs[vid_line].desc);
-		M_Print (13*8, 36 + MODE_AREA_HEIGHT * 8 + 8*4, temp);
-		M_Print (9*8, 36 + MODE_AREA_HEIGHT * 8 + 8*6,
-				"Please wait 5 seconds...");
-	}
-	else
-	{
-		M_Print (9*8, 36 + MODE_AREA_HEIGHT * 8 + 8,
-				"Press Enter to set mode");
-		M_Print (6*8, 36 + MODE_AREA_HEIGHT * 8 + 8*3,
-				"T to test mode for 5 seconds");
-		ptr = VID_GetModeDescription2 (vid_modenum);
-
-		if (ptr)
-		{
-			sprintf (temp, "D to set default: %s", ptr);
-			M_Print (2*8, 36 + MODE_AREA_HEIGHT * 8 + 8*5, temp);
-		}
-
-		ptr = VID_GetModeDescription2 ((int)_vid_default_mode_win.value);
-
-		if (ptr)
-		{
-			sprintf (temp, "Current default: %s", ptr);
-			M_Print (3*8, 36 + MODE_AREA_HEIGHT * 8 + 8*6, temp);
-		}
-
-		M_Print (15*8, 36 + MODE_AREA_HEIGHT * 8 + 8*8,
-				"Esc to exit");
-
-		row = 36 + 2*8 + (vid_line / VID_ROW_SIZE) * 8;
-		column = 8 + (vid_line % VID_ROW_SIZE) * 13*8;
-
-		if (vid_line >= 3)
-			row += 3*8;
-
-		M_DrawCharacter (column, row, 12+((int)(realtime*4)&1));
-	}
-}
-
-
-/*
-================
-VID_MenuKey
-================
-*/
-void VID_MenuKey (int key)
-{
-	if (vid_testingmode)
-		return;
-
-	switch (key)
-	{
-	case K_ESCAPE:
-		M_Menu_Options_f ();
-		break;
-
-	case K_LEFTARROW:
-		vid_line = ((vid_line / VID_ROW_SIZE) * VID_ROW_SIZE) +
-				   ((vid_line + 2) % VID_ROW_SIZE);
-
-		if (vid_line >= vid_wmodes)
-			vid_line = vid_wmodes - 1;
-		break;
-
-	case K_RIGHTARROW:
-		vid_line = ((vid_line / VID_ROW_SIZE) * VID_ROW_SIZE) +
-				   ((vid_line + 4) % VID_ROW_SIZE);
-
-		if (vid_line >= vid_wmodes)
-			vid_line = (vid_line / VID_ROW_SIZE) * VID_ROW_SIZE;
-		break;
-
-	case K_UPARROW:
-		vid_line -= VID_ROW_SIZE;
-
-		if (vid_line < 0)
-		{
-			vid_line += ((vid_wmodes + (VID_ROW_SIZE - 1)) /
-					VID_ROW_SIZE) * VID_ROW_SIZE;
-
-			while (vid_line >= vid_wmodes)
-				vid_line -= VID_ROW_SIZE;
-		}
-		break;
-
-	case K_DOWNARROW:
-		vid_line += VID_ROW_SIZE;
-
-		if (vid_line >= vid_wmodes)
-		{
-			vid_line -= ((vid_wmodes + (VID_ROW_SIZE - 1)) /
-					VID_ROW_SIZE) * VID_ROW_SIZE;
-
-			while (vid_line < 0)
-				vid_line += VID_ROW_SIZE;
-		}
-		break;
-
-	case K_ENTER:
-		VID_SetMode (modedescs[vid_line].modenum, vid_curpal);
-		break;
-
-	case 'T':
-	case 't':
-	// have to set this before setting the mode because WM_PAINT
-	// happens during the mode set and does a VID_Update, which
-	// checks vid_testingmode
-		vid_testingmode = 1;
-		vid_testendtime = realtime + 5.0;
-
-		if (!VID_SetMode (modedescs[vid_line].modenum, vid_curpal))
-		{
-			vid_testingmode = 0;
-		}
-		break;
-
-	case 'D':
-	case 'd':
-		firstupdate = 0;
-		Cvar_SetValue ("_vid_default_mode_win", vid_modenum);
-		break;
-
-	default:
-		break;
 	}
 }

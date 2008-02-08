@@ -60,7 +60,6 @@ struct
 	stringify(MOUSE_PS2),
 };
 
-static unsigned char scantokey[128];
 static byte vid_current_palette[768];
 
 int num_mice = sizeof (mice) / sizeof(mice[0]);
@@ -101,6 +100,12 @@ static byte     backingbuf[48*24];
 int		VGA_width, VGA_height, VGA_rowbytes, VGA_bufferrowbytes, VGA_planar;
 byte	*VGA_pagebase;
 
+
+/*
+=================
+D_BeginDirectRect
+=================
+*/
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 {
 	int i, j, k, plane, reps, repshift, offset, vidpage, off;
@@ -165,6 +170,12 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 	}
 }
 
+
+/*
+=================
+D_EndDirectRect
+=================
+*/
 void D_EndDirectRect (int x, int y, int width, int height)
 {
 	int i, j, k, plane, reps, repshift, offset, vidpage, off;
@@ -224,87 +235,12 @@ void D_EndDirectRect (int x, int y, int width, int height)
 	}
 }
 
-/*
-=================
-VID_Gamma_f
-
-Keybinding command
-=================
-*/
-void VID_Gamma_f (void)
-{
-	float	gamma, f, inf;
-	unsigned char	palette[768];
-	int		i;
-
-	if (Cmd_Argc () == 2)
-	{
-		gamma = Q_atof (Cmd_Argv(1));
-
-		for (i=0 ; i<768 ; i++)
-		{
-			f = pow ( (host_basepal[i]+1)/256.0 , gamma );
-			inf = f*255 + 0.5;
-			if (inf < 0)
-				inf = 0;
-			if (inf > 255)
-				inf = 255;
-			palette[i] = inf;
-		}
-
-		VID_SetPalette (palette);
-
-		vid.recalc_refdef = 1;				// force a surface cache flush
-	}
-}
-
-void VID_DescribeMode_f (void)
-{
-	int modenum;
-
-	modenum = Q_atoi (Cmd_Argv(1));
-	if ((modenum >= num_modes) || (modenum < 0 ) || !modes[modenum].width)
-		Con_Printf("Invalid video mode: %d!\n",modenum);
-	Con_Printf("%d: %d x %d - ",modenum,modes[modenum].width,modes[modenum].height);
-	if (modes[modenum].bytesperpixel == 0)
-		Con_Printf("ModeX\n");
-	else
-		Con_Printf("%d bpp\n", modes[modenum].bytesperpixel<<3);
-}
-
-void VID_DescribeModes_f (void)
-{
-	int i;
-
-	for (i=0;i<num_modes;i++)
-		if (modes[i].width) {
-			Con_Printf("%d: %d x %d - ", i, modes[i].width,modes[i].height);
-			if (modes[i].bytesperpixel == 0)
-				Con_Printf("ModeX\n");
-			else
-				Con_Printf("%d bpp\n", modes[i].bytesperpixel<<3);
-		}
-}
 
 /*
-================
-VID_NumModes
-================
+=================
+VID_Debug_f
+=================
 */
-int VID_NumModes ()
-{
-	int i,i1=0;
-
-	for (i=0;i<num_modes;i++)
-		i1+=(modes[i].width?1:0);
-	return (i1);
-}
-
-void VID_NumModes_f (void)
-{
-	Con_Printf("%d modes\n",VID_NumModes());
-}
-
 void VID_Debug_f (void)
 {
 	Con_Printf("mode: %d\n",current_mode);
@@ -314,134 +250,22 @@ void VID_Debug_f (void)
 }
 
 
-
-void VID_InitModes(void)
-{
-
-	int i;
-
-// get complete information on all modes
-
-	num_modes = vga_lastmodenumber()+1;
-	modes = Z_Malloc(num_modes * sizeof(vga_modeinfo));
-	for (i=0 ; i<num_modes ; i++)
-	{
-		if (vga_hasmode(i))
-			Q_memcpy(&modes[i], vga_getmodeinfo(i), sizeof (vga_modeinfo));
-		else
-			modes[i].width = 0; // means not available
-	}
-
-// filter for modes i don't support
-
-	for (i=0 ; i<num_modes ; i++)
-	{
-		if (modes[i].bytesperpixel != 1 && modes[i].colors != 256)
-			modes[i].width = 0;
-	}
-
-}
-
-int get_mode(char *name, int width, int height, int depth)
-{
-
-	int i;
-	int ok, match;
-
-	match = (!!width) + (!!height)*2 + (!!depth)*4;
-
-	if (name)
-	{
-		i = vga_getmodenumber(name);
-		if (!modes[i].width)
-		{
-			Sys_Printf("Mode [%s] not supported\n", name);
-			i = G320x200x256;
-		}
-	}
-	else
-	{
-		for (i=0 ; i<num_modes ; i++)
-			if (modes[i].width)
-			{
-				ok = (modes[i].width == width)
-					+ (modes[i].height == height)*2
-					+ (modes[i].bytesperpixel == depth/8)*4;
-				if ((ok & match) == ok)
-					break;
-			}
-		if (i==num_modes)
-		{
-			Sys_Printf("Mode %dx%d (%d bits) not supported\n",
-				width, height, depth);
-			i = G320x200x256;
-		}
-	}
-
-	return i;
-
-}
-
-int matchmouse(int mouse, char *name)
-{
-	int i;
-	for (i=0 ; i<num_mice ; i++)
-		if (!strcmp(mice[i].name, name))
-			return i;
-	return mouse;
-}
-
-#if 0
-
-void vtswitch(int newconsole)
-{
-
-	int fd;
-	struct vt_stat x;
-
-// switch consoles and wait until reactivated
-	fd = open("/dev/console", O_RDONLY);
-	ioctl(fd, VT_GETSTATE, &x);
-	ioctl(fd, VT_ACTIVATE, newconsole);
-	ioctl(fd, VT_WAITACTIVE, x.v_active);
-	close(fd);
-
-}
-
-#endif
-
-void keyhandler(int scancode, int state)
-{
-
-	int sc;
-
-	sc = scancode & 0x7f;
-//	Con_Printf("scancode=%x (%d%s)\n", scancode, sc, scancode&0x80?"+128":"");
-	Key_Event(scantokey[sc], state == KEY_EVENTPRESS);
-
-}
-
-void VID_Shutdown(void)
-{
-
-	if (!svgalib_inited) return;
-
-//	printf("shutdown graphics called\n");
-	if (UseKeyboard)
-		keyboard_close();
-	if (UseDisplay)
-		vga_setmode(TEXT);
-//	printf("shutdown graphics finished\n");
-
-	svgalib_inited = 0;
-
-}
-
+/*
+=================
+VID_ShiftPalette
+=================
+*/
 void VID_ShiftPalette(unsigned char *p)
 {
 	VID_SetPalette(p);
 }
 
+
+/*
+=================
+VID_SetPalette
+=================
+*/
 void VID_SetPalette(byte *palette)
 {
 
@@ -467,6 +291,12 @@ void VID_SetPalette(byte *palette)
 	}
 }
 
+
+/*
+=================
+VID_SetMode
+=================
+*/
 int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int bsize, zsize, tsize;
@@ -537,173 +367,12 @@ int VID_SetMode (int modenum, unsigned char *palette)
 	return 0;
 }
 
-void VID_Init(unsigned char *palette)
-{
 
-	int i;
-	int w, h, d;
-
-	if (svgalib_inited)
-		return;
-
-//	Cmd_AddCommand ("gamma", VID_Gamma_f);
-
-	if (UseDisplay)
-	{
-		vga_init();
-
-		VID_InitModes();
-
-		Cvar_RegisterVariable (&vid_mode);
-		Cvar_RegisterVariable (&vid_redrawfull);
-		Cvar_RegisterVariable (&vid_waitforrefresh);
-
-		Cmd_AddCommand("vid_nummodes", VID_NumModes_f);
-		Cmd_AddCommand("vid_describemode", VID_DescribeMode_f);
-		Cmd_AddCommand("vid_describemodes", VID_DescribeModes_f);
-		Cmd_AddCommand("vid_debug", VID_Debug_f);
-
-	// interpret command-line params
-
-		w = h = d = 0;
-		if (getenv("GSVGAMODE"))
-			current_mode = get_mode(getenv("GSVGAMODE"), w, h, d);
-		else if (COM_CheckParm("-mode"))
-			current_mode = get_mode(com_argv[COM_CheckParm("-mode")+1], w, h, d);
-		else if (COM_CheckParm("-w") || COM_CheckParm("-h")
-			|| COM_CheckParm("-d"))
-		{
-			if (COM_CheckParm("-w"))
-				w = Q_atoi(com_argv[COM_CheckParm("-w")+1]);
-			if (COM_CheckParm("-h"))
-				h = Q_atoi(com_argv[COM_CheckParm("-h")+1]);
-			if (COM_CheckParm("-d"))
-				d = Q_atoi(com_argv[COM_CheckParm("-d")+1]);
-			current_mode = get_mode(0, w, h, d);
-		}
-		else
-			current_mode = G320x200x256;
-
-	// set vid parameters
-		VID_SetMode(current_mode, palette);
-
-		VID_SetPalette(palette);
-
-		// we do want to run in the background when switched away
-		vga_runinbackground(1);
-	}
-
-	if (COM_CheckParm("-nokbd")) UseKeyboard = 0;
-
-	if (UseKeyboard)
-	{
-		for (i=0 ; i<128 ; i++)
-			scantokey[i] = ' ';
-
-		scantokey[42] = K_SHIFT;
-		scantokey[54] = K_SHIFT;
-		scantokey[72] = K_UPARROW;
-		scantokey[103] = K_UPARROW;
-		scantokey[80] = K_DOWNARROW;
-		scantokey[108] = K_DOWNARROW;
-		scantokey[75] = K_LEFTARROW;
-		scantokey[105] = K_LEFTARROW;
-		scantokey[77] = K_RIGHTARROW;
-		scantokey[106] = K_RIGHTARROW;
-		scantokey[29] = K_CTRL;
-		scantokey[97] = K_CTRL;
-		scantokey[56] = K_ALT;
-		scantokey[100] = K_ALT;
-//		scantokey[58] = JK_CAPS;
-//		scantokey[69] = JK_NUM_LOCK;
-		scantokey[71] = K_HOME;
-		scantokey[73] = K_PGUP;
-		scantokey[79] = K_END;
-		scantokey[81] = K_PGDN;
-		scantokey[82] = K_INS;
-		scantokey[83] = K_DEL;
-		scantokey[1 ] = K_ESCAPE;
-		scantokey[28] = K_ENTER;
-		scantokey[15] = K_TAB;
-		scantokey[14] = K_BACKSPACE;
-		scantokey[119] = K_PAUSE;
-    	scantokey[57] = ' ';
-
-		scantokey[102] = K_HOME;
-		scantokey[104] = K_PGUP;
-		scantokey[107] = K_END;
-		scantokey[109] = K_PGDN;
-		scantokey[110] = K_INS;
-		scantokey[111] = K_DEL;
-
-		scantokey[2] = '1';
-		scantokey[3] = '2';
-		scantokey[4] = '3';
-		scantokey[5] = '4';
-		scantokey[6] = '5';
-		scantokey[7] = '6';
-		scantokey[8] = '7';
-		scantokey[9] = '8';
-		scantokey[10] = '9';
-		scantokey[11] = '0';
-		scantokey[12] = '-';
-		scantokey[13] = '=';
-		scantokey[41] = '`';
-		scantokey[26] = '[';
-		scantokey[27] = ']';
-		scantokey[39] = ';';
-		scantokey[40] = '\'';
-		scantokey[51] = ',';
-		scantokey[52] = '.';
-		scantokey[53] = '/';
-		scantokey[43] = '\\';
-
-		scantokey[59] = K_F1;
-		scantokey[60] = K_F2;
-		scantokey[61] = K_F3;
-		scantokey[62] = K_F4;
-		scantokey[63] = K_F5;
-		scantokey[64] = K_F6;
-		scantokey[65] = K_F7;
-		scantokey[66] = K_F8;
-		scantokey[67] = K_F9;
-		scantokey[68] = K_F10;
-		scantokey[87] = K_F11;
-		scantokey[88] = K_F12;
-		scantokey[30] = 'a';
-		scantokey[48] = 'b';
-		scantokey[46] = 'c';
-        scantokey[32] = 'd';
-        scantokey[18] = 'e';
-        scantokey[33] = 'f';
-        scantokey[34] = 'g';
-        scantokey[35] = 'h';
-        scantokey[23] = 'i';
-        scantokey[36] = 'j';
-        scantokey[37] = 'k';
-        scantokey[38] = 'l';
-        scantokey[50] = 'm';
-        scantokey[49] = 'n';
-        scantokey[24] = 'o';
-        scantokey[25] = 'p';
-        scantokey[16] = 'q';
-        scantokey[19] = 'r';
-        scantokey[31] = 's';
-        scantokey[20] = 't';
-        scantokey[22] = 'u';
-        scantokey[47] = 'v';
-        scantokey[17] = 'w';
-        scantokey[45] = 'x';
-        scantokey[21] = 'y';
-        scantokey[44] = 'z';
-
-		if (keyboard_init())
-			Sys_Error("keyboard_init() failed");
-		keyboard_seteventhandler(keyhandler);
-	}
-
-}
-
+/*
+=================
+VID_Update
+=================
+*/
 void VID_Update(vrect_t *rects)
 {
 	if (!svgalib_inited)
@@ -767,26 +436,12 @@ void VID_Update(vrect_t *rects)
 		VID_SetMode ((int)vid_mode.value, vid_current_palette);
 }
 
-static int dither;
 
-void VID_DitherOn(void)
-{
-    if (dither == 0)
-    {
-//		R_ViewChanged (&vrect, sb_lines, vid.aspect);
-        dither = 1;
-    }
-}
-
-void VID_DitherOff(void)
-{
-    if (dither)
-    {
-//		R_ViewChanged (&vrect, sb_lines, vid.aspect);
-        dither = 0;
-    }
-}
-
+/*
+=================
+Sys_SendKeyEvents
+=================
+*/
 void Sys_SendKeyEvents(void)
 {
 	if (!svgalib_inited)
@@ -796,201 +451,14 @@ void Sys_SendKeyEvents(void)
 		while (keyboard_update());
 }
 
-void Force_CenterView_f (void)
-{
-	cl.viewangles[PITCH] = 0;
-}
 
-
-void mousehandler(int buttonstate, int dx, int dy)
-{
-	mouse_buttonstate = buttonstate;
-	mx += dx;
-	my += dy;
-}
-
-void IN_Init(void)
-{
-
-	int mtype;
-	char *mousedev;
-	int mouserate;
-
-	if (UseMouse)
-	{
-
-		Cvar_RegisterVariable (&mouse_button_commands[0]);
-		Cvar_RegisterVariable (&mouse_button_commands[1]);
-		Cvar_RegisterVariable (&mouse_button_commands[2]);
-		Cvar_RegisterVariable (&m_filter);
-		Cmd_AddCommand ("force_centerview", Force_CenterView_f);
-
-		mouse_buttons = 3;
-
-		mtype = vga_getmousetype();
-
-		mousedev = "/dev/mouse";
-		if (getenv("MOUSEDEV")) mousedev = getenv("MOUSEDEV");
-		if (COM_CheckParm("-mdev"))
-			mousedev = com_argv[COM_CheckParm("-mdev")+1];
-
-		mouserate = 1200;
-		if (getenv("MOUSERATE")) mouserate = atoi(getenv("MOUSERATE"));
-		if (COM_CheckParm("-mrate"))
-			mouserate = atoi(com_argv[COM_CheckParm("-mrate")+1]);
-
-//		printf("Mouse: dev=%s,type=%s,speed=%d\n",
-//			mousedev, mice[mtype].name, mouserate);
-		if (mouse_init(mousedev, mtype, mouserate))
-		{
-			Con_Printf("No mouse found\n");
-			UseMouse = 0;
-		}
-		else
-			mouse_seteventhandler(mousehandler);
-
-	}
-
-}
-
+/*
+=================
+IN_Shutdown
+=================
+*/
 void IN_Shutdown(void)
 {
 	if (UseMouse)
 		mouse_close();
-}
-
-/*
-===========
-IN_Commands
-===========
-*/
-void IN_Commands (void)
-{
-	if (UseMouse && cls.state != ca_dedicated)
-	{
-		// poll mouse values
-		while (mouse_update())
-			;
-
-		// perform button actions
-		if ((mouse_buttonstate & MOUSE_LEFTBUTTON) &&
-			!(mouse_oldbuttonstate & MOUSE_LEFTBUTTON))
-			Key_Event (K_MOUSE1, true);
-		else if (!(mouse_buttonstate & MOUSE_LEFTBUTTON) &&
-			(mouse_oldbuttonstate & MOUSE_LEFTBUTTON))
-			Key_Event (K_MOUSE1, false);
-
-		if ((mouse_buttonstate & MOUSE_RIGHTBUTTON) &&
-			!(mouse_oldbuttonstate & MOUSE_RIGHTBUTTON))
-			Key_Event (K_MOUSE2, true);
-		else if (!(mouse_buttonstate & MOUSE_RIGHTBUTTON) &&
-			(mouse_oldbuttonstate & MOUSE_RIGHTBUTTON))
-			Key_Event (K_MOUSE2, false);
-
-		if ((mouse_buttonstate & MOUSE_MIDDLEBUTTON) &&
-			!(mouse_oldbuttonstate & MOUSE_MIDDLEBUTTON))
-			Key_Event (K_MOUSE3, true);
-		else if (!(mouse_buttonstate & MOUSE_MIDDLEBUTTON) &&
-			(mouse_oldbuttonstate & MOUSE_MIDDLEBUTTON))
-			Key_Event (K_MOUSE3, false);
-
-		mouse_oldbuttonstate = mouse_buttonstate;
-	}
-}
-
-/*
-===========
-IN_Move
-===========
-*/
-void IN_MouseMove (usercmd_t *cmd)
-{
-	if (!UseMouse)
-		return;
-
-	// poll mouse values
-	while (mouse_update())
-		;
-
-	if (m_filter.value)
-	{
-		mouse_x = (mx + old_mouse_x) * 0.5;
-		mouse_y = (my + old_mouse_y) * 0.5;
-	}
-	else
-	{
-		mouse_x = mx;
-		mouse_y = my;
-	}
-	old_mouse_x = mx;
-	old_mouse_y = my;
-	mx = my = 0; // clear for next update
-
-	mouse_x *= sensitivity.value;
-	mouse_y *= sensitivity.value;
-
-// add mouse X/Y movement to cmd
-	if ( (in_strafe.state & 1) || (lookstrafe.value && (in_mlook.state & 1) ))
-		cmd->sidemove += m_side.value * mouse_x;
-	else
-		cl.viewangles[YAW] -= m_yaw.value * mouse_x;
-
-	if (in_mlook.state & 1)
-		V_StopPitchDrift ();
-
-	if ( (in_mlook.state & 1) && !(in_strafe.state & 1))
-	{
-		cl.viewangles[PITCH] += m_pitch.value * mouse_y;
-
-		// JPG 1.05 - added pq_fullpitch
-		if (pq_fullpitch.value)
-		{
-			if (cl.viewangles[PITCH] > 90)
-				cl.viewangles[PITCH] = 90;
-			if (cl.viewangles[PITCH] < -90)
-				cl.viewangles[PITCH] = -90;
-		}
-		else
-		{
-			if (cl.viewangles[PITCH] > 80)
-				cl.viewangles[PITCH] = 80;
-			if (cl.viewangles[PITCH] < -70)
-				cl.viewangles[PITCH] = -70;
-		}
-	}
-	else
-	{
-		if ((in_strafe.state & 1) && noclip_anglehack)
-			cmd->upmove -= m_forward.value * mouse_y;
-		else
-			cmd->forwardmove -= m_forward.value * mouse_y;
-	}
-}
-
-void IN_Move (usercmd_t *cmd)
-{
-	IN_MouseMove(cmd);
-}
-
-
-/*
-================
-VID_ModeInfo
-================
-*/
-char *VID_ModeInfo (int modenum)
-{
-	static char	*badmodestr = "Bad mode number";
-	static char modestr[40];
-
-	if (modenum == 0)
-	{
-		sprintf (modestr, "%d x %d, %d bpp",
-				 vid.width, vid.height, modes[current_mode].bytesperpixel*8);
-		return (modestr);
-	}
-	else
-	{
-		return (badmodestr);
-	}
 }

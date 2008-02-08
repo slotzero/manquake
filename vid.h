@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -38,7 +38,7 @@ typedef struct
 	unsigned short	*colormap16;	// 256 * VID_GRADES size
 	int				fullbright;		// index of first fullbright color
 	unsigned		rowbytes;	// may be > width if displayed in a window
-	unsigned		width;		
+	unsigned		width;
 	unsigned		height;
 	float			aspect;		// width / height -- < 0 is taller than wide
 	int				numpages;
@@ -65,21 +65,9 @@ void	VID_SetPalette (unsigned char *palette);
 void	VID_ShiftPalette (unsigned char *palette);
 // called for bonus and pain flashes, and for underwater color changes
 
-void	VID_Init (unsigned char *palette);
-// Called at startup to set up translation tables, takes 256 8 bit RGB values
-// the palette data will go away after the call, so it must be copied off if
-// the video driver will need it again
-
-void	VID_Shutdown (void);
-// Called at shutdown
-
 void	VID_Update (vrect_t *rects);
 // flushes the given rectangles from the view buffer to the screen
 
 int VID_SetMode (int modenum, unsigned char *palette);
 // sets the mode; only used by the Quake engine for resetting to mode 0 (the
 // base mode) on memory allocation failures
-
-void VID_HandlePause (qboolean pause);
-// called only on Win32, when pause happens, so the mouse can be released
-

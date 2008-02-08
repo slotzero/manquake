@@ -740,9 +740,6 @@ void _Host_Frame (float time)
 // get new key events
 	Sys_SendKeyEvents ();
 
-// allow mice or other external controllers to add commands
-	IN_Commands ();
-
 // process console commands
 	Cbuf_Execute ();
 
@@ -960,15 +957,8 @@ void Host_Init (quakeparms_t *parms)
 		if (!host_colormap)
 			Sys_Error ("Couldn't load gfx/colormap.lmp");
 
-#ifndef _WIN32 // on non win32, mouse comes before video for security reasons
-		IN_Init ();
-#endif
-		VID_Init (host_basepal);
 		Draw_Init ();
 		SCR_Init ();
-#ifdef _WIN32 // on non win32, mouse comes before video for security reasons
-		IN_Init ();
-#endif
 	}
 
 	Cbuf_InsertText ("exec quake.rc\n");
@@ -1009,9 +999,4 @@ void Host_Shutdown(void)
 
 	NET_Shutdown ();
 	IN_Shutdown ();
-
-	if (cls.state != ca_dedicated)
-	{
-		VID_Shutdown();
-	}
 }
