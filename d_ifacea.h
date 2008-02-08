@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -30,9 +30,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // !!! if this is changed, it must be changed in r_shared.h too !!!
 #define ALIAS_ONSEAM				0x0020
-
-// !!! if this is changed, it must be changed in d_iface.h too !!!
-#define TURB_TEX_SIZE	64		// base turbulent texture size
 
 // !!! if this is changed, it must be changed in d_iface.h too !!!
 #define	CYCLE	128
@@ -95,4 +92,3 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define atd_drawtype		28
 #define atd_seamfixupX16	32
 #define atd_size			36
-

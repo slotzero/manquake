@@ -1,4 +1,4 @@
-/* $Id: r_local.h,v 1.2 2008/02/08 03:10:17 slotzero Exp $
+/* $Id: r_local.h,v 1.3 2008/02/08 09:20:11 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -63,7 +63,6 @@ extern cvar_t	r_fullbright;
 extern cvar_t	r_drawentities;
 extern cvar_t	r_aliasstats;
 extern cvar_t	r_dspeeds;
-extern cvar_t	r_drawflat;
 extern cvar_t	r_ambient;
 extern cvar_t	r_reportsurfout;
 extern cvar_t	r_maxsurfs;
@@ -161,7 +160,6 @@ surf_t *R_GetSurf (void);
 void R_AliasDrawModel (alight_t *plighting);
 void R_BeginEdgeFrame (void);
 void R_ScanEdges (void);
-void D_DrawSurfaces (void);
 void R_InsertNewEdges (edge_t *edgestoadd, edge_t *edgelist);
 void R_StepActiveU (edge_t *pedge);
 void R_RemoveEdges (edge_t *pedge);
