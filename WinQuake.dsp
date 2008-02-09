@@ -576,34 +576,6 @@ SOURCE=..\..\quake\games\basic\source\misc.qc
 SOURCE=..\..\quake\games\basic\source\world.qc
 # End Source File
 # End Group
-# Begin Group "HTML files"
-
-# PROP Default_Filter ".html"
-# Begin Source File
-
-SOURCE=..\html\bill.html
-# End Source File
-# Begin Source File
-
-SOURCE=..\html\faq.html
-# End Source File
-# Begin Source File
-
-SOURCE=..\html\features.html
-# End Source File
-# Begin Source File
-
-SOURCE=..\html\gpl.html
-# End Source File
-# Begin Source File
-
-SOURCE=..\html\index.html
-# End Source File
-# Begin Source File
-
-SOURCE=..\html\moved.html
-# End Source File
-# End Group
 # Begin Group "Loc Files"
 
 # PROP Default_Filter ".loc"
