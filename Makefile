@@ -116,7 +116,6 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/host_cmd.o \
 	$(BUILDDIR)/squake/iplog.o \
 	$(BUILDDIR)/squake/keys.o \
-	$(BUILDDIR)/squake/menu.o \
 	$(BUILDDIR)/squake/mathlib.o \
 	$(BUILDDIR)/squake/model.o \
 	$(BUILDDIR)/squake/net_dgrm.o \
@@ -181,9 +180,6 @@ $(BUILDDIR)/squake/iplog.o :    $(MOUNT_DIR)/iplog.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/keys.o :     $(MOUNT_DIR)/keys.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/menu.o :     $(MOUNT_DIR)/menu.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/mathlib.o :  $(MOUNT_DIR)/mathlib.c

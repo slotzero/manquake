@@ -187,10 +187,6 @@ SOURCE=.\mathlib.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\menu.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\model.c
 # End Source File
 # Begin Source File
@@ -430,10 +426,6 @@ SOURCE=.\keys.h
 # Begin Source File
 
 SOURCE=.\mathlib.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\menu.h
 # End Source File
 # Begin Source File
 

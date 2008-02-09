@@ -1,4 +1,4 @@
-/* $Id: net_dgrm.c,v 1.1 2008/02/03 08:27:54 slotzero Exp $
+/* $Id: net_dgrm.c,v 1.2 2008/02/09 05:29:00 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -78,10 +78,10 @@ struct
 	byte			data[MAX_DATAGRAM];
 } packetBuffer;
 
-extern int m_return_state;
-extern int m_state;
-extern qboolean m_return_onerror;
-extern char m_return_reason[32];
+int m_return_state;
+int m_state;
+qboolean m_return_onerror;
+char m_return_reason[32];
 
 #ifdef DEBUG
 char *StrAddr (struct qsockaddr *addr)

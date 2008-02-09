@@ -902,7 +902,6 @@ void Host_Init (quakeparms_t *parms)
 	W_LoadWadFile ("gfx.wad");
 	Key_Init ();
 	Con_Init ();
-	M_Init ();
 	PR_Init ();
 	Mod_Init ();
 	Security_Init ();	// JPG 3.20 - cheat free

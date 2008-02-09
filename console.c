@@ -68,8 +68,6 @@ qboolean	con_initialized;
 
 int			con_notifylines;		// scan lines to clear for notify lines
 
-extern void M_Menu_Main_f (void);
-
 char logfilename[128];	// JPG - support for different filenames
 
 /*
@@ -81,19 +79,11 @@ void Con_ToggleConsole_f (void)
 {
 	if (key_dest == key_console)
 	{
-		if (cls.state == ca_connected)
-		{
-			key_dest = key_game;
-			key_lines[edit_line][1] = 0;	// clear any typing
-			key_linepos = 1;
-		}
-		else
-		{
-			M_Menu_Main_f ();
-		}
+		Con_Printf ("Con_ToggleConsole_f() - A\n");
 	}
 	else
 	{
+		Con_Printf ("Con_ToggleConsole_f() - B\n");
 		key_dest = key_console;
 		con_backscroll = 0; // JPG - don't want to enter console with backscroll
 	}
