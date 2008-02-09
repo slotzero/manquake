@@ -45,7 +45,6 @@ int			con_current;		// where next message will be printed
 int			con_x;				// offset in current line for next print
 char		*con_text=0;
 
-cvar_t		con_notifytime = {"con_notifytime","3"};		//seconds
 cvar_t		pq_confilter = {"pq_confilter", "0"};	// JPG 1.05 - filter out the "you got" messages
 cvar_t		pq_timestamp = {"pq_timestamp", "0"};	// JPG 1.05 - timestamp player binds during a match
 cvar_t		pq_removecr = {"pq_removecr", "1"};		// JPG 3.20 - remove \r from console output
@@ -63,33 +62,10 @@ extern	char	key_lines[32][MAXCMDLINE];
 extern	int		edit_line;
 extern	int		key_linepos;
 
-
 qboolean	con_initialized;
-
-int			con_notifylines;		// scan lines to clear for notify lines
 
 char logfilename[128];	// JPG - support for different filenames
 
-/*
-================
-Con_ToggleConsole_f
-================
-*/
-void Con_ToggleConsole_f (void)
-{
-	if (key_dest == key_console)
-	{
-		Con_Printf ("Con_ToggleConsole_f() - A\n");
-	}
-	else
-	{
-		Con_Printf ("Con_ToggleConsole_f() - B\n");
-		key_dest = key_console;
-		con_backscroll = 0; // JPG - don't want to enter console with backscroll
-	}
-
-	memset (con_times, 0, sizeof(con_times));
-}
 
 /*
 ================
@@ -114,32 +90,6 @@ void Con_ClearNotify (void)
 
 	for (i=0 ; i<NUM_CON_TIMES ; i++)
 		con_times[i] = 0;
-}
-
-
-/*
-================
-Con_MessageMode_f
-================
-*/
-extern qboolean team_message;
-
-void Con_MessageMode_f (void)
-{
-	key_dest = key_message;
-	team_message = false;
-}
-
-
-/*
-================
-Con_MessageMode2_f
-================
-*/
-void Con_MessageMode2_f (void)
-{
-	key_dest = key_message;
-	team_message = true;
 }
 
 
@@ -269,14 +219,10 @@ void Con_Init (void)
 //
 // register our commands
 //
-	Cvar_RegisterVariable (&con_notifytime);
 	Cvar_RegisterVariable (&pq_confilter);	// JPG 1.05 - make "you got" messages temporary
 	Cvar_RegisterVariable (&pq_timestamp);	// JPG 1.05 - timestamp player binds during a match
 	Cvar_RegisterVariable (&pq_removecr);	// JPG 3.20 - timestamp player binds during a match
 
-	Cmd_AddCommand ("toggleconsole", Con_ToggleConsole_f);
-	Cmd_AddCommand ("messagemode", Con_MessageMode_f);
-	Cmd_AddCommand ("messagemode2", Con_MessageMode2_f);
 	Cmd_AddCommand ("clear", Con_Clear_f);
 	con_initialized = true;
 }
@@ -506,26 +452,8 @@ void Con_Printf (char *fmt, ...)
 
 	if (!con_initialized)
 		return;
-
-	if (cls.state == ca_dedicated)
-		return;		// no graphics mode
-
-// write it to the scrollable buffer
-	Con_Print (msg);
-
-// update the screen if the console is displayed
-	if (cls.signon != SIGNONS && !scr_disabled_for_loading )
-	{
-	// protect against infinite loop if something in SCR_UpdateScreen calls
-	// Con_Printd
-		if (!inupdate)
-		{
-			inupdate = true;
-			SCR_UpdateScreen ();
-			inupdate = false;
-		}
-	}
 }
+
 
 /*
 ================
@@ -571,211 +499,4 @@ void Con_SafePrintf (char *fmt, ...)
 	scr_disabled_for_loading = true;
 	Con_Printf ("%s", msg);
 	scr_disabled_for_loading = temp;
-}
-
-
-/*
-==============================================================================
-
-DRAWING
-
-==============================================================================
-*/
-
-
-/*
-================
-Con_DrawInput
-
-The input line scrolls horizontally if typing goes beyond the right edge
-================
-*/
-void Con_DrawInput (void)
-{
-	int		y;
-	int		i;
-	char	*text;
-
-	if (key_dest != key_console && !con_forcedup)
-		return;		// don't draw anything
-
-	text = key_lines[edit_line];
-
-// add the cursor frame
-	text[key_linepos] = 10+((int)(realtime*con_cursorspeed)&1);
-
-// fill out remainder with spaces
-	for (i=key_linepos+1 ; i< con_linewidth ; i++)
-		text[i] = ' ';
-
-//	prestep if horizontally scrolling
-	if (key_linepos >= con_linewidth)
-		text += 1 + key_linepos - con_linewidth;
-
-// draw it
-	y = con_vislines-16;
-
-	for (i=0 ; i<con_linewidth ; i++)
-		Draw_Character ( (i+1)<<3, con_vislines - 16, text[i]);
-
-// remove cursor
-	key_lines[edit_line][key_linepos] = 0;
-}
-
-
-/*
-================
-Con_DrawNotify
-
-Draws the last few lines of output transparently over the game top
-================
-*/
-void Con_DrawNotify (void)
-{
-	int		x, v;
-	char	*text;
-	int		i;
-	float	time;
-	extern char chat_buffer[];
-
-	v = 0;
-	for (i= con_current-NUM_CON_TIMES+1 ; i<=con_current ; i++)
-	{
-		if (i < 0)
-			continue;
-		time = con_times[i % NUM_CON_TIMES];
-		if (time == 0)
-			continue;
-		time = realtime - time;
-		if (time > con_notifytime.value)
-			continue;
-		text = con_text + (i % con_totallines)*con_linewidth;
-
-		clearnotify = 0;
-		scr_copytop = 1;
-
-		for (x = 0 ; x < con_linewidth ; x++)
-			Draw_Character ( (x+1)<<3, v, text[x]);
-
-		v += 8;
-	}
-
-
-	if (key_dest == key_message)
-	{
-		clearnotify = 0;
-		scr_copytop = 1;
-
-		// JPG - was x = 0 etc.. recoded with x = 5, i = 0
-		i = 0;
-
-		// JPG - added support for team messages
-		if (team_message)
-		{
-			Draw_String (8, v, "(say):");
-			x = 7;
-		}
-		else
-		{
-			Draw_String (8, v, "say:");
-			x = 5;
-		}
-
-		while(chat_buffer[i])
-		{
-			Draw_Character ( x<<3, v, chat_buffer[i]);
-			x++;
-
-			// JPG - added this for longer says
-			i++;
-			if (x > con_linewidth)
-			{
-				x = team_message ? 7 : 5;
-				v += 8;
-			}
-		}
-		Draw_Character ( x<<3, v, 10+((int)(realtime*con_cursorspeed)&1));
-		v += 8;
-	}
-
-	if (v > con_notifylines)
-		con_notifylines = v;
-}
-
-/*
-================
-Con_DrawConsole
-
-Draws the console with the solid background
-The typing input line at the bottom should only be drawn if typing is allowed
-================
-*/
-void Con_DrawConsole (int lines, qboolean drawinput)
-{
-	int				i, x, y;
-	int				rows;
-	char			*text;
-	int				j;
-
-	if (lines <= 0)
-		return;
-
-// draw the background
-	Draw_ConsoleBackground (lines);
-
-// draw the text
-	con_vislines = lines;
-
-	rows = (lines-16)>>3;		// rows of text to draw
-	y = lines - 16 - (rows<<3);	// may start slightly negative
-
-	for (i= con_current - rows + 1 ; i<=con_current ; i++, y+=8 )
-	{
-		j = i - con_backscroll;
-		if (j<0)
-			j = 0;
-		text = con_text + (j % con_totallines)*con_linewidth;
-
-		for (x=0 ; x<con_linewidth ; x++)
-			Draw_Character ( (x+1)<<3, y, text[x]);
-	}
-
-// draw the input prompt, user text, and cursor if desired
-	if (drawinput)
-		Con_DrawInput ();
-}
-
-
-/*
-==================
-Con_NotifyBox
-==================
-*/
-void Con_NotifyBox (char *text)
-{
-	double		t1, t2;
-
-// during startup for sound / cd warnings
-	Con_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
-
-	Con_Printf (text);
-
-	Con_Printf ("Press a key.\n");
-	Con_Printf("\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
-
-	key_count = -2;		// wait for a key down and up
-	key_dest = key_console;
-
-	do
-	{
-		t1 = Sys_FloatTime ();
-		SCR_UpdateScreen ();
-		Sys_SendKeyEvents ();
-		t2 = Sys_FloatTime ();
-		realtime += t2-t1;		// make the cursor blink
-	} while (key_count < 0);
-
-	Con_Printf ("\n");
-	key_dest = key_game;
-	realtime = 0;				// put the cursor back to invisible
 }

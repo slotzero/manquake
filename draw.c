@@ -125,9 +125,9 @@ void Draw_Character (int x, int y, int num)
 
 #ifdef PARANOID
 	if (y > vid.height - 8 || x < 0 || x > vid.width - 8)
-		Sys_Error ("Con_DrawCharacter: (%i, %i)", x, y);
+		Sys_Error ("Draw_Character: (%i, %i)", x, y);
 	if (num < 0 || num > 255)
-		Sys_Error ("Con_DrawCharacter: char %i", num);
+		Sys_Error ("Draw_Character: char %i", num);
 #endif
 
 	row = num>>4;

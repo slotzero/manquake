@@ -45,8 +45,6 @@ entity_t		cl_entities[MAX_EDICTS];
 entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 dlight_t		cl_dlights[MAX_DLIGHTS];
 
-kbutton_t	in_mlook, in_klook;
-kbutton_t	in_strafe, in_speed;
 
 //==========================================================================
 

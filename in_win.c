@@ -666,38 +666,8 @@ void IN_MouseMove (usercmd_t *cmd)
 	mouse_y *= sensitivity.value;
 
 // add mouse X/Y movement to cmd
-	if ( (in_strafe.state & 1) || (lookstrafe.value && (in_mlook.state & 1) ))
-		cmd->sidemove += m_side.value * mouse_x;
-	else
-		cl.viewangles[YAW] -= m_yaw.value * mouse_x;
-
-	if ( (in_mlook.state & 1) && !(in_strafe.state & 1))
-	{
-		cl.viewangles[PITCH] += m_pitch.value * mouse_y;
-
-		// JPG 1.05 - added pq_fullpitch
-		if (pq_fullpitch.value)
-		{
-			if (cl.viewangles[PITCH] > 90)
-				cl.viewangles[PITCH] = 90;
-			if (cl.viewangles[PITCH] < -90)
-				cl.viewangles[PITCH] = -90;
-		}
-		else
-		{
-			if (cl.viewangles[PITCH] > 80)
-				cl.viewangles[PITCH] = 80;
-			if (cl.viewangles[PITCH] < -70)
-				cl.viewangles[PITCH] = -70;
-		}
-	}
-	else
-	{
-		if ((in_strafe.state & 1) && noclip_anglehack)
-			cmd->upmove -= m_forward.value * mouse_y;
-		else
-			cmd->forwardmove -= m_forward.value * mouse_y;
-	}
+	cl.viewangles[YAW] -= m_yaw.value * mouse_x;
+	cmd->forwardmove -= m_forward.value * mouse_y;
 
 // if the mouse has moved, force it to the center, so there's room to move
 	if (mx || my)
@@ -983,10 +953,7 @@ void IN_JoyMove (usercmd_t *cmd)
 		return;
 	}
 
-	if (in_speed.state & 1)
-		speed = cl_movespeedkey.value;
-	else
-		speed = 1;
+	speed = 1;
 	aspeed = speed * host_frametime;
 
 	// loop through the axes
@@ -1019,7 +986,7 @@ void IN_JoyMove (usercmd_t *cmd)
 		switch (dwAxisMap[i])
 		{
 		case AxisForward:
-			if ((joy_advanced.value == 0.0) && (in_mlook.state & 1))
+			if ((joy_advanced.value == 0.0))
 			{
 				// user wants forward control to become look control
 				if (fabs(fAxisValue) > joy_pitchthreshold.value)
@@ -1054,7 +1021,7 @@ void IN_JoyMove (usercmd_t *cmd)
 			break;
 
 		case AxisTurn:
-			if ((in_strafe.state & 1) || (lookstrafe.value && (in_mlook.state & 1)))
+			if ((lookstrafe.value))
 			{
 				// user wants turn control to become side control
 				if (fabs(fAxisValue) > joy_sidethreshold.value)
@@ -1081,21 +1048,6 @@ void IN_JoyMove (usercmd_t *cmd)
 			break;
 
 		case AxisLook:
-			if (in_mlook.state & 1)
-			{
-				if (fabs(fAxisValue) > joy_pitchthreshold.value)
-				{
-					// pitch movement detected and pitch movement desired by user
-					if(dwControlMap[i] == JOY_ABSOLUTE_AXIS)
-					{
-						cl.viewangles[PITCH] += (fAxisValue * joy_pitchsensitivity.value) * aspeed * cl_pitchspeed.value;
-					}
-					else
-					{
-						cl.viewangles[PITCH] += (fAxisValue * joy_pitchsensitivity.value) * speed * 180.0;
-					}
-				}
-			}
 			break;
 
 		default:

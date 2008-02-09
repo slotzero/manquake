@@ -19,12 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #include "quakedef.h"
 
-// JPG - added FrikaC's code for pasting from clipboard
-// 01-22-2000 FrikaC Begin PASTE
-#ifdef _WIN32
-#include <windows.h>
-#endif
-// 01-22-2000 FrikaC End PASTE
 
 /*
 
@@ -36,11 +30,9 @@ key up events are sent even if in console mode
 #define		MAXCMDLINE	256
 char	key_lines[32][MAXCMDLINE];
 int		key_linepos;
-int		shift_down=false;
 int		key_lastpress;
 
 int		edit_line=0;
-int		history_line=0;
 
 keydest_t		key_dest;
 
@@ -148,304 +140,6 @@ keyname_t keynames[] =
 	{NULL,0}
 };
 
-/*
-==============================================================================
-
-			LINE TYPING INTO THE CONSOLE
-
-==============================================================================
-*/
-
-
-/*
-====================
-Key_Console
-
-Interactive line editing and console scrollback
-====================
-*/
-void Key_Console (int key)
-{
-	char	*cmd;
-
-	// JPG - modified FrikaC's code for pasting from clipboard
-#ifdef _WIN32
-	HANDLE  th;
-	char	*s;
-#endif
-	// end mod
-
-	if (key == K_ENTER)
-	{
-		con_backscroll = 0;	// JPG 1.05 - go to end of buffer when user hits enter
-		Cbuf_AddText (key_lines[edit_line]+1);	// skip the >
-		Cbuf_AddText ("\n");
-		Con_Printf ("%s\n",key_lines[edit_line]);
-		edit_line = (edit_line + 1) & 31;
-		history_line = edit_line;
-		key_lines[edit_line][0] = ']';
-		key_linepos = 1;
-		if (cls.state == ca_disconnected)
-			SCR_UpdateScreen ();	// force an update, because the command
-									// may take some time
-		return;
-	}
-
-	// JPG 1.05 - fixed tab completion
-	if (key == K_TAB)
-	{
-		int len, i;
-		char *fragment;
-		cvar_t *var;
-		char *best = "~";
-		char *least = "~";
-
-		len = strlen(key_lines[edit_line]);
-		for (i = 0 ; i < len - 1 ; i++)
-		{
-			if (key_lines[edit_line][i] == ' ')
-				return;
-		}
-		fragment = key_lines[edit_line] + 1;
-
-		len--;
-		for (var = cvar_vars->next ; var ; var = var->next)
-		{
-			if (strcmp(var->name, fragment) >= 0 && strcmp(best, var->name) > 0)
-				best = var->name;
-			if (strcmp(var->name, least) < 0)
-				least = var->name;
-		}
-		cmd = Cmd_CompleteCommand(fragment);
-		if (strcmp(cmd, fragment) >= 0 && strcmp(best, cmd) > 0)
-			best = cmd;
-		if (best[0] == '~')
-		{
-			cmd = Cmd_CompleteCommand(" ");
-			if (strcmp(cmd, least) < 0)
-				best = cmd;
-			else
-				best = least;
-		}
-
-		sprintf(key_lines[edit_line], "]%s ", best);
-		key_linepos = strlen(key_lines[edit_line]);
-		return;
-	}
-
-	/*
-	if (key == K_TAB)
-	{	// command completion
-		cmd = Cmd_CompleteCommand (key_lines[edit_line]+1);
-		if (!cmd)
-			cmd = Cvar_CompleteVariable (key_lines[edit_line]+1);
-		if (cmd)
-		{
-			Q_strcpy (key_lines[edit_line]+1, cmd);
-			key_linepos = Q_strlen(cmd)+1;
-			key_lines[edit_line][key_linepos] = ' ';
-			key_linepos++;
-			key_lines[edit_line][key_linepos] = 0;
-			return;
-		}
-	}
-	*/
-
-	if (key == K_BACKSPACE || key == K_LEFTARROW)
-	{
-		if (key_linepos > 1)
-			key_linepos--;
-		return;
-	}
-
-	if (key == K_UPARROW)
-	{
-		do
-		{
-			history_line = (history_line - 1) & 31;
-		} while (history_line != edit_line
-				&& !key_lines[history_line][1]);
-		if (history_line == edit_line)
-			history_line = (edit_line+1)&31;
-		Q_strcpy(key_lines[edit_line], key_lines[history_line]);
-		key_linepos = Q_strlen(key_lines[edit_line]);
-		return;
-	}
-
-	if (key == K_DOWNARROW)
-	{
-		if (history_line == edit_line) return;
-		do
-		{
-			history_line = (history_line + 1) & 31;
-		}
-		while (history_line != edit_line
-			&& !key_lines[history_line][1]);
-		if (history_line == edit_line)
-		{
-			key_lines[edit_line][0] = ']';
-			key_linepos = 1;
-		}
-		else
-		{
-			Q_strcpy(key_lines[edit_line], key_lines[history_line]);
-			key_linepos = Q_strlen(key_lines[edit_line]);
-		}
-		return;
-	}
-
-	if (key == K_PGUP || key==K_MWHEELUP)
-	{
-		con_backscroll += 2;
-		if (con_backscroll > con_totallines - (vid.height>>3) - 1)
-			con_backscroll = con_totallines - (vid.height>>3) - 1;
-		return;
-	}
-
-	if (key == K_PGDN || key==K_MWHEELDOWN)
-	{
-		con_backscroll -= 2;
-		if (con_backscroll < 0)
-			con_backscroll = 0;
-		return;
-	}
-
-	if (key == K_HOME)
-	{
-		con_backscroll = con_totallines - (vid.height>>3) - 1;
-		return;
-	}
-
-	if (key == K_END)
-	{
-		con_backscroll = 0;
-		return;
-	}
-
-	// JPG - modified FrikaC's code for pasting from clipboard
-#ifdef _WIN32
-	if ((key=='V' || key=='v') && GetKeyState(VK_CONTROL) < 0)
-	{
-		if (OpenClipboard(NULL))
-		{
-			th = GetClipboardData(CF_TEXT);
-			if (th)
-			{
-				s = GlobalLock(th);
-				if (s)
-				{
-					while (*s && *s != '\n' && *s != '\r' && *s != '\b' && key_linepos < MAXCMDLINE - 1)
-						key_lines[edit_line][key_linepos++] = *s++;
-					key_lines[edit_line][key_linepos] = 0;
-				}
-				GlobalUnlock(th);
-			}
-			CloseClipboard();
-			return;
-		}
-	}
-#endif
-	// end mod
-
-	if (key < 32 || key > 127)
-		return;	// non printable
-
-	if (key_linepos < MAXCMDLINE-1)
-	{
-		key_lines[edit_line][key_linepos] = key;
-		key_linepos++;
-		key_lines[edit_line][key_linepos] = 0;
-	}
-
-}
-
-//============================================================================
-
-// JPG - added MAX_CHAT_SIZE
-#define MAX_CHAT_SIZE 45
-char chat_buffer[MAX_CHAT_SIZE];
-qboolean team_message = false;
-
-void Key_Message (int key)
-{
-	static int chat_bufferlen = 0;
-	// JPG - modified FrikaC's code for pasting from clipboard
-#ifdef _WIN32
-	HANDLE  th;
-	char	*s;
-#endif
-	// end mod
-
-	if (key == K_ENTER)
-	{
-		if (team_message)
-			Cbuf_AddText ("say_team \"");
-		else
-			Cbuf_AddText ("say \"");
-		Cbuf_AddText(chat_buffer);
-		Cbuf_AddText("\"\n");
-
-		key_dest = key_game;
-		chat_bufferlen = 0;
-		chat_buffer[0] = 0;
-		return;
-	}
-
-	if (key == K_ESCAPE)
-	{
-		key_dest = key_game;
-		chat_bufferlen = 0;
-		chat_buffer[0] = 0;
-		return;
-	}
-
-	// JPG - modified FrikaC's code for pasting from clipboard
-#ifdef _WIN32
-	if ((key=='V' || key=='v') && GetKeyState(VK_CONTROL) < 0)
-	{
-		if (OpenClipboard(NULL))
-		{
-			th = GetClipboardData(CF_TEXT);
-			if (th)
-			{
-				s = GlobalLock(th);
-				if (s)
-				{
-					while (*s && *s != '\n' && *s != '\r' && *s != '\b' && chat_bufferlen < MAX_CHAT_SIZE - (team_message ? 3 : 1))
-						chat_buffer[chat_bufferlen++] = *s++;
-					chat_buffer[chat_bufferlen] = 0;
-				}
-				GlobalUnlock(th);
-			}
-			CloseClipboard();
-			return;
-		}
-	}
-#endif
-	// end mod
-
-	if (key < 32 || key > 127)
-		return;	// non printable
-
-	if (key == K_BACKSPACE)
-	{
-		if (chat_bufferlen)
-		{
-			chat_bufferlen--;
-			chat_buffer[chat_bufferlen] = 0;
-		}
-		return;
-	}
-
-	if (chat_bufferlen == MAX_CHAT_SIZE - (team_message ? 3 : 1)) // JPG - maximize message length
-		return; // all full
-
-	chat_buffer[chat_bufferlen++] = key;
-	chat_buffer[chat_bufferlen] = 0;
-}
-
-//============================================================================
-
 
 /*
 ===================
@@ -471,36 +165,6 @@ int Key_StringToKeynum (char *str)
 			return kn->keynum;
 	}
 	return -1;
-}
-
-/*
-===================
-Key_KeynumToString
-
-Returns a string (either a single ascii char, or a K_* name) for the
-given keynum.
-FIXME: handle quote special (general escape sequence?)
-===================
-*/
-char *Key_KeynumToString (int keynum)
-{
-	keyname_t	*kn;
-	static	char	tinystr[2];
-
-	if (keynum == -1)
-		return "<KEY NOT FOUND>";
-	if (keynum > 32 && keynum < 127)
-	{	// printable ascii
-		tinystr[0] = keynum;
-		tinystr[1] = 0;
-		return tinystr;
-	}
-
-	for (kn=keynames ; kn->name ; kn++)
-		if (keynum == kn->keynum)
-			return kn->name;
-
-	return "<UNKNOWN KEYNUM>";
 }
 
 
@@ -531,6 +195,7 @@ void Key_SetBinding (int keynum, char *binding)
 	new[l] = 0;
 	keybindings[keynum] = new;
 }
+
 
 /*
 ===================
@@ -612,23 +277,6 @@ void Key_Bind_f (void)
 	Key_SetBinding (b, cmd);
 }
 
-/*
-============
-Key_WriteBindings
-
-Writes lines containing "bind key value"
-============
-*/
-void Key_WriteBindings (FILE *f)
-{
-	int		i;
-
-	for (i=0 ; i<256 ; i++)
-		if (keybindings[i])
-			if (*keybindings[i])
-				fprintf (f, "bind \"%s\" \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
-}
-
 
 /*
 ===================
@@ -651,6 +299,7 @@ void Key_Init (void)
 //
 	for (i=32 ; i<128 ; i++)
 		consolekeys[i] = true;
+
 	consolekeys[K_ENTER] = true;
 	consolekeys[K_TAB] = true;
 	consolekeys[K_LEFTARROW] = true;
@@ -670,8 +319,10 @@ void Key_Init (void)
 
 	for (i=0 ; i<256 ; i++)
 		keyshift[i] = i;
+
 	for (i='a' ; i<='z' ; i++)
 		keyshift[i] = i - 'a' + 'A';
+
 	keyshift['1'] = '!';
 	keyshift['2'] = '@';
 	keyshift['3'] = '#';
@@ -695,6 +346,7 @@ void Key_Init (void)
 	keyshift['\\'] = '|';
 
 	menubound[K_ESCAPE] = true;
+
 	for (i=0 ; i<12 ; i++)
 		menubound[K_F1+i] = true;
 
@@ -704,9 +356,8 @@ void Key_Init (void)
 	Cmd_AddCommand ("bind",Key_Bind_f);
 	Cmd_AddCommand ("unbind",Key_Unbind_f);
 	Cmd_AddCommand ("unbindall",Key_Unbindall_f);
-
-
 }
+
 
 /*
 ===================
@@ -718,7 +369,6 @@ Should NOT be called during an interrupt!
 */
 void Key_Event (int key, qboolean down)
 {
-	Con_Print ("Key_Event()\n");
 }
 
 

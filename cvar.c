@@ -281,6 +281,7 @@ cvar_t	pq_ringblend = {"pq_ringblend", "1"};
 cvar_t	pq_pentblend = {"pq_pentblend", "1"};
 cvar_t	pq_suitblend = {"pq_suitblend", "1"};
 cvar_t	r_polyblend = {"r_polyblend", "1"};
+cvar_t	con_notifytime = {"con_notifytime","3"};
 
 
 /*
@@ -293,6 +294,7 @@ intact because some mods might use them.
 */
 void Cvar_Init (void)
 {
+	// from view.c
 	Cvar_RegisterVariable (&lcd_x);
 	Cvar_RegisterVariable (&lcd_yaw);
 	Cvar_RegisterVariable (&v_centermove);
@@ -326,4 +328,7 @@ void Cvar_Init (void)
 	Cvar_RegisterVariable (&pq_ringblend);
 	Cvar_RegisterVariable (&pq_suitblend);
 	Cvar_RegisterVariable (&r_polyblend);
+
+	// from console.c
+	Cvar_RegisterVariable (&con_notifytime);
 }

@@ -288,19 +288,3 @@ void CL_Signon3 (void);
 void CL_Signon4 (void);
 void CL_Disconnect (void);
 void CL_Disconnect_f (void);
-
-
-//
-// cl_input
-//
-typedef struct
-{
-	int		down[2];		// key nums holding it down
-	int		state;			// low bit is down state
-} kbutton_t;
-
-extern	kbutton_t	in_mlook, in_klook;
-extern 	kbutton_t 	in_strafe;
-extern 	kbutton_t 	in_speed;
-
-char *Key_KeynumToString (int keynum);
