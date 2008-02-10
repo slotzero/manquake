@@ -134,10 +134,6 @@ SOURCE=.\host_cmd.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\in_win.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\iplog.c
 # End Source File
 # Begin Source File
@@ -410,10 +406,6 @@ SOURCE=.\dosisms.h
 # Begin Source File
 
 SOURCE=.\draw.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\input.h
 # End Source File
 # Begin Source File
 

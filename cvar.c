@@ -331,4 +331,7 @@ void Cvar_Init (void)
 
 	// from console.c
 	Cvar_RegisterVariable (&con_notifytime);
+
+	// for chat messages
+	Cvar_RegisterVariable (&cl_name);
 }

@@ -190,15 +190,12 @@ VID_UpdateWindowStatus
 */
 void VID_UpdateWindowStatus (void)
 {
-
 	window_rect.left = window_x;
 	window_rect.top = window_y;
 	window_rect.right = window_x + window_width;
 	window_rect.bottom = window_y + window_height;
 	window_center_x = (window_rect.left + window_rect.right) / 2;
 	window_center_y = (window_rect.top + window_rect.bottom) / 2;
-
-	IN_UpdateClipCursor ();
 }
 
 
@@ -218,7 +215,6 @@ void ClearAllStates (void)
 	}
 
 	Key_ClearStates ();
-	IN_ClearStates ();
 }
 
 
@@ -260,8 +256,6 @@ int VID_Suspend (MGLDC *dc,m_int flags)
 		if (block_switch.value && !WinNT)
 			return MGL_NO_DEACTIVATE;
 
-		IN_RestoreOriginalMouseState ();
-
 	// keep WM_PAINT from trying to redraw
 		in_mode_set = true;
 
@@ -271,7 +265,6 @@ int VID_Suspend (MGLDC *dc,m_int flags)
 	}
 	else if (flags & MGL_REACTIVATE)
 	{
-		IN_SetQuakeMouseState ();
 	// fix the leftover Alt from any Alt-Tab or the like that switched us away
 		ClearAllStates ();
 
@@ -1420,11 +1413,8 @@ void VID_RestoreOldMode (int original_mode)
 
 void VID_SetDefaultMode (void)
 {
-
 	if (vid_initialized)
 		VID_SetMode (0, vid_curpal);
-
-	IN_DeactivateMouse ();
 }
 
 
@@ -1481,27 +1471,19 @@ int VID_SetMode (int modenum, unsigned char *palette)
 		if (_windowed_mouse.value)
 		{
 			stat = VID_SetWindowedMode(modenum);
-			IN_ActivateMouse ();
-			IN_HideMouse ();
 		}
 		else
 		{
-			IN_DeactivateMouse ();
-			IN_ShowMouse ();
 			stat = VID_SetWindowedMode(modenum);
 		}
 	}
 	else if (modelist[modenum].type == MS_FULLDIB)
 	{
 		stat = VID_SetFullDIBMode(modenum);
-		IN_ActivateMouse ();
-		IN_HideMouse ();
 	}
 	else
 	{
 		stat = VID_SetFullscreenMode(modenum);
-		IN_ActivateMouse ();
-		IN_HideMouse ();
 	}
 
 	window_width = vid.width << vid_stretched;
@@ -2047,17 +2029,6 @@ void VID_Update (vrect_t *rects)
 	{
 		if ((int)_windowed_mouse.value != windowed_mouse)
 		{
-			if (_windowed_mouse.value)
-			{
-				IN_ActivateMouse ();
-				IN_HideMouse ();
-			}
-			else
-			{
-				IN_DeactivateMouse ();
-				IN_ShowMouse ();
-			}
-
 			windowed_mouse = (int)_windowed_mouse.value;
 		}
 	}
@@ -2347,14 +2318,6 @@ void AppActivate(BOOL fActive, BOOL minimize)
 					AppActivate (true, false);
 					in_mode_set = t;
 				}
-
-				IN_ActivateMouse ();
-				IN_HideMouse ();
-			}
-			else if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
-			{
-				IN_ActivateMouse ();
-				IN_HideMouse ();
 			}
 		}
 		if (!ActiveApp)
@@ -2378,13 +2341,6 @@ void AppActivate(BOOL fActive, BOOL minimize)
 					AppActivate (false, true);
 					in_mode_set = t;
 				}
-				IN_DeactivateMouse ();
-				IN_ShowMouse ();
-			}
-			else if ((modestate == MS_WINDOWED) && _windowed_mouse.value)
-			{
-				IN_DeactivateMouse ();
-				IN_ShowMouse ();
 			}
 		}
 	}

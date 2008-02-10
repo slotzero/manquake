@@ -93,8 +93,6 @@ float   mouse_x, mouse_y;
 float	old_mouse_x, old_mouse_y;
 int		mx, my;
 
-cvar_t	m_filter = {"m_filter","0"};
-
 static byte     backingbuf[48*24];
 
 int		VGA_width, VGA_height, VGA_rowbytes, VGA_bufferrowbytes, VGA_planar;
@@ -449,16 +447,4 @@ void Sys_SendKeyEvents(void)
 
 	if (UseKeyboard)
 		while (keyboard_update());
-}
-
-
-/*
-=================
-IN_Shutdown
-=================
-*/
-void IN_Shutdown(void)
-{
-	if (UseMouse)
-		mouse_close();
 }

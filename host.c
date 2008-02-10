@@ -949,5 +949,4 @@ void Host_Shutdown(void)
 
 	IPLog_WriteLog ();	// JPG 1.05 - ip loggging
 	NET_Shutdown ();
-	IN_Shutdown ();
 }

@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -27,9 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef SERVERONLY
 #include <ddraw.h>
 #include <dsound.h>
-#ifndef GLQUAKE
 #include <mgraph.h>
-#endif
 #endif
 
 extern	HINSTANCE	global_hInstance;
@@ -66,14 +64,6 @@ extern qboolean	WinNT;
 int VID_ForceUnlockedAndReturnState (void);
 void VID_ForceLockState (int lk);
 
-void IN_ShowMouse (void);
-void IN_DeactivateMouse (void);
-void IN_HideMouse (void);
-void IN_ActivateMouse (void);
-void IN_RestoreOriginalMouseState (void);
-void IN_SetQuakeMouseState (void);
-void IN_MouseEvent (int mstate);
-
 extern qboolean	winsock_lib_initialized;
 
 extern cvar_t		_windowed_mouse;
@@ -86,7 +76,6 @@ extern HWND		hwnd_dialog;
 
 extern HANDLE	hinput, houtput;
 
-void IN_UpdateClipCursor (void);
 void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify);
 
 void S_BlockSound (void);

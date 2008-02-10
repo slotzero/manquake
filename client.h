@@ -258,13 +258,6 @@ extern	cvar_t	cl_pitchspeed;
 extern	cvar_t	cl_anglespeedkey;
 extern	cvar_t	cl_autofire;
 extern	cvar_t	cl_pitchdriftspeed;
-extern	cvar_t	lookspring;
-extern	cvar_t	lookstrafe;
-extern	cvar_t	sensitivity;
-extern	cvar_t	m_pitch;
-extern	cvar_t	m_yaw;
-extern	cvar_t	m_forward;
-extern	cvar_t	m_side;
 
 #define	MAX_STATIC_ENTITIES	128			// torches, etc
 

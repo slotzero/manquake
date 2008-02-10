@@ -758,9 +758,7 @@ void Host_Name_f (void)
 	{
 		if (Q_strcmp(cl_name.string, newName) == 0)
 			return;
-		Cvar_Set ("_cl_name", newName);
-		if (cls.state == ca_connected)
-			Cmd_ForwardToServer ();
+		Cvar_Set ("cl_name", newName);
 		return;
 	}
 
@@ -928,8 +926,8 @@ void Host_Say(qboolean teamonly)
 		}
 	}
 	else
-		// Slot Zero 3.50-2  Server messages show "console" instead of hostname.string.
-		sprintf (text, "%c<%s> ", 1, "console");
+		// Slot Zero 3.50-2  Server uses cl_name instead of hostname.string.
+		sprintf (text, "%c<%s> ", 1, cl_name.string);
 
 	j = sizeof(text) - 2 - Q_strlen(text);  // -2 for /n and null terminator
 	if (Q_strlen(p) > j)
