@@ -1,4 +1,4 @@
-/* $Id: model.c,v 1.2 2008/02/05 09:01:11 slotzero Exp $
+/* $Id: model.c,v 1.3 2008/02/11 07:15:21 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -43,6 +43,8 @@ int		mod_numknown;
 #define NL_PRESENT		0
 #define NL_NEEDS_LOADED	1
 #define NL_UNREFERENCED	2
+
+unsigned short	d_8to16table[256];
 
 /*
 ===============

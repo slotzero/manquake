@@ -522,3 +522,13 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
     		Sys_Error("Protection change failed\n");
 
 }
+
+
+/*
+=================
+Sys_SendKeyEvents
+=================
+*/
+void Sys_SendKeyEvents(void)
+{
+}

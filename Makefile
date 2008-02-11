@@ -138,7 +138,6 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/wad.o \
 	$(BUILDDIR)/squake/world.o \
 	$(BUILDDIR)/squake/sys_linux.o \
-	$(BUILDDIR)/squake/vid_svgalib.o \
 	$(BUILDDIR)/squake/math.o \
 	$(BUILDDIR)/squake/worlda.o \
 	$(BUILDDIR)/squake/sys_dosa.o
@@ -246,9 +245,6 @@ $(BUILDDIR)/squake/world.o :    $(MOUNT_DIR)/world.c
 
 $(BUILDDIR)/squake/sys_linux.o :$(MOUNT_DIR)/sys_linux.c
 	$(DO_CC)
-
-$(BUILDDIR)/squake/vid_svgalib.o:$(MOUNT_DIR)/vid_svgalib.c
-	$(DO_O_CC)
 
 $(BUILDDIR)/squake/math.o :     $(MOUNT_DIR)/math.s
 	$(DO_AS)

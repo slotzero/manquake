@@ -118,10 +118,6 @@ SOURCE=.\cvar.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\draw.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\host.c
 # End Source File
 # Begin Source File
@@ -292,10 +288,6 @@ InputName=sys_wina
 # End Source File
 # Begin Source File
 
-SOURCE=.\vid_win.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\wad.c
 # End Source File
 # Begin Source File
@@ -398,10 +390,6 @@ SOURCE=.\d_iface.h
 # Begin Source File
 
 SOURCE=.\dosisms.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\draw.h
 # End Source File
 # Begin Source File
 
