@@ -105,6 +105,11 @@ cvar_t	pq_mute_spam_client = {"pq_mute_spam_client", "0"};
 // Slot Zero 3.50-2  IP masking.
 cvar_t	pq_ipmask = {"pq_ipmask", "1"};
 
+
+// from cl_main.c, put these here for now..
+client_static_t	cls;
+client_state_t	cl;
+
 /*
 ================
 Host_EndGame
@@ -126,7 +131,7 @@ void Host_EndGame (char *message, ...)
 	if (cls.state == ca_dedicated)
 		Sys_Error ("Host_EndGame: %s\n",string);	// dedicated servers exit
 
-	CL_Disconnect ();
+	//CL_Disconnect ();
 
 	longjmp (host_abortserver, 1);
 }
@@ -159,7 +164,7 @@ void Host_Error (char *error, ...)
 	if (cls.state == ca_dedicated)
 		Sys_Error ("Host_Error: %s\n",string);	// dedicated servers exit
 
-	CL_Disconnect ();
+	//CL_Disconnect ();
 	cls.demonum = -1;
 
 	inerror = false;
@@ -466,8 +471,8 @@ void Host_ShutdownServer(qboolean crash)
 	sv.active = false;
 
 // stop all client sounds immediately
-	if (cls.state == ca_connected)
-		CL_Disconnect ();
+	//if (cls.state == ca_connected)
+	//	CL_Disconnect ();
 
 // flush any pending messages - like the score!!!
 	start = Sys_FloatTime();
@@ -740,12 +745,6 @@ void _Host_Frame (float time)
 
 	if (host_speeds.value)
 		time2 = Sys_FloatTime ();
-
-// update audio
-	if (cls.signon == SIGNONS)
-	{
-		CL_DecayLights ();
-	}
 
 	if (host_speeds.value)
 	{

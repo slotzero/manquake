@@ -94,10 +94,6 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\cl_main.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\cmd.c
 # End Source File
 # Begin Source File

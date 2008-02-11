@@ -61,7 +61,7 @@ void Host_Quit_f (void)
 	{
 		return;
 	}
-	CL_Disconnect ();
+	//CL_Disconnect ();
 	Host_ShutdownServer(false);
 
 	Sys_Quit ();
@@ -328,7 +328,7 @@ void Host_Map_f (void)
 
 	cls.demonum = -1;		// stop demo loop in case this fails
 
-	CL_Disconnect ();
+	//CL_Disconnect ();
 	Host_ShutdownServer(false);
 
 	key_dest = key_game;			// remove console or menu
@@ -445,7 +445,7 @@ void Host_Connect_f (void)
 	if (cls.demoplayback)
 	{
 		//CL_StopPlayback ();
-		CL_Disconnect ();
+		//CL_Disconnect ();
 	}
 	strcpy (name, Cmd_Argv(1));
 	Host_Reconnect_f ();
@@ -643,7 +643,7 @@ void Host_Loadgame_f (void)
 	fscanf (f, "%s\n",mapname);
 	fscanf (f, "%f\n",&time);
 
-	CL_Disconnect_f ();
+	//CL_Disconnect_f ();
 
 	SV_SpawnServer (mapname);
 
@@ -1820,7 +1820,7 @@ void Host_Demos_f (void)
 		return;
 	if (cls.demonum == -1)
 		cls.demonum = 1;
-	CL_Disconnect_f ();
+	//CL_Disconnect_f ();
 }
 
 /*
@@ -1837,7 +1837,7 @@ void Host_Stopdemo_f (void)
 	if (!cls.demoplayback)
 		return;
 	//CL_StopPlayback ();
-	CL_Disconnect ();
+	//CL_Disconnect ();
 }
 
 /*

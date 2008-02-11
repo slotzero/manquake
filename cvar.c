@@ -131,22 +131,6 @@ void Cvar_Set (char *var_name, char *value)
 		rcon_message.cursize--;
 		MSG_WriteString(&rcon_message, va("\"%s\" set to \"%s\"\n", var->name, var->string));
 	}
-
-	// JPG - there's probably a better place for this, but it works.
-	if (!strcmp(var_name, "pq_lag"))
-	{
-		if (var->value < 0)
-		{
-			Cvar_Set("pq_lag", "0");
-			return;
-		}
-		if (var->value > 400)
-		{
-			Cvar_Set("pq_lag", "400");
-			return;
-		}
-		Cbuf_AddText(va("say \"%cping +%d%c\"\n", 157, (int) var->value, 159));
-	}
 }
 
 /*
@@ -282,6 +266,8 @@ cvar_t	pq_pentblend = {"pq_pentblend", "1"};
 cvar_t	pq_suitblend = {"pq_suitblend", "1"};
 cvar_t	r_polyblend = {"r_polyblend", "1"};
 cvar_t	con_notifytime = {"con_notifytime","3"};
+cvar_t	cl_name = {"cl_name", "player", true};
+cvar_t	cl_color = {"_cl_color", "0", true};
 
 
 /*

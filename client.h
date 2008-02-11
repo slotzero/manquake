@@ -248,36 +248,4 @@ typedef struct
 //
 extern	cvar_t	cl_name;
 extern	cvar_t	cl_color;
-extern	cvar_t	cl_upspeed;
-extern	cvar_t	cl_forwardspeed;
-extern	cvar_t	cl_backspeed;
-extern	cvar_t	cl_sidespeed;
-extern	cvar_t	cl_movespeedkey;
-extern	cvar_t	cl_yawspeed;
-extern	cvar_t	cl_pitchspeed;
-extern	cvar_t	cl_anglespeedkey;
-extern	cvar_t	cl_autofire;
-extern	cvar_t	cl_pitchdriftspeed;
-
-#define	MAX_STATIC_ENTITIES	128			// torches, etc
-
 extern	client_state_t	cl;
-
-// FIXME, allocate dynamically
-extern	entity_t		cl_entities[MAX_EDICTS];
-extern	entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
-extern	dlight_t		cl_dlights[MAX_DLIGHTS];
-
-//=============================================================================
-
-
-//
-// cl_main
-//
-void CL_DecayLights (void);
-void CL_Signon1 (void);
-void CL_Signon2 (void);
-void CL_Signon3 (void);
-void CL_Signon4 (void);
-void CL_Disconnect (void);
-void CL_Disconnect_f (void);
