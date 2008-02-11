@@ -713,7 +713,6 @@ void Sys_SendKeyEvents (void)
 	while (PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
 	{
 	// we always update if there are any event, even if we're paused
-		scr_skipupdate = 0;
 
 		if (!GetMessage (&msg, NULL, 0, 0))
 			Sys_Quit ();
@@ -938,10 +937,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		else
 		{
 		// yield the CPU for a little while when paused, minimized, or not the focus
-			if ((cl.paused && (!ActiveApp)) || Minimized || block_drawing)
+			if ((cl.paused && (!ActiveApp)) || Minimized)
 			{
 				SleepUntilInput (PAUSE_SLEEP);
-				scr_skipupdate = 1;		// no point in bothering to draw
 			}
 			else if (!ActiveApp)
 			{

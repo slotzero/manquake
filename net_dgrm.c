@@ -1,4 +1,4 @@
-/* $Id: net_dgrm.c,v 1.2 2008/02/09 05:29:00 slotzero Exp $
+/* $Id: net_dgrm.c,v 1.3 2008/02/11 08:46:52 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -1535,7 +1535,7 @@ static qsocket_t *_Datagram_Connect (char *host)
 		goto ErrorReturn;
 
 	// send the connection request
-	Con_Printf("trying...\n"); SCR_UpdateScreen ();
+	Con_Printf("trying...\n");
 	start_time = net_time;
 
 	for (reps = 0; reps < 3; reps++)
@@ -1566,7 +1566,6 @@ static qsocket_t *_Datagram_Connect (char *host)
 					Con_Printf("wrong reply address\n");
 					Con_Printf("Expected: %s\n", StrAddr (&sendaddr));
 					Con_Printf("Received: %s\n", StrAddr (&readaddr));
-					SCR_UpdateScreen ();
 #endif
 					ret = 0;
 					continue;
@@ -1603,7 +1602,7 @@ static qsocket_t *_Datagram_Connect (char *host)
 		while (ret == 0 && (SetNetTime() - start_time) < 2.5);
 		if (ret)
 			break;
-		Con_Printf("still trying...\n"); SCR_UpdateScreen ();
+		Con_Printf("still trying...\n");
 		start_time = SetNetTime();
 	}
 

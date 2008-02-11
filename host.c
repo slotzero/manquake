@@ -741,8 +741,6 @@ void _Host_Frame (float time)
 	if (host_speeds.value)
 		time1 = Sys_FloatTime ();
 
-	SCR_UpdateScreen ();
-
 	if (host_speeds.value)
 		time2 = Sys_FloatTime ();
 
@@ -942,9 +940,6 @@ void Host_Shutdown(void)
 		return;
 	}
 	isdown = true;
-
-// keep Con_Printf from trying to update the screen
-	scr_disabled_for_loading = true;
 
 	IPLog_WriteLog ();	// JPG 1.05 - ip loggging
 	NET_Shutdown ();

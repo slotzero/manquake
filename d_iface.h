@@ -167,5 +167,3 @@ extern byte				*r_skysource;
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 #define	CYCLE			128		// turbulent cycle size
-
-extern vrect_t	scr_vrect;

@@ -1,4 +1,4 @@
-/* $Id: quakedef.h,v 1.11 2008/02/11 07:15:21 slotzero Exp $
+/* $Id: quakedef.h,v 1.12 2008/02/11 08:46:52 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -231,7 +231,6 @@ typedef struct
 
 #include "wad.h"
 #include "cvar.h"
-#include "screen.h"
 #include "net.h"
 #include "security.h"	// JPG 3.20
 #include "protocol.h"

@@ -223,10 +223,6 @@ SOURCE=.\r_main.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\screen.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\security.c
 # End Source File
 # Begin Source File
@@ -466,18 +462,35 @@ SOURCE=.\quakedef.h
 # Begin Source File
 
 SOURCE=.\r_local.h
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\r_shared.h
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=.\render.h
-# End Source File
-# Begin Source File
 
-SOURCE=.\screen.h
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -498,6 +511,13 @@ SOURCE=.\sys.h
 # Begin Source File
 
 SOURCE=.\vid.h
+
+!IF  "$(CFG)" == "winquake - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
