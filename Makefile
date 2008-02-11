@@ -110,7 +110,6 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/console.o \
 	$(BUILDDIR)/squake/crc.o \
 	$(BUILDDIR)/squake/cvar.o \
-	$(BUILDDIR)/squake/draw.o \
 	$(BUILDDIR)/squake/host.o \
 	$(BUILDDIR)/squake/host_cmd.o \
 	$(BUILDDIR)/squake/iplog.o \
@@ -160,9 +159,6 @@ $(BUILDDIR)/squake/crc.o :      $(MOUNT_DIR)/crc.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/cvar.o :     $(MOUNT_DIR)/cvar.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/draw.o :     $(MOUNT_DIR)/draw.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/host.o :     $(MOUNT_DIR)/host.c
