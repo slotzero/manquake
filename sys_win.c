@@ -45,7 +45,6 @@ static double		pfreq;
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
 static int			lowshift;
-qboolean			isDedicated = true;
 static qboolean		sc_return_on_enter = false;
 HANDLE				hinput, houtput;
 
@@ -165,16 +164,11 @@ int filelength (FILE *f)
 {
 	int		pos;
 	int		end;
-	int		t;
-
-	//t = VID_ForceUnlockedAndReturnState ();
 
 	pos = ftell (f);
 	fseek (f, 0, SEEK_END);
 	end = ftell (f);
 	fseek (f, pos, SEEK_SET);
-
-	//VID_ForceLockState (t);
 
 	return end;
 }
@@ -183,9 +177,6 @@ int Sys_FileOpenRead (char *path, int *hndl)
 {
 	FILE	*f;
 	int		i, retval;
-	int		t;
-
-	//t = VID_ForceUnlockedAndReturnState ();
 
 	i = findhandle ();
 
@@ -203,8 +194,6 @@ int Sys_FileOpenRead (char *path, int *hndl)
 		retval = filelength(f);
 	}
 
-	//VID_ForceLockState (t);
-
 	return retval;
 }
 
@@ -212,9 +201,6 @@ int Sys_FileOpenWrite (char *path)
 {
 	FILE	*f;
 	int		i;
-	int		t;
-
-	//t = VID_ForceUnlockedAndReturnState ();
 
 	i = findhandle ();
 
@@ -223,56 +209,42 @@ int Sys_FileOpenWrite (char *path)
 		Sys_Error ("Error opening %s: %s", path,strerror(errno));
 	sys_handles[i] = f;
 
-	//VID_ForceLockState (t);
-
 	return i;
 }
 
 void Sys_FileClose (int handle)
 {
-	int		t;
-
-	//t = VID_ForceUnlockedAndReturnState ();
 	fclose (sys_handles[handle]);
 	sys_handles[handle] = NULL;
-	//VID_ForceLockState (t);
 }
 
 void Sys_FileSeek (int handle, int position)
 {
-	int		t;
-
-	//t = VID_ForceUnlockedAndReturnState ();
 	fseek (sys_handles[handle], position, SEEK_SET);
-	//VID_ForceLockState (t);
 }
 
 int Sys_FileRead (int handle, void *dest, int count)
 {
-	int		t, x;
+	int		x;
 
-	//t = VID_ForceUnlockedAndReturnState ();
 	x = fread (dest, 1, count, sys_handles[handle]);
-	//VID_ForceLockState (t);
+
 	return x;
 }
 
 int Sys_FileWrite (int handle, void *data, int count)
 {
-	int		t, x;
+	int		x;
 
-	//t = VID_ForceUnlockedAndReturnState ();
 	x = fwrite (data, 1, count, sys_handles[handle]);
-	//VID_ForceLockState (t);
+
 	return x;
 }
 
 int	Sys_FileTime (char *path)
 {
 	FILE	*f;
-	int		t, retval;
-
-	//t = VID_ForceUnlockedAndReturnState ();
+	int		retval;
 
 	f = fopen(path, "rb");
 
@@ -286,7 +258,6 @@ int	Sys_FileTime (char *path)
 		retval = -1;
 	}
 
-	//VID_ForceLockState (t);
 	return retval;
 }
 
@@ -408,51 +379,28 @@ void Sys_Error (char *error, ...)
 	if (!in_sys_error3)
 	{
 		in_sys_error3 = 1;
-		//VID_ForceUnlockedAndReturnState ();
 	}
 
 	va_start (argptr, error);
 	vsprintf (text, error, argptr);
 	va_end (argptr);
 
-	if (isDedicated)
+	va_start (argptr, error);
+	vsprintf (text, error, argptr);
+	va_end (argptr);
+
+	sprintf (text2, "ERROR: %s\n", text);
+	WriteFile (houtput, text5, strlen (text5), &dummy, NULL);
+	WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
+	WriteFile (houtput, text2, strlen (text2), &dummy, NULL);
+	WriteFile (houtput, text3, strlen (text3), &dummy, NULL);
+	WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
+
+	starttime = Sys_FloatTime ();
+	sc_return_on_enter = true;	// so Enter will get us out of here
+
+	while (!Sys_ConsoleInput () && ((Sys_FloatTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
 	{
-		va_start (argptr, error);
-		vsprintf (text, error, argptr);
-		va_end (argptr);
-
-		sprintf (text2, "ERROR: %s\n", text);
-		WriteFile (houtput, text5, strlen (text5), &dummy, NULL);
-		WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
-		WriteFile (houtput, text2, strlen (text2), &dummy, NULL);
-		WriteFile (houtput, text3, strlen (text3), &dummy, NULL);
-		WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
-
-
-		starttime = Sys_FloatTime ();
-		sc_return_on_enter = true;	// so Enter will get us out of here
-
-		while (!Sys_ConsoleInput () &&
-				((Sys_FloatTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
-		{
-		}
-	}
-	else
-	{
-	// switch to windowed so the message box is visible, unless we already
-	// tried that and failed
-		if (!in_sys_error0)
-		{
-			in_sys_error0 = 1;
-			//VID_SetDefaultMode ();
-			MessageBox(NULL, text, "Quake Error",
-					   MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
-		}
-		else
-		{
-			MessageBox(NULL, text, "Double Quake Error",
-					   MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
-		}
 	}
 
 	if (!in_sys_error1)
@@ -471,34 +419,32 @@ void Sys_Error (char *error, ...)
 	exit (1);
 }
 
+
 void Sys_Printf (char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[2048];	// JPG - changed this from 1024 to 2048
 	DWORD		dummy;
 
-	if (isDedicated)
+	va_start (argptr,fmt);
+	vsprintf (text, fmt, argptr);
+	va_end (argptr);
+
+	// JPG 1.05 - translate to plain text
+	if (pq_dequake.value)
 	{
-		va_start (argptr,fmt);
-		vsprintf (text, fmt, argptr);
-		va_end (argptr);
+		unsigned char *ch;
+		for (ch = text ; *ch ; ch++)
+			*ch = dequake[*ch];
+	}
 
-		// JPG 1.05 - translate to plain text
-		if (pq_dequake.value)
-		{
-			unsigned char *ch;
-			for (ch = text ; *ch ; ch++)
-				*ch = dequake[*ch];
-		}
+	WriteFile(houtput, text, strlen (text), &dummy, NULL);
 
-		WriteFile(houtput, text, strlen (text), &dummy, NULL);
-
-		// JPG 3.00 - rcon (64 doesn't mean anything special, but we need some extra space because NET_MAXMESSAGE == RCON_BUFF_SIZE)
-		if (rcon_active  && (rcon_message.cursize < rcon_message.maxsize - strlen(text) - 64))
-		{
-			rcon_message.cursize--;
-			MSG_WriteString(&rcon_message, text);
-		}
+	// JPG 3.00 - rcon (64 doesn't mean anything special, but we need some extra space because NET_MAXMESSAGE == RCON_BUFF_SIZE)
+	if (rcon_active  && (rcon_message.cursize < rcon_message.maxsize - strlen(text) - 64))
+	{
+		rcon_message.cursize--;
+		MSG_WriteString(&rcon_message, text);
 	}
 }
 
@@ -506,15 +452,12 @@ extern char *hunk_base; // JPG - needed for Sys_Quit
 
 void Sys_Quit (void)
 {
-	//VID_ForceUnlockedAndReturnState ();
-
 	Host_Shutdown();
 
 	if (tevent)
 		CloseHandle (tevent);
 
-	if (isDedicated)
-		FreeConsole ();
+	FreeConsole ();
 
 // shut down QHOST hooks if necessary
 	DeinitConProc ();
@@ -628,10 +571,6 @@ char *Sys_ConsoleInput (void)
 	int		count;
 	int		i, dummy;
 	int		ch, numread, numevents;
-
-	if (!isDedicated)
-		return NULL;
-
 
 	for ( ;; )
 	{
@@ -794,7 +733,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	if (ch = strchr(argv[0], '\"'))
 		*ch = 0;
 
-
 	while (*lpCmdLine && (parms.argc < MAX_NUM_ARGVS))
 	{
 		while (*lpCmdLine && ((*lpCmdLine <= 32) || (*lpCmdLine > 126)))
@@ -823,29 +761,6 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	parms.argc = com_argc;
 	parms.argv = com_argv;
-
-	if (!isDedicated)
-	{
-		hwnd_dialog = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
-
-		if (hwnd_dialog)
-		{
-			if (GetWindowRect (hwnd_dialog, &rect))
-			{
-				if (rect.left > (rect.top * 2))
-				{
-					SetWindowPos (hwnd_dialog, 0,
-						(rect.left / 2) - ((rect.right - rect.left) / 2),
-						rect.top, 0, 0,
-						SWP_NOZORDER | SWP_NOSIZE);
-				}
-			}
-
-			ShowWindow (hwnd_dialog, SW_SHOWDEFAULT);
-			UpdateWindow (hwnd_dialog);
-			SetForegroundWindow (hwnd_dialog);
-		}
-	}
 
 // take the greater of all the available memory or half the total memory,
 // but at least 8 Mb and no more than 16 Mb, unless they explicitly
@@ -881,37 +796,34 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	if (!tevent)
 		Sys_Error ("Couldn't create event");
 
-	if (isDedicated)
+	if (!AllocConsole ())
 	{
-		if (!AllocConsole ())
-		{
-			Sys_Error ("Couldn't create dedicated server console");
-		}
+		Sys_Error ("Couldn't create dedicated server console");
+	}
 
-		hinput = GetStdHandle (STD_INPUT_HANDLE);
-		houtput = GetStdHandle (STD_OUTPUT_HANDLE);
+	hinput = GetStdHandle (STD_INPUT_HANDLE);
+	houtput = GetStdHandle (STD_OUTPUT_HANDLE);
 
 	// give QHOST a chance to hook into the console
-		if ((t = COM_CheckParm ("-HFILE")) > 0)
-		{
-			if (t < com_argc)
-				hFile = (HANDLE)Q_atoi (com_argv[t+1]);
-		}
-
-		if ((t = COM_CheckParm ("-HPARENT")) > 0)
-		{
-			if (t < com_argc)
-				heventParent = (HANDLE)Q_atoi (com_argv[t+1]);
-		}
-
-		if ((t = COM_CheckParm ("-HCHILD")) > 0)
-		{
-			if (t < com_argc)
-				heventChild = (HANDLE)Q_atoi (com_argv[t+1]);
-		}
-
-		InitConProc (hFile, heventParent, heventChild);
+	if ((t = COM_CheckParm ("-HFILE")) > 0)
+	{
+		if (t < com_argc)
+			hFile = (HANDLE)Q_atoi (com_argv[t+1]);
 	}
+
+	if ((t = COM_CheckParm ("-HPARENT")) > 0)
+	{
+		if (t < com_argc)
+			heventParent = (HANDLE)Q_atoi (com_argv[t+1]);
+	}
+
+	if ((t = COM_CheckParm ("-HCHILD")) > 0)
+	{
+		if (t < com_argc)
+			heventChild = (HANDLE)Q_atoi (com_argv[t+1]);
+	}
+
+	InitConProc (hFile, heventParent, heventChild);
 
 	Sys_Init ();
 	Sys_Printf ("Host_Init\n");
@@ -922,30 +834,12 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
     /* main window message loop */
 	while (1)
 	{
-		if (isDedicated)
-		{
-			newtime = Sys_FloatTime ();
-			time = newtime - oldtime;
+		newtime = Sys_FloatTime ();
+		time = newtime - oldtime;
 
-			while (time < sys_ticrate.value )
-			{
-				Sys_Sleep();
-				newtime = Sys_FloatTime ();
-				time = newtime - oldtime;
-			}
-		}
-		else
+		while (time < sys_ticrate.value )
 		{
-		// yield the CPU for a little while when paused, minimized, or not the focus
-			if ((cl.paused && (!ActiveApp)) || Minimized)
-			{
-				SleepUntilInput (PAUSE_SLEEP);
-			}
-			else if (!ActiveApp)
-			{
-				SleepUntilInput (NOT_FOCUS_SLEEP);
-			}
-
+			Sys_Sleep();
 			newtime = Sys_FloatTime ();
 			time = newtime - oldtime;
 		}

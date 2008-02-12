@@ -19,8 +19,6 @@
 
 #include "quakedef.h"
 
-qboolean			isDedicated;
-
 int nostdout = 0;
 
 char *basedir = ".";

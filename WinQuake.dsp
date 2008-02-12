@@ -385,10 +385,6 @@ SOURCE=.\d_iface.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\dosisms.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\iplog.h
 # End Source File
 # Begin Source File
@@ -462,35 +458,14 @@ SOURCE=.\quakedef.h
 # Begin Source File
 
 SOURCE=.\r_local.h
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\r_shared.h
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=.\render.h
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -511,13 +486,6 @@ SOURCE=.\sys.h
 # Begin Source File
 
 SOURCE=.\vid.h
-
-!IF  "$(CFG)" == "winquake - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 

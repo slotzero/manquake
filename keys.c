@@ -17,8 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
-#include "quakedef.h"
 
+#include "quakedef.h"
 
 /*
 
@@ -26,23 +26,16 @@ key up events are sent even if in console mode
 
 */
 
-
 #define		MAXCMDLINE	256
 char	key_lines[32][MAXCMDLINE];
 int		key_linepos;
-int		key_lastpress;
-
-int		edit_line=0;
 
 keydest_t		key_dest;
-
-int		key_count;			// incremented every key event
 
 char	*keybindings[256];
 qboolean	consolekeys[256];	// if true, can't be rebound while in console
 qboolean	menubound[256];	// if true, can't be rebound while in menu
 int		keyshift[256];		// key to map to if shift held down in console
-int		key_repeats[256];	// if > 1, it is autorepeating
 qboolean	keydown[256];
 
 typedef struct
@@ -356,34 +349,4 @@ void Key_Init (void)
 	Cmd_AddCommand ("bind",Key_Bind_f);
 	Cmd_AddCommand ("unbind",Key_Unbind_f);
 	Cmd_AddCommand ("unbindall",Key_Unbindall_f);
-}
-
-
-/*
-===================
-Key_Event
-
-Called by the system between frames for both key up and key down events
-Should NOT be called during an interrupt!
-===================
-*/
-void Key_Event (int key, qboolean down)
-{
-}
-
-
-/*
-===================
-Key_ClearStates
-===================
-*/
-void Key_ClearStates (void)
-{
-	int		i;
-
-	for (i=0 ; i<256 ; i++)
-	{
-		keydown[i] = false;
-		key_repeats[i] = 0;
-	}
 }

@@ -1,4 +1,4 @@
-/* $Id: quakedef.h,v 1.12 2008/02/11 08:46:52 slotzero Exp $
+/* $Id: quakedef.h,v 1.13 2008/02/12 09:02:41 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -23,22 +23,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define	QUAKE_GAME			// as opposed to utilities
 
-#define PROQUAKE_BUILD		2.18	// Slot Zero 3.50-1  Added this.
+#define PROQUAKE_BUILD		2.19	// Slot Zero 3.50-1  Added this.
 #define PROQUAKE_VERSION	3.50	// JPG - added this
 #define	VERSION				1.09
-#define	GLQUAKE_VERSION		1.00
-#define	D3DQUAKE_VERSION	0.01
-#define	WINQUAKE_VERSION	0.996
 #define	LINUX_VERSION		1.30
-#define	X11_VERSION			1.10
 
 //define	PARANOID			// speed sapping error checking
-
-#ifdef QUAKE2
 #define	GAMENAME	"id1"		// directory to look in by default
-#else
-#define	GAMENAME	"id1"
-#endif
 
 #include <math.h>
 #include <string.h>
@@ -53,17 +44,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define __i386__	1
 #endif
 
-void	VID_LockBuffer (void);
-void	VID_UnlockBuffer (void);
-
-#else
-
-#define	VID_LockBuffer()
-#define	VID_UnlockBuffer()
-
 #endif
 
-#if defined __i386__ // && !defined __sun__
+#if defined __i386__
 #define id386	1
 #else
 #define id386	0
@@ -78,7 +61,7 @@ void	VID_UnlockBuffer (void);
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 #define CACHE_SIZE	32		// used to align key data structures
 
-#define UNUSED(x)	(x = x)	// for pesky compiler / lint warnings
+
 
 #define	MINIMUM_MEMORY			0x550000
 #define	MINIMUM_MEMORY_LEVELPAK	(MINIMUM_MEMORY + 0x100000)
@@ -204,12 +187,7 @@ void	VID_UnlockBuffer (void);
 
 #define	MAX_SCOREBOARD		16
 #define	MAX_SCOREBOARDNAME	32
-
 #define	SOUND_CHANNELS		8
-
-// This makes anyone on id's net privileged
-// Use for multiplayer testing only - VERY dangerous!!!
-// #define IDGODS
 
 #include "common.h"
 #include "bspfile.h"
@@ -266,10 +244,7 @@ typedef struct
 
 //=============================================================================
 
-
-
 extern qboolean noclip_anglehack;
-
 
 //
 // host
@@ -312,9 +287,6 @@ extern qboolean		msg_suppress_1;		// suppresses resolution and cache size consol
 extern int			current_skill;		// skill level for currently loaded level (in case
 										//  the user changes the cvar while the level is
 										//  running, this reflects the level actually in use)
-
-extern qboolean		isDedicated;
-
 extern int			minimum_memory;
 
 extern char dequake[256];	// JPG 1.05 - dedicated console translation
