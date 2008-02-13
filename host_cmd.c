@@ -307,8 +307,6 @@ void Host_Map_f (void)
 	if (cmd_source != src_command)
 		return;
 
-	cls.demonum = -1;		// stop demo loop in case this fails
-
 	Host_ShutdownServer(false);
 
 	key_dest = key_game;			// remove console or menu
@@ -351,7 +349,7 @@ void Host_Changelevel_f (void)
 		Con_Printf ("changelevel <levelname> : continue game on a new level\n");
 		return;
 	}
-	if (!sv.active || cls.demoplayback)
+	if (!sv.active)
 	{
 		Con_Printf ("Only the server may changelevel\n");
 		return;
@@ -372,7 +370,7 @@ void Host_Restart_f (void)
 {
 	char	mapname[MAX_QPATH];
 
-	if (cls.demoplayback || !sv.active)
+	if (!sv.active)
 		return;
 
 	if (cmd_source != src_command)
@@ -408,7 +406,6 @@ void Host_Connect_f (void)
 {
 	char	name[MAX_QPATH];
 
-	cls.demonum = -1;		// stop demo loop in case this fails
 	strcpy (name, Cmd_Argv(1));
 	Host_Reconnect_f ();
 
@@ -1394,14 +1391,6 @@ void Host_Viewprev_f (void)
 	PrintFrameName (m, e->v.frame);
 }
 
-/*
-===============================================================================
-
-DEMO LOOP CONTROL
-
-===============================================================================
-*/
-
 
 /*
 ==================
@@ -1410,53 +1399,8 @@ Host_Startdemos_f
 */
 void Host_Startdemos_f (void)
 {
-	int		i, c;
-
 	if (!sv.active)
 		Cbuf_AddText ("map start\n");
-
-	return;
-
-
-	c = Cmd_Argc() - 1;
-	if (c > MAX_DEMOS)
-	{
-		Con_Printf ("Max %i demos in demoloop\n", MAX_DEMOS);
-		c = MAX_DEMOS;
-	}
-	Con_Printf ("%i demo(s) in loop\n", c);
-
-	for (i=1 ; i<c+1 ; i++)
-		strncpy (cls.demos[i-1], Cmd_Argv(i), sizeof(cls.demos[0])-1);
-
-	if (!sv.active && cls.demonum != -1 && !cls.demoplayback)
-		cls.demonum = 0;
-	else
-		cls.demonum = -1;
-}
-
-
-/*
-==================
-Host_Demos_f
-
-Return to looping demos
-==================
-*/
-void Host_Demos_f (void)
-{
-}
-
-
-/*
-==================
-Host_Stopdemo_f
-
-Return to looping demos
-==================
-*/
-void Host_Stopdemo_f (void)
-{
 }
 
 
@@ -1592,7 +1536,7 @@ void Host_InitCommands (void)
 	Cmd_AddCommand ("status", Host_Status_f);
 	Cmd_AddCommand ("cheatfree", Host_Cheatfree_f);	// JPG 3.50 - print cheat-free status
 	Cmd_AddCommand ("quit", Host_Quit_f);
-	Cmd_AddCommand ("exit", Host_Quit_f);
+	Cmd_AddCommand ("exit", Host_Quit_f); // Slot Zero 3.50-2  Added this.
 	Cmd_AddCommand ("god", Host_God_f);
 	Cmd_AddCommand ("notarget", Host_Notarget_f);
 	Cmd_AddCommand ("fly", Host_Fly_f);
@@ -1618,8 +1562,6 @@ void Host_InitCommands (void)
 	Cmd_AddCommand ("give", Host_Give_f);
 
 	Cmd_AddCommand ("startdemos", Host_Startdemos_f);
-	Cmd_AddCommand ("demos", Host_Demos_f);
-	Cmd_AddCommand ("stopdemo", Host_Stopdemo_f);
 
 	Cmd_AddCommand ("viewmodel", Host_Viewmodel_f);
 	Cmd_AddCommand ("viewframe", Host_Viewframe_f);

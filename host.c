@@ -164,7 +164,6 @@ void Host_Error (char *error, ...)
 
 	Sys_Error ("Host_Error: %s\n",string);	// dedicated servers exit
 
-	cls.demonum = -1;
 	inerror = false;
 
 	longjmp (host_abortserver, 1);
@@ -549,7 +548,7 @@ qboolean Host_FilterTime (float time)
 {
 	realtime += time;
 
-	if (!cls.timedemo && realtime - oldrealtime < 1.0 / pq_maxfps.value)
+	if (realtime - oldrealtime < 1.0 / pq_maxfps.value)
 		return false;		// framerate is too high
 
 	host_frametime = realtime - oldrealtime;
@@ -911,7 +910,7 @@ void Host_Init (quakeparms_t *parms)
 
 	host_initialized = true;
 
-	Sys_Printf ("========Quake Initialized=========\n");
+	Sys_Printf ("========Quake Initialized========\n");
 }
 
 
