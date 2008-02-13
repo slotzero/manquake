@@ -101,20 +101,12 @@ typedef struct
 #define	MAX_DEMOS		8
 #define	MAX_DEMONAME	16
 
-typedef enum {
-ca_dedicated, 		// a dedicated server with no ability to start a client
-ca_disconnected, 	// full screen console with no connection
-ca_connected		// valid netcon, talking to a server
-} cactive_t;
-
 //
 // the client_static_t structure is persistant through an arbitrary number
 // of server connections
 //
 typedef struct
 {
-	cactive_t	state;
-
 // personalization data sent to server
 	char		mapstring[MAX_QPATH];
 	char		spawnparms[MAX_MAPSTRING];	// to restart a level
@@ -234,7 +226,6 @@ typedef struct
 	int				seconds;			// JPG - for match time in status bar
 	double			last_match_time;	// JPG - last time match time was obtained
 	double			last_ping_time;		// JPG - last time pings were obtained
-	qboolean		console_ping;		// JPG 1.05 - true if the ping came from the console
 	double			last_status_time;	// JPG 1.05 - last time status was obtained
 	qboolean		console_status;		// JPG 1.05 - true if the status came from the console
 	double			match_pause_time;	// JPG - time that match was paused (or 0)

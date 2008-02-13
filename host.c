@@ -110,6 +110,7 @@ cvar_t	pq_ipmask = {"pq_ipmask", "1"};
 client_static_t	cls;
 client_state_t	cl;
 
+
 /*
 ================
 Host_EndGame
@@ -123,18 +124,17 @@ void Host_EndGame (char *message, ...)
 	va_start (argptr,message);
 	vsprintf (string,message,argptr);
 	va_end (argptr);
+
 	Con_DPrintf ("Host_EndGame: %s\n",string);
 
 	if (sv.active)
 		Host_ShutdownServer (false);
 
-	if (cls.state == ca_dedicated)
-		Sys_Error ("Host_EndGame: %s\n",string);	// dedicated servers exit
-
-	//CL_Disconnect ();
+	Sys_Error ("Host_EndGame: %s\n",string);	// dedicated servers exit
 
 	longjmp (host_abortserver, 1);
 }
+
 
 /*
 ================
@@ -156,21 +156,20 @@ void Host_Error (char *error, ...)
 	va_start (argptr,error);
 	vsprintf (string,error,argptr);
 	va_end (argptr);
+
 	Con_Printf ("Host_Error: %s\n",string);
 
 	if (sv.active)
 		Host_ShutdownServer (false);
 
-	if (cls.state == ca_dedicated)
-		Sys_Error ("Host_Error: %s\n",string);	// dedicated servers exit
+	Sys_Error ("Host_Error: %s\n",string);	// dedicated servers exit
 
-	//CL_Disconnect ();
 	cls.demonum = -1;
-
 	inerror = false;
 
 	longjmp (host_abortserver, 1);
 }
+
 
 /*
 ================
@@ -186,7 +185,6 @@ void Host_FindMaxClients (void)
 	i = COM_CheckParm ("-dedicated");
 	if (i)
 	{
-		cls.state = ca_dedicated;
 		if (i != (com_argc - 1))
 		{
 			svs.maxclients = Q_atoi (com_argv[i+1]);
@@ -196,7 +194,6 @@ void Host_FindMaxClients (void)
 	}
 	else
 	{
-		cls.state = ca_dedicated;
 		svs.maxclients = 8;
 	}
 
@@ -469,10 +466,6 @@ void Host_ShutdownServer(qboolean crash)
 		return;
 
 	sv.active = false;
-
-// stop all client sounds immediately
-	//if (cls.state == ca_connected)
-	//	CL_Disconnect ();
 
 // flush any pending messages - like the score!!!
 	start = Sys_FloatTime();

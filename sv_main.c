@@ -1,4 +1,4 @@
-/* $Id: sv_main.c,v 1.4 2008/02/08 03:10:17 slotzero Exp $
+/* $Id: sv_main.c,v 1.5 2008/02/13 04:40:36 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -315,12 +315,7 @@ void SV_ConnectClient (int clientnum)
 	client->message.data = client->msgbuf;
 	client->message.maxsize = sizeof(client->msgbuf);
 	client->message.allowoverflow = true;		// we can catch it
-
-#ifdef IDGODS
-	client->privileged = IsID(&client->netconnection->addr);
-#else
 	client->privileged = false;
-#endif
 
 	if (sv.loadgame)
 		memcpy (client->spawn_parms, spawn_parms, sizeof(spawn_parms));
@@ -1331,13 +1326,6 @@ void SV_SendReconnect (void)
 	MSG_WriteChar (&msg, svc_stufftext);
 	MSG_WriteString (&msg, "reconnect\n");
 	NET_SendToAll (&msg, 5);
-
-	if (cls.state != ca_dedicated)
-#ifdef QUAKE2
-		Cbuf_InsertText ("reconnect\n");
-#else
-		Cmd_ExecuteString ("reconnect\n", src_command);
-#endif
 }
 
 

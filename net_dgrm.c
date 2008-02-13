@@ -1,4 +1,4 @@
-/* $Id: net_dgrm.c,v 1.3 2008/02/11 08:46:52 slotzero Exp $
+/* $Id: net_dgrm.c,v 1.4 2008/02/13 04:40:36 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -918,14 +918,8 @@ static void Rcon_f (void)
 
 	if (!*rcon_server.string)
 	{
-		// JPG 3.50 - use current server
-		if (cls.state == ca_connected)
-			host = server_name;
-		else
-		{
-			Con_Printf("rcon_server has not been set\n");
-			return;
-		}
+		Con_Printf("rcon_server has not been set\n");
+		return;
 	}
 
 	Strip_Port(host);

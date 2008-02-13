@@ -386,22 +386,22 @@ char *Sys_ConsoleInput(void)
 	fd_set	fdset;
     struct timeval timeout;
 
-	if (cls.state == ca_dedicated) {
-		FD_ZERO(&fdset);
-		FD_SET(0, &fdset); // stdin
-		timeout.tv_sec = 0;
-		timeout.tv_usec = 0;
-		if (select (1, &fdset, NULL, NULL, &timeout) == -1 || !FD_ISSET(0, &fdset))
-			return NULL;
+	FD_ZERO(&fdset);
+	FD_SET(0, &fdset); // stdin
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 0;
 
-		len = read (0, text, sizeof(text));
-		if (len < 1)
-			return NULL;
-		text[len-1] = 0;    // rip off the /n and terminate
+	if (select (1, &fdset, NULL, NULL, &timeout) == -1 || !FD_ISSET(0, &fdset))
+		return NULL;
 
-		return text;
-	}
-	return NULL;
+	len = read (0, text, sizeof(text));
+
+	if (len < 1)
+		return NULL;
+
+	text[len-1] = 0;    // rip off the /n and terminate
+
+	return text;
 }
 
 #if !id386
@@ -472,15 +472,14 @@ int main (int c, char **v)
         newtime = Sys_FloatTime ();
         time = newtime - oldtime;
 
-        if (cls.state == ca_dedicated)
-        {   // play vcrfiles at max speed
-            if (time < sys_ticrate.value && (vcrFile == -1 || recording) )
-            {
-				usleep(1);
-                continue;       // not time to run a server only tic yet
-            }
-            time = sys_ticrate.value;
-        }
+        // play vcrfiles at max speed
+		if (time < sys_ticrate.value && (vcrFile == -1 || recording) )
+		{
+			usleep(1);
+			continue;       // not time to run a server only tic yet
+		}
+		time = sys_ticrate.value;
+
 
         if (time > sys_ticrate.value*2)
             oldtime = newtime;
