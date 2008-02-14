@@ -1,4 +1,4 @@
-/* $Id: net_dgrm.c,v 1.4 2008/02/13 04:40:36 slotzero Exp $
+/*
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or

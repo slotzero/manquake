@@ -191,10 +191,6 @@ SOURCE=.\net_main.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\net_vcr.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\net_win.c
 # End Source File
 # Begin Source File
@@ -414,14 +410,6 @@ SOURCE=.\net_dgrm.h
 # Begin Source File
 
 SOURCE=.\net_loop.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\net_ser.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\net_vcr.h
 # End Source File
 # Begin Source File
 

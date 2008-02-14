@@ -290,9 +290,6 @@ void		NET_Shutdown (void);
 struct qsocket_s	*NET_CheckNewConnections (void);
 // returns a new connection number if there is one pending, else -1
 
-struct qsocket_s	*NET_Connect (char *host);
-// called by client to connect to a host.  Returns -1 if not able to
-
 qboolean NET_CanSendMessage (qsocket_t *sock);
 // Returns true or false if the given qsocket can currently accept a
 // message to be transmitted.
@@ -326,7 +323,6 @@ void		NET_Close (struct qsocket_s *sock);
 
 void NET_Poll(void);
 
-
 typedef struct _PollProcedure
 {
 	struct _PollProcedure	*next;
@@ -337,18 +333,7 @@ typedef struct _PollProcedure
 
 void SchedulePollProcedure(PollProcedure *pp, double timeOffset);
 
-extern	qboolean	serialAvailable;
 extern	qboolean	ipxAvailable;
 extern	qboolean	tcpipAvailable;
 extern	char		my_ipx_address[NET_NAMELEN];
 extern	char		my_tcpip_address[NET_NAMELEN];
-extern void (*GetComPortConfig) (int portNumber, int *port, int *irq, int *baud, qboolean *useModem);
-extern void (*SetComPortConfig) (int portNumber, int port, int irq, int baud, qboolean useModem);
-extern void (*GetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
-extern void (*SetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
-
-extern	qboolean	slistInProgress;
-extern	qboolean	slistSilent;
-extern	qboolean	slistLocal;
-
-void NET_Slist_f (void);

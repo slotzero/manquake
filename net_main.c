@@ -1,4 +1,4 @@
-/* $Id: net_main.c,v 1.2 2008/02/13 04:40:36 slotzero Exp $
+/*
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -20,13 +20,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // net_main.c
 
 #include "quakedef.h"
-#include "net_vcr.h"
 
 qsocket_t	*net_activeSockets = NULL;
 qsocket_t	*net_freeSockets = NULL;
 int			net_numsockets = 0;
 
-qboolean	serialAvailable = false;
 qboolean	ipxAvailable = false;
 qboolean	tcpipAvailable = false;
 
@@ -36,24 +34,7 @@ int			DEFAULTnet_hostport = 26000;
 char		my_ipx_address[NET_NAMELEN];
 char		my_tcpip_address[NET_NAMELEN];
 
-void (*GetComPortConfig) (int portNumber, int *port, int *irq, int *baud, qboolean *useModem);
-void (*SetComPortConfig) (int portNumber, int port, int irq, int baud, qboolean useModem);
-void (*GetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
-void (*SetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
-
 static qboolean	listening = false;
-
-qboolean	slistInProgress = false;
-qboolean	slistSilent = false;
-qboolean	slistLocal = true;
-static double	slistStartTime;
-static int		slistLastShown;
-
-static void Slist_Send(void);
-static void Slist_Poll(void);
-PollProcedure	slistSendProcedure = {NULL, 0.0, Slist_Send};
-PollProcedure	slistPollProcedure = {NULL, 0.0, Slist_Poll};
-
 
 sizebuf_t		net_message;
 int				net_activeconnections = 0;
@@ -84,24 +65,12 @@ sizebuf_t	rcon_message = {false, false, rcon_buff, RCON_BUFF_SIZE, 0};
 qboolean	rcon_active = false;
 
 qboolean	configRestored = false;
-cvar_t	config_com_port = {"_config_com_port", "0x3f8", true};
-cvar_t	config_com_irq = {"_config_com_irq", "4", true};
-cvar_t	config_com_baud = {"_config_com_baud", "57600", true};
-cvar_t	config_com_modem = {"_config_com_modem", "1", true};
-cvar_t	config_modem_dialtype = {"_config_modem_dialtype", "T", true};
-cvar_t	config_modem_clear = {"_config_modem_clear", "ATZ", true};
-cvar_t	config_modem_init = {"_config_modem_init", "", true};
-cvar_t	config_modem_hangup = {"_config_modem_hangup", "AT H", true};
-
-int	vcrFile = -1;
-qboolean recording = false;
 
 // these two macros are to make the code more readable
 #define sfunc	net_drivers[sock->driver]
 #define dfunc	net_drivers[net_driverlevel]
 
 int	net_driverlevel;
-
 
 double			net_time;
 
@@ -287,205 +256,15 @@ static void NET_Port_f (void)
 }
 
 
-static void PrintSlistHeader(void)
-{
-	Con_Printf("Server          Map             Users\n");
-	Con_Printf("--------------- --------------- -----\n");
-	slistLastShown = 0;
-}
-
-
-static void PrintSlist(void)
-{
-	int n;
-
-	for (n = slistLastShown; n < hostCacheCount; n++)
-	{
-		if (hostcache[n].maxusers)
-			Con_Printf("%-15.15s %-15.15s %2u/%2u\n", hostcache[n].name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
-		else
-			Con_Printf("%-15.15s %-15.15s\n", hostcache[n].name, hostcache[n].map);
-	}
-	slistLastShown = n;
-}
-
-
-static void PrintSlistTrailer(void)
-{
-	if (hostCacheCount)
-		Con_Printf("== end list ==\n\n");
-	else
-		Con_Printf("No Quake servers found.\n\n");
-}
-
-
-void NET_Slist_f (void)
-{
-	if (slistInProgress)
-		return;
-
-	if (! slistSilent)
-	{
-		Con_Printf("Looking for Quake servers...\n");
-		PrintSlistHeader();
-	}
-
-	slistInProgress = true;
-	slistStartTime = Sys_FloatTime();
-
-	SchedulePollProcedure(&slistSendProcedure, 0.0);
-	SchedulePollProcedure(&slistPollProcedure, 0.1);
-
-	hostCacheCount = 0;
-}
-
-
-static void Slist_Send(void)
-{
-	for (net_driverlevel=0; net_driverlevel < net_numdrivers; net_driverlevel++)
-	{
-		if (!slistLocal && net_driverlevel == 0)
-			continue;
-		if (net_drivers[net_driverlevel].initialized == false)
-			continue;
-		dfunc.SearchForHosts (true);
-	}
-
-	if ((Sys_FloatTime() - slistStartTime) < 0.5)
-		SchedulePollProcedure(&slistSendProcedure, 0.75);
-}
-
-
-static void Slist_Poll(void)
-{
-	for (net_driverlevel=0; net_driverlevel < net_numdrivers; net_driverlevel++)
-	{
-		if (!slistLocal && net_driverlevel == 0)
-			continue;
-		if (net_drivers[net_driverlevel].initialized == false)
-			continue;
-		dfunc.SearchForHosts (false);
-	}
-
-	if (! slistSilent)
-		PrintSlist();
-
-	if ((Sys_FloatTime() - slistStartTime) < 1.5)
-	{
-		SchedulePollProcedure(&slistPollProcedure, 0.1);
-		return;
-	}
-
-	if (! slistSilent)
-		PrintSlistTrailer();
-	slistInProgress = false;
-	slistSilent = false;
-	slistLocal = true;
-}
-
-
-/*
-===================
-NET_Connect
-===================
-*/
-
+// XXX REMOVE THESE
 int hostCacheCount = 0;
 hostcache_t hostcache[HOSTCACHESIZE];
-
-qsocket_t *NET_Connect (char *host)
-{
-	qsocket_t		*ret;
-	int				n;
-	int				numdrivers = net_numdrivers;
-
-	SetNetTime();
-
-	if (host && *host == 0)
-		host = NULL;
-
-	if (host)
-	{
-		if (Q_strcasecmp (host, "local") == 0)
-		{
-			numdrivers = 1;
-			goto JustDoIt;
-		}
-
-		if (hostCacheCount)
-		{
-			for (n = 0; n < hostCacheCount; n++)
-				if (Q_strcasecmp (host, hostcache[n].name) == 0)
-				{
-					host = hostcache[n].cname;
-					break;
-				}
-			if (n < hostCacheCount)
-				goto JustDoIt;
-		}
-	}
-
-	slistSilent = host ? true : false;
-	NET_Slist_f ();
-
-	while(slistInProgress)
-		NET_Poll();
-
-	if (host == NULL)
-	{
-		if (hostCacheCount != 1)
-			return NULL;
-		host = hostcache[0].cname;
-		Con_Printf("Connecting to...\n%s @ %s\n\n", hostcache[0].name, host);
-	}
-
-	if (hostCacheCount)
-		for (n = 0; n < hostCacheCount; n++)
-			if (Q_strcasecmp (host, hostcache[n].name) == 0)
-			{
-				host = hostcache[n].cname;
-				break;
-			}
-
-JustDoIt:
-	for (net_driverlevel=0 ; net_driverlevel<numdrivers; net_driverlevel++)
-	{
-		if (net_drivers[net_driverlevel].initialized == false)
-			continue;
-		ret = dfunc.Connect (host);
-		if (!sv.active && pq_cheatfree)
-			Security_SetSeed(_lrotr(net_seed, 17), argv[0]);
-		if (ret)
-			return ret;
-	}
-
-	/* JPG 3.20 - this has always annoyed me so I commented it out
-	if (host)
-	{
-		Con_Printf("\n");
-		PrintSlistHeader();
-		PrintSlist();
-		PrintSlistTrailer();
-	}
-	*/
-
-	return NULL;
-}
-
 
 /*
 ===================
 NET_CheckNewConnections
 ===================
 */
-
-struct
-{
-	double	time;
-	int		op;
-	long	session;
-} vcrConnect;
-
 qsocket_t *NET_CheckNewConnections (void)
 {
 	qsocket_t	*ret;
@@ -500,25 +279,7 @@ qsocket_t *NET_CheckNewConnections (void)
 			continue;
 		ret = dfunc.CheckNewConnections ();
 		if (ret)
-		{
-			if (recording)
-			{
-				vcrConnect.time = host_time;
-				vcrConnect.op = VCR_OP_CONNECT;
-				vcrConnect.session = (long)ret;
-				Sys_FileWrite (vcrFile, &vcrConnect, sizeof(vcrConnect));
-				Sys_FileWrite (vcrFile, ret->address, NET_NAMELEN);
-			}
 			return ret;
-		}
-	}
-
-	if (recording)
-	{
-		vcrConnect.time = host_time;
-		vcrConnect.op = VCR_OP_CONNECT;
-		vcrConnect.session = 0;
-		Sys_FileWrite (vcrFile, &vcrConnect, sizeof(vcrConnect));
 	}
 
 	return NULL;
@@ -557,15 +318,6 @@ returns 1 if a message was received
 returns -1 if connection is invalid
 =================
 */
-
-struct
-{
-	double	time;
-	int		op;
-	long	session;
-	int		ret;
-	int		len;
-} vcrGetMessage;
 
 extern void PrintStats(qsocket_t *s);
 
@@ -622,28 +374,6 @@ int	NET_GetMessage (qsocket_t *sock)
 			else if (ret == 2)
 				unreliableMessagesReceived++;
 		}
-
-		if (recording)
-		{
-			vcrGetMessage.time = host_time;
-			vcrGetMessage.op = VCR_OP_GETMESSAGE;
-			vcrGetMessage.session = (long)sock;
-			vcrGetMessage.ret = ret;
-			vcrGetMessage.len = net_message.cursize;
-			Sys_FileWrite (vcrFile, &vcrGetMessage, 24);
-			Sys_FileWrite (vcrFile, net_message.data, net_message.cursize);
-		}
-	}
-	else
-	{
-		if (recording)
-		{
-			vcrGetMessage.time = host_time;
-			vcrGetMessage.op = VCR_OP_GETMESSAGE;
-			vcrGetMessage.session = (long)sock;
-			vcrGetMessage.ret = ret;
-			Sys_FileWrite (vcrFile, &vcrGetMessage, 20);
-		}
 	}
 
 	return ret;
@@ -661,13 +391,6 @@ returns 1 if the message was sent properly
 returns -1 if the connection died
 ==================
 */
-struct
-{
-	double	time;
-	int		op;
-	long	session;
-	int		r;
-} vcrSendMessage;
 
 // JPG 3.20 - cheat free
 byte buff[NET_MAXMESSAGE];
@@ -708,15 +431,6 @@ int NET_SendMessage (qsocket_t *sock, sizebuf_t *data)
 	if (r == 1 && sock->driver)
 		messagesSent++;
 
-	if (recording)
-	{
-		vcrSendMessage.time = host_time;
-		vcrSendMessage.op = VCR_OP_SENDMESSAGE;
-		vcrSendMessage.session = (long)sock;
-		vcrSendMessage.r = r;
-		Sys_FileWrite (vcrFile, &vcrSendMessage, 20);
-	}
-
 	return r;
 }
 
@@ -755,15 +469,6 @@ int NET_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 	if (r == 1 && sock->driver)
 		unreliableMessagesSent++;
 
-	if (recording)
-	{
-		vcrSendMessage.time = host_time;
-		vcrSendMessage.op = VCR_OP_SENDMESSAGE;
-		vcrSendMessage.session = (long)sock;
-		vcrSendMessage.r = r;
-		Sys_FileWrite (vcrFile, &vcrSendMessage, 20);
-	}
-
 	return r;
 }
 
@@ -789,15 +494,6 @@ qboolean NET_CanSendMessage (qsocket_t *sock)
 	SetNetTime();
 
 	r = sfunc.CanSendMessage(sock);
-
-	if (recording)
-	{
-		vcrSendMessage.time = host_time;
-		vcrSendMessage.op = VCR_OP_CANSENDMESSAGE;
-		vcrSendMessage.session = (long)sock;
-		vcrSendMessage.r = r;
-		Sys_FileWrite (vcrFile, &vcrSendMessage, 20);
-	}
 
 	return r;
 }
@@ -879,26 +575,17 @@ int NET_SendToAll(sizebuf_t *data, int blocktime)
 
 //=============================================================================
 
+
 /*
 ====================
 NET_Init
 ====================
 */
-
 void NET_Init (void)
 {
 	int			i;
 	int			controlSocket;
 	qsocket_t	*s;
-
-	if (COM_CheckParm("-playback"))
-	{
-		net_numdrivers = 1;
-		net_drivers[0].Init = VCR_Init;
-	}
-
-	if (COM_CheckParm("-record"))
-		recording = true;
 
 	i = COM_CheckParm ("-port");
 	if (!i)
@@ -913,6 +600,7 @@ void NET_Init (void)
 		else
 			Sys_Error ("NET_Init: you must specify a number after -port");
 	}
+
 	net_hostport = DEFAULTnet_hostport;
 
 	listening = true;
@@ -944,23 +632,13 @@ void NET_Init (void)
 	Cvar_RegisterVariable (&ip_hidden);
 	Cvar_RegisterVariable (&ip_hidden2);
 
-	Cvar_RegisterVariable (&config_com_port);
-	Cvar_RegisterVariable (&config_com_irq);
-	Cvar_RegisterVariable (&config_com_baud);
-	Cvar_RegisterVariable (&config_com_modem);
-	Cvar_RegisterVariable (&config_modem_dialtype);
-	Cvar_RegisterVariable (&config_modem_clear);
-	Cvar_RegisterVariable (&config_modem_init);
-	Cvar_RegisterVariable (&config_modem_hangup);
-
-	Cmd_AddCommand ("slist", NET_Slist_f);
 	Cmd_AddCommand ("listen", NET_Listen_f);
 	Cmd_AddCommand ("maxplayers", MaxPlayers_f);
 	Cmd_AddCommand ("port", NET_Port_f);
 
 	// initialize all the drivers
 	for (net_driverlevel=0 ; net_driverlevel<net_numdrivers ; net_driverlevel++)
-		{
+	{
 		controlSocket = net_drivers[net_driverlevel].Init();
 		if (controlSocket == -1)
 			continue;
@@ -968,7 +646,7 @@ void NET_Init (void)
 		net_drivers[net_driverlevel].controlSock = controlSocket;
 		if (listening)
 			net_drivers[net_driverlevel].Listen (true);
-		}
+	}
 
 	if (*my_ipx_address)
 		Con_DPrintf("IPX address %s\n", my_ipx_address);
@@ -988,6 +666,7 @@ void NET_Init (void)
 		Security_SetSeed(net_seed, argv[0]);
 	}
 }
+
 
 /*
 ====================
@@ -1015,12 +694,6 @@ void NET_Shutdown (void)
 			net_drivers[net_driverlevel].initialized = false;
 		}
 	}
-
-	if (vcrFile != -1)
-	{
-		Con_Printf ("Closing vcrfile.\n");
-		Sys_FileClose(vcrFile);
-	}
 }
 
 
@@ -1032,18 +705,7 @@ void NET_Poll(void)
 	qboolean	useModem;
 
 	if (!configRestored)
-	{
-		if (serialAvailable)
-		{
-			if (config_com_modem.value == 1.0)
-				useModem = true;
-			else
-				useModem = false;
-			SetComPortConfig (0, (int)config_com_port.value, (int)config_com_irq.value, (int)config_com_baud.value, useModem);
-			SetModemConfig (0, config_modem_dialtype.string, config_modem_clear.string, config_modem_init.string, config_modem_hangup.string);
-		}
 		configRestored = true;
-	}
 
 	SetNetTime();
 

@@ -119,7 +119,6 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/net_dgrm.o \
 	$(BUILDDIR)/squake/net_loop.o \
 	$(BUILDDIR)/squake/net_main.o \
-	$(BUILDDIR)/squake/net_vcr.o \
 	$(BUILDDIR)/squake/net_udp.o \
 	$(BUILDDIR)/squake/net_bsd.o \
 	$(BUILDDIR)/squake/nonintel.o \
@@ -185,9 +184,6 @@ $(BUILDDIR)/squake/net_loop.o : $(MOUNT_DIR)/net_loop.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/net_main.o : $(MOUNT_DIR)/net_main.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/net_vcr.o :  $(MOUNT_DIR)/net_vcr.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/net_udp.o :  $(MOUNT_DIR)/net_udp.c
