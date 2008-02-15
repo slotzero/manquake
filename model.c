@@ -1,4 +1,4 @@
-/* $Id: model.c,v 1.3 2008/02/11 07:15:21 slotzero Exp $
+/* $Id: model.c,v 1.4 2008/02/15 03:01:34 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -23,7 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // on the same machine.
 
 #include "quakedef.h"
-#include "r_local.h"
 
 model_t	*loadmodel;
 char	loadname[32];	// for hunk tags
@@ -45,6 +44,13 @@ int		mod_numknown;
 #define NL_UNREFERENCED	2
 
 unsigned short	d_8to16table[256];
+
+// normalizing factor so player model works out to about 1 pixel per triangle
+#define ALIAS_BASE_SIZE_RATIO		(1.0 / 11.0)
+
+#define MAX_BTOFPOLYS	5000	// FIXME: tune this
+#define MAXALIASVERTS	2000	// TODO: tune this
+#define MAX_LBM_HEIGHT	480
 
 /*
 ===============

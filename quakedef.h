@@ -1,4 +1,4 @@
-/* $Id: quakedef.h,v 1.13 2008/02/12 09:02:41 slotzero Exp $
+/* $Id: quakedef.h,v 1.14 2008/02/15 03:01:35 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -57,11 +57,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #else
 #define UNALIGNED_OK	0
 #endif
-
-// !!! if this is changed, it must be changed in d_ifacea.h too !!!
-#define CACHE_SIZE	32		// used to align key data structures
-
-
 
 #define	MINIMUM_MEMORY			0x550000
 #define	MINIMUM_MEMORY_LEVELPAK	(MINIMUM_MEMORY + 0x100000)
@@ -218,7 +213,6 @@ typedef struct
 #include "progs.h"
 #include "server.h"
 #include "model.h"
-#include "d_iface.h"
 #include "world.h"
 #include "keys.h"
 #include "console.h"
@@ -291,3 +285,5 @@ extern int			minimum_memory;
 
 extern char dequake[256];	// JPG 1.05 - dedicated console translation
 extern cvar_t pq_dequake;	// JPG 1.05 - dedicated console translation
+
+extern int		r_pixbytes;

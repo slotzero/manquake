@@ -377,10 +377,6 @@ SOURCE=.\cvar.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\d_iface.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\iplog.h
 # End Source File
 # Begin Source File
@@ -442,14 +438,6 @@ SOURCE=.\quakeasm.h
 # Begin Source File
 
 SOURCE=.\quakedef.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\r_local.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\r_shared.h
 # End Source File
 # Begin Source File
 

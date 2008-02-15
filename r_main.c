@@ -20,72 +20,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_main.c
 
 #include "quakedef.h"
-#include "r_local.h"
-
-int			r_pixbytes = 1;
-
-qboolean	r_dowarp, r_dowarpold, r_viewchanged;
-
-int			numbtofpolys;
-btofpoly_t	*pbtofpolys;
-mvertex_t	*r_pcurrentvertbase;
-
-int			r_maxsurfsseen, r_maxedgesseen, r_cnumsurfs;
-qboolean	r_surfsonstack;
-
-byte		*r_stack_start;
-
 
 //
 // view origin
 //
-vec3_t	vup, base_vup;
-vec3_t	vpn, base_vpn;
-vec3_t	vright, base_vright;
-vec3_t	r_origin;
-
-//
-// screen size info
-//
-refdef_t	r_refdef;
-float		xcenter, ycenter;
-float		xscale, yscale;
-float		xscaleinv, yscaleinv;
-float		xscaleshrink, yscaleshrink;
-float		aliasxscale, aliasyscale, aliasxcenter, aliasycenter;
-
-int		screenwidth;
-
-float	pixelAspect;
-float	screenAspect;
-float	verticalFieldOfView;
-float	xOrigin, yOrigin;
-
-mplane_t	screenedge[4];
+vec3_t	vup;
+vec3_t	vpn;
+vec3_t	vright;
 
 //
 // refresh flags
 //
-int		r_framecount = 1;	// so frame counts initialized to 0 don't match
-int		r_visframecount;
-int		r_polycount;
-int		r_drawnpolycount;
-int		r_wholepolycount;
-
-#define		VIEWMODNAME_LENGTH	256
-char		viewmodname[VIEWMODNAME_LENGTH+1];
-int			modcount;
-
-int			*pfrustum_indexes[4];
-int			r_frustum_indexes[4*6];
-
+int		r_pixbytes = 1;
 
 texture_t	*r_notexture_mip;
-
-float		r_aliastransition, r_resfudge;
-
-
-
 
 /*
 ==================

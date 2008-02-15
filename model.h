@@ -1,4 +1,4 @@
-/* $Id: model.h,v 1.1 2008/02/03 08:27:53 slotzero Exp $
+/* $Id: model.h,v 1.2 2008/02/15 03:01:34 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -49,10 +49,6 @@ typedef struct
 	vec3_t		position;
 } mvertex_t;
 
-#define	SIDE_FRONT	0
-#define	SIDE_BACK	1
-#define	SIDE_ON		2
-
 
 // plane_t structure
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
@@ -64,6 +60,7 @@ typedef struct mplane_s
 	byte	signbits;		// signx + signy<<1 + signz<<1
 	byte	pad[2];
 } mplane_t;
+
 
 typedef struct texture_s
 {
@@ -84,12 +81,14 @@ typedef struct texture_s
 #define SURF_DRAWTILED		0x20
 #define SURF_DRAWBACKGROUND	0x40
 
+
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct
 {
 	unsigned short	v[2];
 	unsigned int	cachededgeoffset;
 } medge_t;
+
 
 typedef struct
 {
@@ -98,6 +97,7 @@ typedef struct
 	texture_t	*texture;
 	int			flags;
 } mtexinfo_t;
+
 
 typedef struct msurface_s
 {
@@ -144,7 +144,6 @@ typedef struct mnode_s
 } mnode_t;
 
 
-
 typedef struct mleaf_s
 {
 // common with node
@@ -178,6 +177,7 @@ typedef struct
     int			available;
 } hull_t;
 
+
 /*
 ==============================================================================
 
@@ -197,6 +197,7 @@ typedef struct mspriteframe_s
 	byte	pixels[4];
 } mspriteframe_t;
 
+
 typedef struct
 {
 	int				numframes;
@@ -204,11 +205,13 @@ typedef struct
 	mspriteframe_t	*frames[1];
 } mspritegroup_t;
 
+
 typedef struct
 {
 	spriteframetype_t	type;
 	mspriteframe_t		*frameptr;
 } mspriteframedesc_t;
+
 
 typedef struct
 {
@@ -231,6 +234,7 @@ Alias models are position independent, so the cache manager can move them.
 ==============================================================================
 */
 
+
 typedef struct
 {
 	aliasframetype_t	type;
@@ -240,12 +244,14 @@ typedef struct
 	char				name[16];
 } maliasframedesc_t;
 
+
 typedef struct
 {
 	aliasskintype_t		type;
 	void				*pcachespot;
 	int					skin;
 } maliasskindesc_t;
+
 
 typedef struct
 {
@@ -254,12 +260,14 @@ typedef struct
 	int					frame;
 } maliasgroupframedesc_t;
 
+
 typedef struct
 {
 	int						numframes;
 	int						intervals;
 	maliasgroupframedesc_t	frames[1];
 } maliasgroup_t;
+
 
 typedef struct
 {
@@ -268,11 +276,13 @@ typedef struct
 	maliasskindesc_t	skindescs[1];
 } maliasskingroup_t;
 
+
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct mtriangle_s {
 	int					facesfront;
 	int					vertindex[3];
 } mtriangle_t;
+
 
 typedef struct {
 	int					model;
@@ -281,6 +291,7 @@ typedef struct {
 	int					triangles;
 	maliasframedesc_t	frames[1];
 } aliashdr_t;
+
 
 //===================================================================
 
@@ -298,6 +309,7 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 #define	EF_ZOMGIB	32			// small blood trail
 #define	EF_TRACER2	64			// orange split trail + rotate
 #define	EF_TRACER3	128			// purple trail
+
 
 typedef struct model_s
 {
@@ -369,6 +381,7 @@ typedef struct model_s
 	cache_user_t	cache;		// only access through Mod_Extradata
 
 } model_t;
+
 
 //============================================================================
 

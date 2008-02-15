@@ -121,7 +121,6 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/net_main.o \
 	$(BUILDDIR)/squake/net_udp.o \
 	$(BUILDDIR)/squake/net_bsd.o \
-	$(BUILDDIR)/squake/nonintel.o \
 	$(BUILDDIR)/squake/pr_cmds.o \
 	$(BUILDDIR)/squake/pr_edict.o \
 	$(BUILDDIR)/squake/pr_exec.o \
@@ -190,9 +189,6 @@ $(BUILDDIR)/squake/net_udp.o :  $(MOUNT_DIR)/net_udp.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/net_bsd.o :  $(MOUNT_DIR)/net_bsd.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/nonintel.o : $(MOUNT_DIR)/nonintel.c
 	$(DO_CC)
 
 $(BUILDDIR)/squake/pr_cmds.o :  $(MOUNT_DIR)/pr_cmds.c
