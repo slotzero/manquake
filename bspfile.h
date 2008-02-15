@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -18,19 +18,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-
 // upper design bounds
-
 #define	MAX_MAP_HULLS		4
-
 #define	MAX_MAP_MODELS		256
 #define	MAX_MAP_BRUSHES		4096
 #define	MAX_MAP_ENTITIES	1024
 #define	MAX_MAP_ENTSTRING	65536
-
 #define	MAX_MAP_PLANES		32767
 #define	MAX_MAP_NODES		32767		// because negative shorts are contents
-#define	MAX_MAP_CLIPNODES	32767		//
+#define	MAX_MAP_CLIPNODES	32767
 #define	MAX_MAP_LEAFS		8192
 #define	MAX_MAP_VERTS		65535
 #define	MAX_MAP_FACES		65535
@@ -42,16 +38,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	MAX_MAP_MIPTEX		0x200000
 #define	MAX_MAP_LIGHTING	0x100000
 #define	MAX_MAP_VISIBILITY	0x100000
-
 #define	MAX_MAP_PORTALS		65536
 
 // key / value pair sizes
-
 #define	MAX_KEY		32
 #define	MAX_VALUE	1024
 
 //=============================================================================
-
 
 #define BSPVERSION	29
 #define	TOOLVERSION	2
@@ -90,7 +83,7 @@ typedef struct
 
 typedef struct
 {
-	int			version;	
+	int			version;
 	lump_t		lumps[HEADER_LUMPS];
 } dheader_t;
 
@@ -191,7 +184,7 @@ typedef struct
 	short		side;
 
 	int			firstedge;		// we must support > 64k edges
-	short		numedges;	
+	short		numedges;
 	short		texinfo;
 
 // lighting info
@@ -223,102 +216,3 @@ typedef struct
 
 	byte		ambient_level[NUM_AMBIENTS];
 } dleaf_t;
-
-
-//============================================================================
-
-#ifndef QUAKE_GAME
-
-#define	ANGLE_UP	-1
-#define	ANGLE_DOWN	-2
-
-
-// the utilities get to be lazy and just use large static arrays
-
-extern	int			nummodels;
-extern	dmodel_t	dmodels[MAX_MAP_MODELS];
-
-extern	int			visdatasize;
-extern	byte		dvisdata[MAX_MAP_VISIBILITY];
-
-extern	int			lightdatasize;
-extern	byte		dlightdata[MAX_MAP_LIGHTING];
-
-extern	int			texdatasize;
-extern	byte		dtexdata[MAX_MAP_MIPTEX]; // (dmiptexlump_t)
-
-extern	int			entdatasize;
-extern	char		dentdata[MAX_MAP_ENTSTRING];
-
-extern	int			numleafs;
-extern	dleaf_t		dleafs[MAX_MAP_LEAFS];
-
-extern	int			numplanes;
-extern	dplane_t	dplanes[MAX_MAP_PLANES];
-
-extern	int			numvertexes;
-extern	dvertex_t	dvertexes[MAX_MAP_VERTS];
-
-extern	int			numnodes;
-extern	dnode_t		dnodes[MAX_MAP_NODES];
-
-extern	int			numtexinfo;
-extern	texinfo_t	texinfo[MAX_MAP_TEXINFO];
-
-extern	int			numfaces;
-extern	dface_t		dfaces[MAX_MAP_FACES];
-
-extern	int			numclipnodes;
-extern	dclipnode_t	dclipnodes[MAX_MAP_CLIPNODES];
-
-extern	int			numedges;
-extern	dedge_t		dedges[MAX_MAP_EDGES];
-
-extern	int			nummarksurfaces;
-extern	unsigned short	dmarksurfaces[MAX_MAP_MARKSURFACES];
-
-extern	int			numsurfedges;
-extern	int			dsurfedges[MAX_MAP_SURFEDGES];
-
-
-void DecompressVis (byte *in, byte *decompressed);
-int CompressVis (byte *vis, byte *dest);
-
-void	LoadBSPFile (char *filename);
-void	WriteBSPFile (char *filename);
-void	PrintBSPFileSizes (void);
-
-//===============
-
-
-typedef struct epair_s
-{
-	struct epair_s	*next;
-	char	*key;
-	char	*value;
-} epair_t;
-
-typedef struct
-{
-	vec3_t		origin;
-	int			firstbrush;
-	int			numbrushes;
-	epair_t		*epairs;
-} entity_t;
-
-extern	int			num_entities;
-extern	entity_t	entities[MAX_MAP_ENTITIES];
-
-void	ParseEntities (void);
-void	UnparseEntities (void);
-
-void 	SetKeyValue (entity_t *ent, char *key, char *value);
-char 	*ValueForKey (entity_t *ent, char *key);
-// will return "" if not present
-
-vec_t	FloatForKey (entity_t *ent, char *key);
-void 	GetVectorForKey (entity_t *ent, char *key, vec3_t vec);
-
-epair_t *ParseEpair (void);
-
-#endif

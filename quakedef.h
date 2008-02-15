@@ -1,4 +1,4 @@
-/* $Id: quakedef.h,v 1.14 2008/02/15 03:01:35 slotzero Exp $
+/*
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -18,10 +18,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // quakedef.h -- primary header for client
-
-//#define	GLTEST			// experimental stuff
-
-#define	QUAKE_GAME			// as opposed to utilities
 
 #define PROQUAKE_BUILD		2.19	// Slot Zero 3.50-1  Added this.
 #define PROQUAKE_VERSION	3.50	// JPG - added this
@@ -88,8 +84,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	MAX_LIGHTSTYLES	64
 #define	MAX_MODELS		256			// these are sent over the net as bytes
 #define	MAX_SOUNDS		256			// so they cannot be blindly increased
-
-#define	SAVEGAME_COMMENT_LENGTH	39
 
 #define	MAX_STYLESTRING	64
 

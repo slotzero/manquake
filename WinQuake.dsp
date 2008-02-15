@@ -337,14 +337,6 @@ SOURCE=.\zone.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
 # Begin Source File
 
-SOURCE=.\anorm_dots.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\anorms.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\bspfile.h
 # End Source File
 # Begin Source File
