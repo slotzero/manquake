@@ -1,4 +1,4 @@
-/* $Id: model.h,v 1.2 2008/02/15 03:01:34 slotzero Exp $
+/* $Id: model.h,v 1.3 2008/02/15 05:34:15 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -43,7 +43,7 @@ BRUSH MODELS
 //
 // in memory representation
 //
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
+// !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct
 {
 	vec3_t		position;
@@ -82,7 +82,7 @@ typedef struct texture_s
 #define SURF_DRAWBACKGROUND	0x40
 
 
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
+// !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct
 {
 	unsigned short	v[2];
@@ -277,7 +277,7 @@ typedef struct
 } maliasskingroup_t;
 
 
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
+// !!! if this is changed, it must be changed in asm_i386.h !!!
 typedef struct mtriangle_s {
 	int					facesfront;
 	int					vertindex[3];

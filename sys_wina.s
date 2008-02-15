@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // sys_wina.s
 // x86 assembly-language Win-dependent routines.
 
-#define GLQUAKE	1	// don't include unneeded defs
 #include "asm_i386.h"
 #include "quakeasm.h"
 
@@ -113,4 +112,3 @@ C(Sys_SetFPCW):
 	movl	%eax,ceil_cw
 
 	ret
-

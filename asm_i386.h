@@ -1,4 +1,4 @@
-/* $Id: asm_i386.h,v 1.1 2008/02/03 08:27:43 slotzero Exp $
+/* $Id: asm_i386.h,v 1.2 2008/02/15 05:34:15 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -67,34 +67,38 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	nd_numfaces		36
 #define nd_size			40
 
-// sfxcache_t structure
-// !!! if this is changed, it much be changed in sound.h too !!!
-#define sfxc_length		0
-#define sfxc_loopstart	4
-#define sfxc_speed		8
-#define sfxc_width		12
-#define sfxc_stereo		16
-#define sfxc_data		20
+// MOVED ->
 
-// channel_t structure
-// !!! if this is changed, it much be changed in sound.h too !!!
-#define ch_sfx			0
-#define ch_leftvol		4
-#define ch_rightvol		8
-#define ch_end			12
-#define ch_pos			16
-#define ch_looping		20
-#define ch_entnum		24
-#define ch_entchannel	28
-#define ch_origin		32
-#define ch_dist_mult	44
-#define ch_master_vol	48
-#define ch_size			52
+// stvert_t structure
+// !!! if this is changed, it must be changed in modelgen.h too !!!
+#define stv_onseam	0
+#define stv_s		4
+#define stv_t		8
+#define stv_size	12
 
-// portable_samplepair_t structure
-// !!! if this is changed, it much be changed in sound.h too !!!
-#define psp_left		0
-#define psp_right		4
-#define psp_size		8
+// trivertx_t structure
+// !!! if this is changed, it must be changed in modelgen.h too !!!
+#define tv_v				0
+#define tv_lightnormalindex	3
+#define tv_size				4
+
+// medge_t structure
+// !!! if this is changed, it must be changed in model.h too !!!
+#define me_v				0
+#define me_cachededgeoffset	4
+#define me_size				8
+
+// mvertex_t structure
+// !!! if this is changed, it must be changed in model.h too !!!
+#define mv_position		0
+#define mv_size			12
+
+// mtriangle_t structure
+// !!! if this is changed, it must be changed in model.h too !!!
+#define mtri_facesfront		0
+#define mtri_vertindex		4
+#define mtri_size			16	// !!! if this changes, array indexing in !!!
+								// !!! d_polysa.s must be changed to match !!!
+#define mtri_shift			4
 
 #endif
