@@ -23,12 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
 
-A server can allways be started, even if the system started out as a client
-to a remote system.
-
-A client can NOT be started if the system started as a dedicated server.
-
-Memory is cleared / released when a server or client begins, not when they end.
+Memory is cleared / released when a server begins, not when it ends.
 
 */
 
@@ -37,12 +32,9 @@ quakeparms_t host_parms;
 qboolean	host_initialized;		// true if into command execution
 
 double		host_frametime;
-double		host_time;
 double		realtime;				// without any filtering or bounding
 double		oldrealtime;			// last frame run
-double		last_angle_time;		// JPG - for smooth chasecam
 
-int			host_framecount;
 int			host_hunklevel;
 int			minimum_memory;
 
@@ -50,30 +42,20 @@ client_t	*host_client;			// current client
 
 jmp_buf 	host_abortserver;
 
-byte		*host_colormap;
-
 cvar_t	host_framerate = {"host_framerate","0"};	// set for slow motion
-cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
-
 cvar_t	sys_ticrate = {"sys_ticrate","0.05"};
 cvar_t	serverprofile = {"serverprofile","0"};
-
 cvar_t	fraglimit = {"fraglimit","0",false,true};
 cvar_t	timelimit = {"timelimit","0",false,true};
 cvar_t	teamplay = {"teamplay","0",false,true};
-
 cvar_t	samelevel = {"samelevel","0"};
 cvar_t	noexit = {"noexit","0",false,true};
 cvar_t	developer = {"developer","0"};
-
 cvar_t	skill = {"skill","1"};						// 0 - 3
 cvar_t	deathmatch = {"deathmatch","0"};			// 0, 1, or 2
 cvar_t	coop = {"coop","0"};			// 0 or 1
-
 cvar_t	pausable = {"pausable","1"};
-
 cvar_t	temp1 = {"temp1","0"};
-
 cvar_t	proquake = {"proquake", "L33T"}; // JPG - added this
 
 // JPG - spam protection.  If a client's msg's/second exceeds spam rate
@@ -138,7 +120,7 @@ void Host_EndGame (char *message, ...)
 ================
 Host_Error
 
-This shuts down both the client and server
+This shuts down the server
 ================
 */
 void Host_Error (char *error, ...)
@@ -244,6 +226,7 @@ void Host_InitDeQuake (void)
 	dequake[141] = '>';
 }
 
+
 /*
 =======================
 Host_InitLocal
@@ -254,11 +237,8 @@ void Host_InitLocal (void)
 	Host_InitCommands ();
 
 	Cvar_RegisterVariable (&host_framerate);
-	Cvar_RegisterVariable (&host_speeds);
-
 	Cvar_RegisterVariable (&sys_ticrate);
 	Cvar_RegisterVariable (&serverprofile);
-
 	Cvar_RegisterVariable (&fraglimit);
 	Cvar_RegisterVariable (&timelimit);
 	Cvar_RegisterVariable (&teamplay);
@@ -268,28 +248,20 @@ void Host_InitLocal (void)
 	Cvar_RegisterVariable (&developer);
 	Cvar_RegisterVariable (&deathmatch);
 	Cvar_RegisterVariable (&coop);
-
 	Cvar_RegisterVariable (&pausable);
-
 	Cvar_RegisterVariable (&temp1);
-
-	Cvar_RegisterVariable (&proquake);		// JPG - added this so QuakeC can find it
-	Cvar_RegisterVariable (&pq_spam_rate);		// JPG - spam protection
-	Cvar_RegisterVariable (&pq_spam_grace);		// JPG - spam protection
-	Cvar_RegisterVariable (&pq_tempmute);		// JPG 3.20 - temporary muting
-	Cvar_RegisterVariable (&pq_showedict);		// JPG 3.11 - feature request from Slot Zero
-	Cvar_RegisterVariable (&pq_dequake);		// JPG 1.05 - translate dedicated console output to plain text
-	Cvar_RegisterVariable (&pq_maxfps);		// JPG 1.05
-	Cvar_RegisterVariable (&pq_logbinds);		// JPG 3.20 - log player binds
+	Cvar_RegisterVariable (&proquake);				// JPG - added this so QuakeC can find it
+	Cvar_RegisterVariable (&pq_spam_rate);			// JPG - spam protection
+	Cvar_RegisterVariable (&pq_spam_grace);			// JPG - spam protection
+	Cvar_RegisterVariable (&pq_tempmute);			// JPG 3.20 - temporary muting
+	Cvar_RegisterVariable (&pq_showedict);			// JPG 3.11 - feature request from Slot Zero
+	Cvar_RegisterVariable (&pq_dequake);			// JPG 1.05 - translate dedicated console output to plain text
+	Cvar_RegisterVariable (&pq_maxfps);				// JPG 1.05
+	Cvar_RegisterVariable (&pq_logbinds);			// JPG 3.20 - log player binds
 	Cvar_RegisterVariable (&pq_mute_spam_client);	// Slot Zero 3.50-2  Mute spamming client.
-	Cvar_RegisterVariable (&pq_ipmask);		// Slot Zero 3.50-2  IP masking.
+	Cvar_RegisterVariable (&pq_ipmask);				// Slot Zero 3.50-2  IP masking.
 
 	Host_FindMaxClients ();
-
-	host_time = 1.0;		// so a think at time 0 won't get called
-
-	last_angle_time = 0.0;  // JPG - smooth chasecam
-
 	Host_InitDeQuake();	// JPG 1.05 - initialize dequake array
 }
 
@@ -315,6 +287,7 @@ void SV_ClientPrintf (char *fmt, ...)
 	MSG_WriteString (&host_client->message, string);
 }
 
+
 /*
 =================
 SV_BroadcastPrintf
@@ -333,12 +306,15 @@ void SV_BroadcastPrintf (char *fmt, ...)
 	va_end (argptr);
 
 	for (i=0 ; i<svs.maxclients ; i++)
+	{
 		if (svs.clients[i].active && svs.clients[i].spawned)
 		{
 			MSG_WriteByte (&svs.clients[i].message, svc_print);
 			MSG_WriteString (&svs.clients[i].message, string);
 		}
+	}
 }
+
 
 /*
 =================
@@ -359,6 +335,7 @@ void Host_ClientCommands (char *fmt, ...)
 	MSG_WriteByte (&host_client->message, svc_stufftext);
 	MSG_WriteString (&host_client->message, string);
 }
+
 
 /*
 =====================
@@ -435,6 +412,7 @@ void SV_DropClient (qboolean crash)
 	}
 }
 
+
 /*
 ==================
 Host_ShutdownServer
@@ -506,7 +484,7 @@ void Host_ShutdownServer(qboolean crash)
 ================
 Host_ClearMemory
 
-This clears all the memory used by both the client and server, but does
+This clears all the memory used by the server, but does
 not reinitialize anything.
 ================
 */
@@ -584,54 +562,6 @@ Host_ServerFrame
 
 ==================
 */
-#ifdef FPS_20
-
-void _Host_ServerFrame (void)
-{
-// run the world state
-	pr_global_struct->frametime = host_frametime;
-
-// read client messages
-	SV_RunClients ();
-
-// move things around and think
-// always pause in single player if in console or menus
-	if (!sv.paused && (svs.maxclients > 1 || key_dest == key_game) )
-		SV_Physics ();
-}
-
-void Host_ServerFrame (void)
-{
-	float	save_host_frametime;
-	float	temp_host_frametime;
-
-// run the world state
-	pr_global_struct->frametime = host_frametime;
-
-// set the time and clear the general datagram
-	SV_ClearDatagram ();
-
-// check for new clients
-	SV_CheckForNewClients ();
-
-	temp_host_frametime = save_host_frametime = host_frametime;
-	while(temp_host_frametime > (1.0/72.0))
-	{
-		if (temp_host_frametime > 0.05)
-			host_frametime = 0.05;
-		else
-			host_frametime = temp_host_frametime;
-		temp_host_frametime -= host_frametime;
-		_Host_ServerFrame ();
-	}
-	host_frametime = save_host_frametime;
-
-// send all messages to the clients
-	SV_SendClientMessages ();
-}
-
-#else
-
 void Host_ServerFrame (void)
 {
 // JPG 3.00 - stuff the port number into the server console once every minute
@@ -656,15 +586,13 @@ void Host_ServerFrame (void)
 	SV_RunClients ();
 
 // move things around and think
-// always pause in single player if in console or menus
-	if (!sv.paused && (svs.maxclients > 1 || key_dest == key_game) )
+	if (!sv.paused)
 		SV_Physics ();
 
 // send all messages to the clients
 	SV_SendClientMessages ();
 }
 
-#endif
 
 /*
 ==================
@@ -675,11 +603,6 @@ Runs all active servers
 */
 void _Host_Frame (float time)
 {
-	static double		time1 = 0;
-	static double		time2 = 0;
-	static double		time3 = 0;
-	int			pass1, pass2, pass3;
-
 	if (setjmp (host_abortserver))
 		return;			// something bad happened, or the server disconnected
 
@@ -698,44 +621,11 @@ void _Host_Frame (float time)
 
 	NET_Poll();
 
-//-------------------
-//
-// server operations
-//
-//-------------------
-
 // check for commands typed to the host
 	Host_GetConsoleCommands ();
 
 	if (sv.active)
 		Host_ServerFrame ();
-
-//-------------------
-//
-// client operations
-//
-//-------------------
-
-	host_time += host_frametime;
-
-// update video
-	if (host_speeds.value)
-		time1 = Sys_FloatTime ();
-
-	if (host_speeds.value)
-		time2 = Sys_FloatTime ();
-
-	if (host_speeds.value)
-	{
-		pass1 = (time1 - time3)*1000;
-		time3 = Sys_FloatTime ();
-		pass2 = (time2 - time1)*1000;
-		pass3 = (time3 - time2)*1000;
-		Con_Printf ("%3i tot %3i server %3i gfx %3i snd\n",
-					pass1+pass2+pass3, pass1, pass2, pass3);
-	}
-
-	host_framecount++;
 }
 
 void Host_Frame (float time)
