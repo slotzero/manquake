@@ -268,6 +268,9 @@ cvar_t	r_polyblend = {"r_polyblend", "1"};
 cvar_t	con_notifytime = {"con_notifytime","3"};
 cvar_t	cl_name = {"cl_name", "player", true};
 cvar_t	cl_color = {"_cl_color", "0", true};
+cvar_t	pq_confilter = {"pq_confilter", "0"};
+cvar_t	pq_timestamp = {"pq_timestamp", "0"};
+cvar_t	pq_removecr = {"pq_removecr", "1"};
 
 
 /*
@@ -317,6 +320,9 @@ void Cvar_Init (void)
 
 	// from console.c
 	Cvar_RegisterVariable (&con_notifytime);
+	Cvar_RegisterVariable (&pq_confilter);
+	Cvar_RegisterVariable (&pq_timestamp);
+	Cvar_RegisterVariable (&pq_removecr);
 
 	// for chat messages
 	Cvar_RegisterVariable (&cl_name);

@@ -453,10 +453,6 @@ SOURCE=.\sys.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\vid.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\wad.h
 # End Source File
 # Begin Source File
@@ -531,14 +527,6 @@ SOURCE=..\release\pq_readme.txt
 # Begin Source File
 
 SOURCE=..\release\pqsrc_readme.txt
-# End Source File
-# Begin Source File
-
-SOURCE=.\progdefs.q1
-# End Source File
-# Begin Source File
-
-SOURCE=.\progdefs.q2
 # End Source File
 # Begin Source File
 

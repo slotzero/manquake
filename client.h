@@ -35,6 +35,9 @@ typedef struct
 	char	map[MAX_STYLESTRING];
 } lightstyle_t;
 
+#define VID_CBITS	6
+#define VID_GRADES	(1 << VID_CBITS)
+
 typedef struct
 {
 	char	name[MAX_SCOREBOARDNAME];

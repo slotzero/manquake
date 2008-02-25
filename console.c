@@ -45,10 +45,6 @@ int			con_current;		// where next message will be printed
 int			con_x;				// offset in current line for next print
 char		*con_text=0;
 
-cvar_t		pq_confilter = {"pq_confilter", "0"};	// JPG 1.05 - filter out the "you got" messages
-cvar_t		pq_timestamp = {"pq_timestamp", "0"};	// JPG 1.05 - timestamp player binds during a match
-cvar_t		pq_removecr = {"pq_removecr", "1"};		// JPG 3.20 - remove \r from console output
-
 #define	NUM_CON_TIMES 4
 float		con_times[NUM_CON_TIMES];	// realtime time the line was generated
 								// for transparent notify lines
@@ -64,8 +60,6 @@ extern	int		key_linepos;
 qboolean	con_initialized;
 
 char logfilename[128];	// JPG - support for different filenames
-
-viddef_t	vid;
 
 
 /*
@@ -106,7 +100,7 @@ void Con_CheckResize (void)
 	int		i, j, width, oldwidth, oldtotallines, numlines, numchars;
 	char	tbuf[CON_TEXTSIZE];
 
-	width = (vid.width >> 3) - 2;
+	width = (0 >> 3) - 2;
 
 	if (width == con_linewidth)
 		return;
@@ -220,10 +214,6 @@ void Con_Init (void)
 //
 // register our commands
 //
-	Cvar_RegisterVariable (&pq_confilter);	// JPG 1.05 - make "you got" messages temporary
-	Cvar_RegisterVariable (&pq_timestamp);	// JPG 1.05 - timestamp player binds during a match
-	Cvar_RegisterVariable (&pq_removecr);	// JPG 3.20 - timestamp player binds during a match
-
 	Cmd_AddCommand ("clear", Con_Clear_f);
 	con_initialized = true;
 }
@@ -263,79 +253,9 @@ void Con_Print (char *txt)
 	static int	cr;
 	int		mask;
 
-	static int fixline = 0;
-
 	//con_backscroll = 0;  // JPG - half of a fix for an annoying problem
 
-	// JPG 1.05 - make the "You got" messages temporary
-	if (pq_confilter.value)
-		fixline |= !strcmp(txt, "You got armor\n") ||
-				   !strcmp(txt, "You receive ") ||
-				   !strcmp(txt, "You got the ") ||
-				   !strcmp(txt, "no weapon.\n") ||
-				   !strcmp(txt, "not enough ammo.\n");
-
-	if (txt[0] == 1)
-	{
-		mask = 128;		// go to colored text
-	// play talk wav
-		txt++;
-
-		// JPG 1.05 - timestamp player binds during a match (unless the bind already has a time in it)
-		if ((!cls.netcon || cls.netcon->mod != MOD_PROQUAKE || *txt == '(') &&		// JPG 3.30 - fixed old bug hit by some servers
-			!con_x && pq_timestamp.value && (cl.minutes || cl.seconds) && cl.seconds < 128)
-		{
-			int minutes, seconds, match_time, msg_time;
-			char buff[16];
-			char *ch;
-
-			if (cl.match_pause_time)
-				match_time = ceil(60.0 * cl.minutes + cl.seconds - (cl.match_pause_time - cl.last_match_time));
-			else
-				match_time = ceil(60.0 * cl.minutes + cl.seconds - (cl.time - cl.last_match_time));
-			minutes = match_time / 60;
-			seconds = match_time - 60 * minutes;
-
-			msg_time = -10;
-			ch = txt + 2;
-			if (ch[0] && ch[1] && ch[2])
-			{
-				while (ch[2])
-				{
-					if (ch[0] == ':' && DIGIT(ch[1]) && DIGIT(ch[2]) && DIGIT(ch[-1]))
-					{
-						msg_time = 60 * (ch[-1] - '0') + 10 * (ch[1] - '0') + (ch[2] - '0');
-						if (DIGIT(ch[-2]))
-							msg_time += 600 * (ch[-2] - '0');
-						break;
-					}
-					ch++;
-				}
-			}
-			if (msg_time < match_time - 2 || msg_time > match_time + 2)
-			{
-				if (pq_timestamp.value == 1)
-					sprintf(buff, "%d%c%02d", minutes, 'X' + 128, seconds);
-				else
-					sprintf(buff, "%02d", seconds);
-
-				if (cr)
-				{
-					con_current--;
-					cr = false;
-				}
-				Con_Linefeed ();
-				if (con_current >= 0)
-					con_times[con_current % NUM_CON_TIMES] = realtime;
-
-				y = con_current % con_totallines;
-				for (ch = buff ; *ch ; ch++)
-					con_text[y*con_linewidth+con_x++] = *ch - 30;
-				con_text[y*con_linewidth+con_x++] = ' ';
-			}
-		}
-	}
-	else if (txt[0] == 2)
+	if (txt[0] == 1 || txt[0] == 2)
 	{
 		mask = 128;		// go to colored text
 		txt++;
@@ -362,7 +282,6 @@ void Con_Print (char *txt)
 			cr = false;
 		}
 
-
 		if (!con_x)
 		{
 			Con_Linefeed ();
@@ -375,19 +294,10 @@ void Con_Print (char *txt)
 		{
 		case '\n':
 			con_x = 0;
-			cr = fixline;	// JPG 1.05 - make the "you got" messages temporary
-			fixline = 0;	// JPG
 			break;
 
 		case '\r':
-			if (pq_removecr.value)	// JPG 3.20 - optionally remove '\r'
-				c += 128;
-			else
-			{
-				con_x = 0;
-				cr = 1;
-				break;
-			}
+			c += 128;
 
 		default:	// display character and advance
 			y = con_current % con_totallines;
@@ -397,7 +307,6 @@ void Con_Print (char *txt)
 				con_x = 0;
 			break;
 		}
-
 	}
 }
 

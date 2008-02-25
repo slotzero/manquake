@@ -180,7 +180,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "common.h"
 #include "bspfile.h"
-#include "vid.h"
 #include "sys.h"
 #include "zone.h"
 #include "mathlib.h"
