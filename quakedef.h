@@ -207,7 +207,6 @@ typedef struct
 #include "server.h"
 #include "model.h"
 #include "world.h"
-#include "keys.h"
 #include "console.h"
 #include "crc.h"
 #include "iplog.h"		// JPG 1.05 - ip address logging

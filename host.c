@@ -706,7 +706,6 @@ void Host_Init (quakeparms_t *parms)
 	COM_Init (parms->basedir);
 	Host_InitLocal ();
 	W_LoadWadFile ("gfx.wad");
-	Key_Init ();
 	Con_Init ();
 	PR_Init ();
 	Mod_Init ();

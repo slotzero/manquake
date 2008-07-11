@@ -130,10 +130,6 @@ SOURCE=.\iplog.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\keys.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\math.s
 
 !IF  "$(CFG)" == "winquake - Win32 Release"
@@ -370,10 +366,6 @@ SOURCE=.\cvar.h
 # Begin Source File
 
 SOURCE=.\iplog.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\keys.h
 # End Source File
 # Begin Source File
 
