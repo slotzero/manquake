@@ -1267,128 +1267,6 @@ void Host_Give_f (void)
     }
 }
 
-edict_t	*FindViewthing (void)
-{
-	int		i;
-	edict_t	*e;
-
-	for (i=0 ; i<sv.num_edicts ; i++)
-	{
-		e = EDICT_NUM(i);
-		if ( !strcmp (pr_strings + e->v.classname, "viewthing") )
-			return e;
-	}
-	Con_Printf ("No viewthing on map\n");
-	return NULL;
-}
-
-/*
-==================
-Host_Viewmodel_f
-==================
-*/
-void Host_Viewmodel_f (void)
-{
-	edict_t	*e;
-	model_t	*m;
-
-	e = FindViewthing ();
-	if (!e)
-		return;
-
-	m = Mod_ForName (Cmd_Argv(1), false);
-	if (!m)
-	{
-		Con_Printf ("Can't load %s\n", Cmd_Argv(1));
-		return;
-	}
-
-	e->v.frame = 0;
-	cl.model_precache[(int)e->v.modelindex] = m;
-}
-
-/*
-==================
-Host_Viewframe_f
-==================
-*/
-void Host_Viewframe_f (void)
-{
-	edict_t	*e;
-	int		f;
-	model_t	*m;
-
-	e = FindViewthing ();
-	if (!e)
-		return;
-	m = cl.model_precache[(int)e->v.modelindex];
-
-	f = atoi(Cmd_Argv(1));
-	if (f >= m->numframes)
-		f = m->numframes-1;
-
-	e->v.frame = f;
-}
-
-
-void PrintFrameName (model_t *m, int frame)
-{
-	aliashdr_t 			*hdr;
-	maliasframedesc_t	*pframedesc;
-
-	hdr = (aliashdr_t *)Mod_Extradata (m);
-	if (!hdr)
-		return;
-	pframedesc = &hdr->frames[frame];
-
-	Con_Printf ("frame %i: %s\n", frame, pframedesc->name);
-}
-
-/*
-==================
-Host_Viewnext_f
-==================
-*/
-void Host_Viewnext_f (void)
-{
-	edict_t	*e;
-	model_t	*m;
-
-	e = FindViewthing ();
-	if (!e)
-		return;
-	m = cl.model_precache[(int)e->v.modelindex];
-
-	e->v.frame = e->v.frame + 1;
-	if (e->v.frame >= m->numframes)
-		e->v.frame = m->numframes - 1;
-
-	PrintFrameName (m, e->v.frame);
-}
-
-/*
-==================
-Host_Viewprev_f
-==================
-*/
-void Host_Viewprev_f (void)
-{
-	edict_t	*e;
-	model_t	*m;
-
-	e = FindViewthing ();
-	if (!e)
-		return;
-
-	m = cl.model_precache[(int)e->v.modelindex];
-
-	e->v.frame = e->v.frame - 1;
-	if (e->v.frame < 0)
-		e->v.frame = 0;
-
-	PrintFrameName (m, e->v.frame);
-}
-
 
 /*
 ==================
@@ -1397,6 +1275,9 @@ Host_Startdemos_f
 */
 void Host_Startdemos_f (void)
 {
+	Cbuf_InsertText ("exec config.cfg\n");
+	Cbuf_InsertText ("exec autoexec.cfg\n");
+
 	if (!sv.active)
 		Cbuf_AddText ("map start\n");
 }
@@ -1558,16 +1439,8 @@ void Host_InitCommands (void)
 	Cmd_AddCommand ("kick", Host_Kick_f);
 	Cmd_AddCommand ("ping", Host_Ping_f);
 	Cmd_AddCommand ("give", Host_Give_f);
-
 	Cmd_AddCommand ("startdemos", Host_Startdemos_f);
-
-	Cmd_AddCommand ("viewmodel", Host_Viewmodel_f);
-	Cmd_AddCommand ("viewframe", Host_Viewframe_f);
-	Cmd_AddCommand ("viewnext", Host_Viewnext_f);
-	Cmd_AddCommand ("viewprev", Host_Viewprev_f);
-
 	Cmd_AddCommand ("mcache", Mod_Print);
-
 	Cmd_AddCommand ("identify", Host_Identify_f);	// JPG 1.05 - player IP logging
 	Cmd_AddCommand ("ipdump", IPLog_Dump);			// JPG 1.05 - player IP logging
 	Cmd_AddCommand ("ipmerge", IPLog_Import);		// JPG 3.00 - import an IP data file

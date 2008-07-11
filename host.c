@@ -719,7 +719,7 @@ void Host_Init (quakeparms_t *parms)
 
 	R_InitTextures ();		// needed even for dedicated servers
 
-	Cbuf_InsertText ("exec quake.rc\n");
+	Cbuf_InsertText ("startdemos\n");
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
