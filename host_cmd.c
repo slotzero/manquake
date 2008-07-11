@@ -1277,6 +1277,7 @@ void Host_Startdemos_f (void)
 {
 	Cbuf_InsertText ("exec config.cfg\n");
 	Cbuf_InsertText ("exec autoexec.cfg\n");
+	Cbuf_InsertText ("stuffcmds\n");
 
 	if (!sv.active)
 		Cbuf_AddText ("map start\n");
