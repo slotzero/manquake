@@ -30,8 +30,6 @@ key up events are sent even if in console mode
 char	key_lines[32][MAXCMDLINE];
 int		key_linepos;
 
-keydest_t		key_dest;
-
 char	*keybindings[256];
 qboolean	consolekeys[256];	// if true, can't be rebound while in console
 qboolean	menubound[256];	// if true, can't be rebound while in menu

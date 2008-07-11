@@ -118,11 +118,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define K_MWHEELUP		241
 #define K_MWHEELDOWN	242
 
-
-
-typedef enum {key_game, key_console, key_message, key_menu} keydest_t;
-
-extern keydest_t	key_dest;
 extern char *keybindings[256];
 
 void Key_Init (void);

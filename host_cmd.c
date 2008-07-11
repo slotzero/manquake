@@ -309,8 +309,6 @@ void Host_Map_f (void)
 
 	Host_ShutdownServer(false);
 
-	key_dest = key_game;			// remove console or menu
-
 	cls.mapstring[0] = 0;
 	for (i=0 ; i<Cmd_Argc() ; i++)
 	{
