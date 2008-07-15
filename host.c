@@ -86,11 +86,6 @@ cvar_t	pq_mute_spam_client = {"pq_mute_spam_client", "0"};
 cvar_t	pq_ipmask = {"pq_ipmask", "1"};
 
 
-// from cl_main.c, put these here for now..
-client_static_t	cls;
-client_state_t	cl;
-
-
 /*
 ================
 Host_EndGame
@@ -495,9 +490,7 @@ void Host_ClearMemory (void)
 	if (host_hunklevel)
 		Hunk_FreeToLowMark (host_hunklevel);
 
-	cls.signon = 0;
 	memset (&sv, 0, sizeof(sv));
-	memset (&cl, 0, sizeof(cl));
 }
 
 

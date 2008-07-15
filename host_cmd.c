@@ -80,7 +80,6 @@ void Host_Status_f (void)
 	{
 		if (!sv.active)
 		{
-			cl.console_status = true;	// JPG 1.05 - added this;
 			Cmd_ForwardToServer ();
 			return;
 		}
@@ -309,14 +308,6 @@ void Host_Map_f (void)
 
 	Host_ShutdownServer(false);
 
-	cls.mapstring[0] = 0;
-	for (i=0 ; i<Cmd_Argc() ; i++)
-	{
-		strcat (cls.mapstring, Cmd_Argv(i));
-		strcat (cls.mapstring, " ");
-	}
-	strcat (cls.mapstring, "\n");
-
 	svs.serverflags = 0;			// haven't completed an episode yet
 	strcpy (name, Cmd_Argv(1));
 
@@ -378,37 +369,8 @@ void Host_Restart_f (void)
 	SV_SpawnServer (mapname);
 }
 
-/*
-==================
-Host_Reconnect_f
-
-This command causes the client to wait for the signon messages again.
-This is sent just before a server changes levels
-==================
-*/
-void Host_Reconnect_f (void)
-{
-	cls.signon = 0;		// need new connection messages
-}
 
 extern char server_name[MAX_QPATH];	// JPG 3.50
-
-/*
-=====================
-Host_Connect_f
-
-User command to connect to server
-=====================
-*/
-void Host_Connect_f (void)
-{
-	char	name[MAX_QPATH];
-
-	strcpy (name, Cmd_Argv(1));
-	Host_Reconnect_f ();
-
-	strcpy(server_name, name);	// JPG 3.50
-}
 
 
 /*
@@ -1336,6 +1298,7 @@ void Host_Identify_f (void)
 		Con_Printf("usage: identify <player number or name>\n");
 		return;
 	}
+
 	if (sscanf(Cmd_Argv(1), "%d.%d.%d", &a, &b, &c) == 3)
 	{
 		Con_Printf("known aliases for %d.%d.%d:\n", a, b, c);
@@ -1354,15 +1317,8 @@ void Host_Identify_f (void)
 					break;
 			}
 		}
-		else
-		{
-			for (i = 0 ; i < cl.maxclients ; i++)
-			{
-				if (unfun_match(Cmd_Argv(1), cl.scores[i].name))
-					break;
-			}
-		}
 	}
+
 	if (sv.active)
 	{
 		if (i < 0 || i >= svs.maxclients || !svs.clients[i].active)
@@ -1379,23 +1335,6 @@ void Host_Identify_f (void)
 		name[15] = 0;
 		Con_Printf("known aliases for %s:\n", name);
 		IPLog_Identify((a << 16) | (b << 8) | c);
-	}
-	else
-	{
-		if (i < 0 || i >= cl.maxclients || !cl.scores[i].name[0])
-		{
-			Con_Printf("No such player\n");
-			return;
-		}
-		if (!cl.scores[i].addr)
-		{
-			Con_Printf("No IP information for %.15s\nUse 'status'\n", cl.scores[i].name);
-			return;
-		}
-		strncpy(name, cl.scores[i].name, 15);
-		name[15] = 0;
-		Con_Printf("known aliases for %s:\n", name);
-		IPLog_Identify(cl.scores[i].addr);
 	}
 }
 
@@ -1419,8 +1358,8 @@ void Host_InitCommands (void)
 	Cmd_AddCommand ("map", Host_Map_f);
 	Cmd_AddCommand ("restart", Host_Restart_f);
 	Cmd_AddCommand ("changelevel", Host_Changelevel_f);
-	Cmd_AddCommand ("connect", Host_Connect_f);
-	Cmd_AddCommand ("reconnect", Host_Reconnect_f);
+	//Cmd_AddCommand ("connect", Host_Connect_f);
+	//Cmd_AddCommand ("reconnect", Host_Reconnect_f);
 	Cmd_AddCommand ("name", Host_Name_f);
 	Cmd_AddCommand ("noclip", Host_Noclip_f);
 	Cmd_AddCommand ("version", Host_Version_f);
