@@ -72,6 +72,17 @@ typedef struct
 	unsigned long	model_crc[MAX_MODELS];	// JPG - model checking
 } server_t;
 
+// moved from client.h
+typedef struct
+{
+	vec3_t	viewangles;
+
+	// intended velocities
+	float	forwardmove;
+	float	sidemove;
+	float	upmove;
+} usercmd_t;
+
 
 #define	NUM_PING_TIMES		16
 #define	NUM_SPAWN_PARMS		16
@@ -239,3 +250,7 @@ void SV_SaveSpawnparms ();
 void SV_SpawnServer (char *server);
 
 float SV_CalcRoll (vec3_t angles, vec3_t velocity);
+
+// moved from client.h
+extern	cvar_t	cl_name;
+extern	cvar_t	cl_color;

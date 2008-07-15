@@ -337,10 +337,6 @@ SOURCE=.\bspfile.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\client.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\cmd.h
 # End Source File
 # Begin Source File

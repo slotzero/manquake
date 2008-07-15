@@ -202,7 +202,6 @@ typedef struct
 #include "protocol.h"
 #include "cmd.h"
 #include "render.h"
-#include "client.h"
 #include "progs.h"
 #include "server.h"
 #include "model.h"
