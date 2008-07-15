@@ -719,8 +719,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	if (!GetCurrentDirectory (sizeof(cwd), cwd))
 		Sys_Error ("Couldn't determine current directory");
 
-	if (cwd[Q_strlen(cwd)-1] == '/')
-		cwd[Q_strlen(cwd)-1] = 0;
+	if (cwd[strlen(cwd)-1] == '/')
+		cwd[strlen(cwd)-1] = 0;
 
 	parms.basedir = cwd;
 	parms.cachedir = NULL;

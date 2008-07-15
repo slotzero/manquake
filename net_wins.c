@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -63,29 +63,29 @@ WSADATA		winsockdata;
 
 static double	blocktime;
 
-BOOL PASCAL FAR BlockingHook(void)  
-{ 
+BOOL PASCAL FAR BlockingHook(void)
+{
     MSG		msg;
     BOOL	ret;
- 
+
 	if ((Sys_FloatTime() - blocktime) > 2.0)
 	{
 		WSACancelBlockingCall();
 		return FALSE;
 	}
 
-    /* get the next message, if any */ 
-    ret = (BOOL) PeekMessage(&msg, NULL, 0, 0, PM_REMOVE); 
- 
-    /* if we got one, process it */ 
-    if (ret) { 
-        TranslateMessage(&msg); 
-        DispatchMessage(&msg); 
-    } 
- 
-    /* TRUE if we got a message */ 
-    return ret; 
-} 
+    /* get the next message, if any */
+    ret = (BOOL) PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
+
+    /* if we got one, process it */
+    if (ret) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    /* TRUE if we got a message */
+    return ret;
+}
 
 
 void WINS_GetLocalAddress()
@@ -126,7 +126,7 @@ int WINS_Init (void)
 // initialize the Winsock function vectors (we do this instead of statically linking
 // so we can run on Win 3.1, where there isn't necessarily Winsock)
     hInst = LoadLibrary("wsock32.dll");
-	
+
 	if (hInst == NULL)
 	{
 		Con_SafePrintf ("Failed to load winsock.dll\n");
@@ -165,7 +165,7 @@ int WINS_Init (void)
 
 	if (winsock_initialized == 0)
 	{
-		wVersionRequested = MAKEWORD(1, 1); 
+		wVersionRequested = MAKEWORD(1, 1);
 
 		r = pWSAStartup (MAKEWORD(1, 1), &winsockdata);
 
@@ -346,7 +346,7 @@ static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 	int mask;
 	int run;
 	int port;
-	
+
 	buff[0] = '.';
 	b = buff;
 	strcpy(buff+1, in);
@@ -373,16 +373,16 @@ static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 		mask<<=8;
 		addr = (addr<<8) + num;
 	}
-	
+
 	if (*b++ == ':')
 		port = Q_atoi(b);
 	else
 		port = net_hostport;
 
 	hostaddr->sa_family = AF_INET;
-	((struct sockaddr_in *)hostaddr)->sin_port = htons((short)port);	
+	((struct sockaddr_in *)hostaddr)->sin_port = htons((short)port);
 	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = (myAddr & htonl(mask)) | htonl(addr);
-	
+
 	return 0;
 }
 //=============================================================================
@@ -513,7 +513,7 @@ int WINS_GetSocketAddr (int socket, struct qsockaddr *addr)
 	int addrlen = sizeof(struct qsockaddr);
 	unsigned int a;
 
-	Q_memset(addr, 0, sizeof(struct qsockaddr));
+	memset(addr, 0, sizeof(struct qsockaddr));
 	pgetsockname(socket, (struct sockaddr *)addr, &addrlen);
 	a = ((struct sockaddr_in *)addr)->sin_addr.s_addr;
 	if (a == 0 || a == inet_addr("127.0.0.1"))
@@ -549,13 +549,13 @@ int WINS_GetAddrFromName(char *name, struct qsockaddr *addr)
 
 	if (name[0] >= '0' && name[0] <= '9')
 		return PartialIPAddress (name, addr);
-	
+
 	hostentry = pgethostbyname (name);
 	if (!hostentry)
 		return -1;
 
 	addr->sa_family = AF_INET;
-	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)net_hostport);	
+	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)net_hostport);
 	((struct sockaddr_in *)addr)->sin_addr.s_addr = *(int *)hostentry->h_addr_list[0];
 
 	return 0;

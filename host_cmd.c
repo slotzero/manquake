@@ -465,7 +465,7 @@ void Host_Say(qboolean teamonly)
 	if (*p == '"')
 	{
 		p++;
-		p[Q_strlen(p)-1] = 0;
+		p[strlen(p)-1] = 0;
 	}
 
 	spam_client = 0; // Slot Zero 3.50-2  Mute spamming client.
@@ -518,8 +518,8 @@ void Host_Say(qboolean teamonly)
 		// Slot Zero 3.50-2  Server uses cl_name instead of hostname.string.
 		sprintf (text, "%c<%s> ", 1, cl_name.string);
 
-	j = sizeof(text) - 2 - Q_strlen(text);  // -2 for /n and null terminator
-	if (Q_strlen(p) > j)
+	j = sizeof(text) - 2 - strlen(text);  // -2 for /n and null terminator
+	if (strlen(p) > j)
 		p[j] = 0;
 
 	strcat (text, p);
@@ -604,12 +604,12 @@ void Host_Tell_f(void)
 	if (*p == '"')
 	{
 		p++;
-		p[Q_strlen(p)-1] = 0;
+		p[strlen(p)-1] = 0;
 	}
 
 // check length & truncate if necessary
-	j = sizeof(text) - 2 - Q_strlen(text);  // -2 for /n and null terminator
-	if (Q_strlen(p) > j)
+	j = sizeof(text) - 2 - strlen(text);  // -2 for /n and null terminator
+	if (strlen(p) > j)
 		p[j] = 0;
 
 	strcat (text, p);
@@ -1047,7 +1047,7 @@ void Host_Kick_f (void)
 				message++;							// skip the #
 				while (*message == ' ')				// skip white space
 					message++;
-				message += Q_strlen(Cmd_Argv(2));	// skip the number
+				message += strlen(Cmd_Argv(2));	// skip the number
 			}
 			while (*message && *message == ' ')
 				message++;

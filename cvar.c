@@ -82,7 +82,7 @@ char *Cvar_CompleteVariable (char *partial)
 	cvar_t		*cvar;
 	int			len;
 
-	len = Q_strlen(partial);
+	len = strlen(partial);
 
 	if (!len)
 		return NULL;
@@ -116,7 +116,7 @@ void Cvar_Set (char *var_name, char *value)
 
 	Z_Free (var->string);	// free the old value string
 
-	var->string = Z_Malloc (Q_strlen(value)+1);
+	var->string = Z_Malloc (strlen(value)+1);
 	Q_strcpy (var->string, value);
 	var->value = Q_atof (var->string);
 	if ((var->server == 1) && changed)  // JPG - so that server = 2 will mute the variable
@@ -174,7 +174,7 @@ void Cvar_RegisterVariable (cvar_t *variable)
 
 // copy the value off, because future sets will Z_Free it
 	oldstr = variable->string;
-	variable->string = Z_Malloc (Q_strlen(variable->string)+1);
+	variable->string = Z_Malloc (strlen(variable->string)+1);
 	Q_strcpy (variable->string, oldstr);
 	variable->value = Q_atof (variable->string);
 

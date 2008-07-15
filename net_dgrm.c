@@ -1470,7 +1470,7 @@ static void _Datagram_SearchForHosts (qboolean xmit)
 				continue;
 			if (Q_strcasecmp (hostcache[n].name, hostcache[i].name) == 0)
 			{
-				i = Q_strlen(hostcache[n].name);
+				i = strlen(hostcache[n].name);
 				if (i < 15 && hostcache[n].name[i-1] > '8')
 				{
 					hostcache[n].name[i] = '0';

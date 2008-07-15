@@ -1,4 +1,4 @@
-/* $Id: sv_main.c,v 1.5 2008/02/13 04:40:36 slotzero Exp $
+/* $Id: sv_main.c,v 1.6 2008/07/15 22:25:49 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -451,7 +451,7 @@ given point.
 byte *SV_FatPVS (vec3_t org)
 {
 	fatbytes = (sv.worldmodel->numleafs+31)>>3;
-	Q_memset (fatpvs, 0, fatbytes);
+	memset (fatpvs, 0, fatbytes);
 	SV_AddToFatPVS (org, sv.worldmodel->nodes);
 	return fatpvs;
 }

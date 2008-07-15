@@ -1,4 +1,4 @@
-/* $Id: model.c,v 1.4 2008/02/15 03:01:34 slotzero Exp $
+/* $Id: model.c,v 1.5 2008/07/15 22:25:49 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -1757,7 +1757,7 @@ void * Mod_LoadSpriteFrame (void * pin, mspriteframe_t **ppframe)
 	pspriteframe = Hunk_AllocName (sizeof (mspriteframe_t) + size*r_pixbytes,
 								   loadname);
 
-	Q_memset (pspriteframe, 0, sizeof (mspriteframe_t) + size);
+	memset (pspriteframe, 0, sizeof (mspriteframe_t) + size);
 	*ppframe = pspriteframe;
 
 	pspriteframe->width = width;
