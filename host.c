@@ -686,7 +686,7 @@ void Host_Init (quakeparms_t *parms)
 	com_argv = parms->argv;
 
 	// JPG 3.00 - moved this here
-#ifdef WIN32
+#ifdef _WIN32
 	srand(time(NULL) ^ _getpid());
 #else
 	srand(time(NULL) ^ getpid());

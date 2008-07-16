@@ -1,4 +1,4 @@
-// $Id: security.c,v 1.1 2008/02/03 08:28:01 slotzero Exp $
+// $Id: security.c,v 1.2 2008/07/16 00:52:28 slotzero Exp $
 // security.c
 //
 // Created by JPG for ProQuake v3.20
@@ -6,7 +6,7 @@
 
 #include "quakedef.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #else
 #include <dlfcn.h>
@@ -27,7 +27,7 @@ Security_CRC_t Security_CRC = NULL;
 Security_CRC_File_t Security_CRC_File = NULL;
 Security_Verify_t Security_Verify = NULL;
 
-#ifdef WIN32
+#ifdef _WIN32
 #define PROCADDRESS GetProcAddress
 #else
 #define PROCADDRESS dlsym
@@ -37,7 +37,7 @@ Security_Verify_t Security_Verify = NULL;
 
 void Security_Init (void)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	HINSTANCE h = LoadLibrary("qsecurity.dll");
 #else
 	void *h = dlopen("./qsecurity.so", RTLD_LAZY);

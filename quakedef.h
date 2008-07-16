@@ -246,7 +246,7 @@ extern	double		realtime;			// not bounded in any way, changed at
 										// start of every frame, never reset
 
 // JPG 3.20
-#ifdef WIN32
+#ifdef _WIN32
 extern char	*argv[MAX_NUM_ARGVS];
 #else
 extern char	**argv;

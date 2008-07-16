@@ -82,7 +82,7 @@ double SetNetTime(void)
 
 
 // JPG 3.00 - need this for linux build
-#ifndef WIN32
+#ifndef _WIN32
 unsigned _lrotl (unsigned x, int s)
 {
 	s &= 31;
