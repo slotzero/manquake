@@ -136,33 +136,6 @@ void InsertLinkAfter (link_t *l, link_t *after)
 ============================================================================
 */
 
-
-void Q_memcpy (void *dest, void *src, int count)
-{
-	int             i;
-
-	if (( ( (long)dest | (long)src | count) & 3) == 0 )
-	{
-		count>>=2;
-		for (i=0 ; i<count ; i++)
-			((int *)dest)[i] = ((int *)src)[i];
-	}
-	else
-		for (i=0 ; i<count ; i++)
-			((byte *)dest)[i] = ((byte *)src)[i];
-}
-
-int Q_memcmp (void *m1, void *m2, int count)
-{
-	while(count)
-	{
-		count--;
-		if (((byte *)m1)[count] != ((byte *)m2)[count])
-			return -1;
-	}
-	return 0;
-}
-
 void Q_strcpy (char *dest, char *src)
 {
 	while (*src)
@@ -775,20 +748,7 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 
 void SZ_Write (sizebuf_t *buf, void *data, int length)
 {
-	Q_memcpy (SZ_GetSpace(buf,length),data,length);
-}
-
-void SZ_Print (sizebuf_t *buf, char *data)
-{
-	int             len;
-
-	len = strlen(data)+1;
-
-// byte * cast to keep VC++ happy
-	if (buf->data[buf->cursize-1])
-		Q_memcpy ((byte *)SZ_GetSpace(buf, len),data,len); // no trailing 0
-	else
-		Q_memcpy ((byte *)SZ_GetSpace(buf, len-1)-1,data,len); // write over trailing 0
+	memcpy (SZ_GetSpace(buf,length),data,length);
 }
 
 
@@ -1159,6 +1119,9 @@ void COM_Init (char *basedir)
 	COM_CheckRegistered ();
 }
 
+#ifdef _WIN32
+#define vsnprintf _vsnprintf
+#endif
 
 /*
 ============
@@ -1175,7 +1138,7 @@ char    *va(char *format, ...)
 	static char             string[1024];
 
 	va_start (argptr, format);
-	vsprintf (string, format,argptr);
+	vsnprintf (string, sizeof(string), format, argptr);
 	va_end (argptr);
 
 	return string;
