@@ -327,7 +327,7 @@ void Con_DebugLog( /* char *file, */ char *fmt, ...)
     int fd;
 
     va_start(argptr, fmt);
-    vsprintf(data, fmt, argptr);
+    dpvsnprintf (data, sizeof(data), fmt, argptr);
     va_end(argptr);
     fd = open(va("%s/%s", com_gamedir, logfilename), O_WRONLY | O_CREAT | O_APPEND, 0666);
     write(fd, data, strlen(data));
@@ -342,7 +342,6 @@ Con_Printf
 Handles cursor positioning, line wrapping, etc
 ================
 */
-// FIXME: make a buffer size safe vsprintf?
 void Con_Printf (char *fmt, ...)
 {
 	va_list		argptr;
@@ -350,7 +349,7 @@ void Con_Printf (char *fmt, ...)
 	static qboolean	inupdate;
 
 	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
+	dpvsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 
 // also echo to debugging console
@@ -381,7 +380,7 @@ void Con_DPrintf (char *fmt, ...)
 		return;			// don't confuse non-developers with techie stuff...
 
 	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
+	dpvsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 
 	Con_Printf ("%s", msg);
@@ -401,7 +400,7 @@ void Con_SafePrintf (char *fmt, ...)
 	char		msg[1024];
 
 	va_start (argptr,fmt);
-	vsprintf (msg,fmt,argptr);
+	dpvsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 
 	Con_Printf ("%s", msg);

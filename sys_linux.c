@@ -74,52 +74,6 @@ void Sys_DebugNumber(int y, int val)
 {
 }
 
-/*
-void Sys_Printf (char *fmt, ...)
-{
-	va_list		argptr;
-	char		text[1024];
-
-	va_start (argptr,fmt);
-	vsprintf (text,fmt,argptr);
-	va_end (argptr);
-	fprintf(stderr, "%s", text);
-
-	Con_Print (text);
-}
-
-void Sys_Printf (char *fmt, ...)
-{
-
-    va_list     argptr;
-    char        text[1024], *t_p;
-    int         l, r;
-
-	if (nostdout)
-		return;
-
-    va_start (argptr,fmt);
-    vsprintf (text,fmt,argptr);
-    va_end (argptr);
-
-    l = strlen(text);
-    t_p = text;
-
-// make sure everything goes through, even though we are non-blocking
-    while (l)
-    {
-        r = write (1, text, l);
-        if (r != l)
-            sleep (0);
-        if (r > 0)
-        {
-            t_p += r;
-            l -= r;
-        }
-    }
-
-}
-*/
 
 void Sys_Printf (char *fmt, ...)
 {
@@ -130,7 +84,7 @@ void Sys_Printf (char *fmt, ...)
 
     // Slot Zero 3.50-2  Memory overwrite protection for Sys_Printf.
     va_start (argptr, fmt);
-	vsnprintf (text, sizeof(text), fmt, argptr);
+	dpvsnprintf (text, sizeof(text), fmt, argptr);
 	va_end (argptr);
 
 	// JPG 1.05 - translate to plain text
@@ -205,8 +159,7 @@ void Sys_Error (char *error, ...)
     fcntl (0, F_SETFL, fcntl (0, F_GETFL, 0) & ~FNDELAY);
 
     va_start (argptr,error);
-    vsnprintf (string, sizeof(string), error, argptr); // Slot Zero 3.50-2
-    //vsprintf (string,error,argptr);
+    dpvsnprintf (string, sizeof(string), error, argptr); // Slot Zero 3.50-2
     va_end (argptr);
 	fprintf(stderr, "Error: %s\n", string);
 
@@ -221,7 +174,7 @@ void Sys_Warn (char *warning, ...)
     char        string[1024];
 
     va_start (argptr,warning);
-    vsprintf (string,warning,argptr);
+    dpvsnprintf (string, sizeof(string), warning, argptr);
     va_end (argptr);
 	fprintf(stderr, "Warning: %s", string);
 }
@@ -308,9 +261,8 @@ void Sys_DebugLog(char *file, char *fmt, ...)
     int fd;
 
     va_start(argptr, fmt);
-    vsprintf(data, fmt, argptr);
+    dpvsnprintf (data, sizeof(data), fmt, argptr);
     va_end(argptr);
-//    fd = open(file, O_WRONLY | O_BINARY | O_CREAT | O_APPEND, 0666);
     fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
     write(fd, data, strlen(data));
     close(fd);
@@ -318,7 +270,6 @@ void Sys_DebugLog(char *file, char *fmt, ...)
 
 void Sys_EditFile(char *filename)
 {
-
 	char cmd[256];
 	char *term;
 	char *editor;

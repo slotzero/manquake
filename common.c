@@ -25,9 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 static char     *largv[MAX_NUM_ARGVS + NUM_SAFE_ARGVS + 1];
 static char     *argvdummy = " ";
-
-static char     *safeargvs[NUM_SAFE_ARGVS] =
-	{"-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse", "-dibonly"};
+static char     *safeargvs[NUM_SAFE_ARGVS] = {"-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse", "-dibonly"};
 
 cvar_t  registered = {"registered","0"};
 cvar_t  cmdline = {"cmdline","0", false, true};
@@ -36,7 +34,6 @@ cvar_t  cmdline = {"cmdline","0", false, true};
 cvar_t	pq_show_packfile = {"pq_show_packfile", "0"};
 
 qboolean        com_modified;   // set true if using non-id files
-
 qboolean		proghack;
 
 int             static_registered = 1;  // only for startup check, then set
@@ -79,22 +76,32 @@ unsigned short pop[] =
 
 /*
 
+All of Quake's data access is through a hierchal file system, but the contents
+of the file system can be transparently merged from several sources.
 
-All of Quake's data access is through a hierchal file system, but the contents of the file system can be transparently merged from several sources.
+The "base directory" is the path to the directory holding the quake.exe and
+all game directories.  The sys_* files pass this to host_init in quakeparms_t->basedir.
+This can be overridden with the "-basedir" command line parm to allow code
+debugging in a different directory.  The base directory is only used during
+filesystem initialization.
 
-The "base directory" is the path to the directory holding the quake.exe and all game directories.  The sys_* files pass this to host_init in quakeparms_t->basedir.  This can be overridden with the "-basedir" command line parm to allow code debugging in a different directory.  The base directory is
-only used during filesystem initialization.
+The "game directory" is the first tree on the search path and directory that
+all generated files (savegames, screenshots, demos, config files) will be
+saved to.  This can be overridden with the "-game" command line parameter.
+The game directory can never be changed while quake is executing.  This is
+a precacution against having a malicious server instruct clients to write
+files over areas they shouldn't.
 
-The "game directory" is the first tree on the search path and directory that all generated files (savegames, screenshots, demos, config files) will be saved to.  This can be overridden with the "-game" command line parameter.  The game directory can never be changed while quake is executing.  This is a precacution against having a malicious server instruct clients to write files over areas they shouldn't.
+The "cache directory" is only used during development to save network bandwidth,
+especially over ISDN / T1 lines.  If there is a cache directory specified,
+when a file is found by the normal search path, it will be mirrored into the
+cache directory, then opened there.
 
-The "cache directory" is only used during development to save network bandwidth, especially over ISDN / T1 lines.  If there is a cache directory
-specified, when a file is found by the normal search path, it will be mirrored
-into the cache directory, then opened there.
-
-
-
-FIXME:
-The file "parms.txt" will be read out of the game directory and appended to the current command line arguments to allow different games to initialize startup parms differently.  This could be used to add a "-sspeed 22050" for the high quality sound edition.  Because they are added at the end, they will not override an explicit setting on the original command line.
+FIXME: The file "parms.txt" will be read out of the game directory and appended
+to the current command line arguments to allow different games to initialize
+startup parms differently.  This could be used to add a "-sspeed 22050" for
+the high quality sound edition.  Because they are added at the end, they will
+not override an explicit setting on the original command line.
 
 */
 
@@ -107,11 +114,13 @@ void ClearLink (link_t *l)
 	l->prev = l->next = l;
 }
 
+
 void RemoveLink (link_t *l)
 {
 	l->next->prev = l->prev;
 	l->prev->next = l->next;
 }
+
 
 void InsertLinkBefore (link_t *l, link_t *before)
 {
@@ -120,6 +129,8 @@ void InsertLinkBefore (link_t *l, link_t *before)
 	l->prev->next = l;
 	l->next->prev = l;
 }
+
+
 void InsertLinkAfter (link_t *l, link_t *after)
 {
 	l->next = after->next;
@@ -127,6 +138,7 @@ void InsertLinkAfter (link_t *l, link_t *after)
 	l->prev->next = l;
 	l->next->prev = l;
 }
+
 
 /*
 ============================================================================
@@ -136,6 +148,7 @@ void InsertLinkAfter (link_t *l, link_t *after)
 ============================================================================
 */
 
+
 void Q_strcpy (char *dest, char *src)
 {
 	while (*src)
@@ -144,6 +157,7 @@ void Q_strcpy (char *dest, char *src)
 	}
 	*dest++ = 0;
 }
+
 
 void Q_strncpy (char *dest, char *src, int count)
 {
@@ -155,6 +169,7 @@ void Q_strncpy (char *dest, char *src, int count)
 		*dest++ = 0;
 }
 
+
 char *Q_strrchr(char *s, char c)
 {
     int len = strlen(s);
@@ -164,11 +179,13 @@ char *Q_strrchr(char *s, char c)
     return 0;
 }
 
+
 void Q_strcat (char *dest, char *src)
 {
 	dest += strlen(dest);
 	Q_strcpy (dest, src);
 }
+
 
 int Q_strcmp (char *s1, char *s2)
 {
@@ -184,6 +201,7 @@ int Q_strcmp (char *s1, char *s2)
 
 	return -1;
 }
+
 
 int Q_strncmp (char *s1, char *s2, int count)
 {
@@ -201,6 +219,7 @@ int Q_strncmp (char *s1, char *s2, int count)
 
 	return -1;
 }
+
 
 int Q_strncasecmp (char *s1, char *s2, int n)
 {
@@ -232,10 +251,12 @@ int Q_strncasecmp (char *s1, char *s2, int n)
 	return -1;
 }
 
+
 int Q_strcasecmp (char *s1, char *s2)
 {
 	return Q_strncasecmp (s1, s2, 99999);
 }
+
 
 int Q_atoi (char *str)
 {
@@ -371,6 +392,7 @@ float Q_atof (char *str)
 	return val*sign;
 }
 
+
 /*
 ============================================================================
 
@@ -398,10 +420,12 @@ short   ShortSwap (short l)
 	return (b1<<8) + b2;
 }
 
+
 short   ShortNoSwap (short l)
 {
 	return l;
 }
+
 
 int    LongSwap (int l)
 {
@@ -415,10 +439,12 @@ int    LongSwap (int l)
 	return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
 }
 
+
 int     LongNoSwap (int l)
 {
 	return l;
 }
+
 
 float FloatSwap (float f)
 {
@@ -437,10 +463,12 @@ float FloatSwap (float f)
 	return dat2.f;
 }
 
+
 float FloatNoSwap (float f)
 {
 	return f;
 }
+
 
 /*
 ==============================================================================
@@ -495,6 +523,7 @@ void MSG_WriteShort (sizebuf_t *sb, int c)
 	buf[1] = c>>8;
 }
 
+
 void MSG_WriteLong (sizebuf_t *sb, int c)
 {
 	byte    *buf;
@@ -505,6 +534,7 @@ void MSG_WriteLong (sizebuf_t *sb, int c)
 	buf[2] = (c>>16)&0xff;
 	buf[3] = c>>24;
 }
+
 
 void MSG_WriteFloat (sizebuf_t *sb, float f)
 {
@@ -521,6 +551,7 @@ void MSG_WriteFloat (sizebuf_t *sb, float f)
 	SZ_Write (sb, &dat.l, 4);
 }
 
+
 void MSG_WriteString (sizebuf_t *sb, char *s)
 {
 	if (!s)
@@ -529,15 +560,18 @@ void MSG_WriteString (sizebuf_t *sb, char *s)
 		SZ_Write (sb, s, strlen(s)+1);
 }
 
+
 void MSG_WriteCoord (sizebuf_t *sb, float f)
 {
 	MSG_WriteShort (sb, (int)(f*8));
 }
 
+
 void MSG_WriteAngle (sizebuf_t *sb, float f)
 {
 	MSG_WriteByte (sb, ((int)f*256/360) & 255);
 }
+
 
 // JPG - precise aim for ProQuake!
 void MSG_WritePreciseAngle (sizebuf_t *sb, float f)
@@ -558,6 +592,7 @@ void MSG_BeginReading (void)
 	msg_badread = false;
 }
 
+
 // returns -1 and sets msg_badread if no more characters are available
 int MSG_ReadChar (void)
 {
@@ -575,6 +610,7 @@ int MSG_ReadChar (void)
 	return c;
 }
 
+
 int MSG_ReadByte (void)
 {
 	int     c;
@@ -591,6 +627,7 @@ int MSG_ReadByte (void)
 	return c;
 }
 
+
 // JPG - need this to check for ProQuake messages
 int MSG_PeekByte (void)
 {
@@ -602,6 +639,7 @@ int MSG_PeekByte (void)
 
 	return (unsigned char)net_message.data[msg_readcount];
 }
+
 
 int MSG_ReadShort (void)
 {
@@ -620,6 +658,7 @@ int MSG_ReadShort (void)
 
 	return c;
 }
+
 
 int MSG_ReadLong (void)
 {
@@ -641,6 +680,7 @@ int MSG_ReadLong (void)
 	return c;
 }
 
+
 float MSG_ReadFloat (void)
 {
 	union
@@ -660,6 +700,7 @@ float MSG_ReadFloat (void)
 
 	return dat.f;
 }
+
 
 char *MSG_ReadString (void)
 {
@@ -681,15 +722,18 @@ char *MSG_ReadString (void)
 	return string;
 }
 
+
 float MSG_ReadCoord (void)
 {
 	return MSG_ReadShort() * (1.0/8);
 }
 
+
 float MSG_ReadAngle (void)
 {
 	return MSG_ReadChar() * (360.0/256);
 }
+
 
 // JPG - exact aim for proquake!
 float MSG_ReadPreciseAngle (void)
@@ -698,7 +742,9 @@ float MSG_ReadPreciseAngle (void)
 	return val * (360.0/65536);
 }
 
+
 //===========================================================================
+
 
 void SZ_Alloc (sizebuf_t *buf, int startsize)
 {
@@ -718,10 +764,12 @@ void SZ_Free (sizebuf_t *buf)
 	buf->cursize = 0;
 }
 
+
 void SZ_Clear (sizebuf_t *buf)
 {
 	buf->cursize = 0;
 }
+
 
 void *SZ_GetSpace (sizebuf_t *buf, int length)
 {
@@ -746,6 +794,7 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 	return data;
 }
 
+
 void SZ_Write (sizebuf_t *buf, void *data, int length)
 {
 	memcpy (SZ_GetSpace(buf,length),data,length);
@@ -754,37 +803,6 @@ void SZ_Write (sizebuf_t *buf, void *data, int length)
 
 //============================================================================
 
-
-/*
-============
-COM_SkipPath
-============
-*/
-char *COM_SkipPath (char *pathname)
-{
-	char    *last;
-
-	last = pathname;
-	while (*pathname)
-	{
-		if (*pathname=='/')
-			last = pathname+1;
-		pathname++;
-	}
-	return last;
-}
-
-/*
-============
-COM_StripExtension
-============
-*/
-void COM_StripExtension (char *in, char *out)
-{
-	while (*in && *in != '.')
-		*out++ = *in++;
-	*out = 0;
-}
 
 /*
 ============
@@ -806,6 +824,7 @@ char *COM_FileExtension (char *in)
 	exten[i] = 0;
 	return exten;
 }
+
 
 /*
 ============
@@ -832,31 +851,6 @@ void COM_FileBase (char *in, char *out)
 		strncpy (out,s2+1, s-s2);
 		out[s-s2] = 0;
 	}
-}
-
-
-/*
-==================
-COM_DefaultExtension
-==================
-*/
-void COM_DefaultExtension (char *path, char *extension)
-{
-	char    *src;
-//
-// if path doesn't have a .EXT, append extension
-// (extension should include the .)
-//
-	src = path + strlen(path) - 1;
-
-	while (*src != '/' && src != path)
-	{
-		if (*src == '.')
-			return;                 // it has an extension
-		src--;
-	}
-
-	strcat (path, extension);
 }
 
 
@@ -961,6 +955,7 @@ int COM_CheckParm (char *parm)
 	return 0;
 }
 
+
 /*
 ================
 COM_CheckRegistered
@@ -1004,9 +999,7 @@ void COM_CheckRegistered (void)
 	Con_Printf ("Playing registered version.\n");
 }
 
-
 void COM_Path_f (void);
-
 
 /*
 ================
@@ -1119,9 +1112,6 @@ void COM_Init (char *basedir)
 	COM_CheckRegistered ();
 }
 
-#ifdef _WIN32
-#define vsnprintf _vsnprintf
-#endif
 
 /*
 ============
@@ -1138,23 +1128,12 @@ char    *va(char *format, ...)
 	static char             string[1024];
 
 	va_start (argptr, format);
-	vsnprintf (string, sizeof(string), format, argptr);
+	dpvsnprintf (string, sizeof(string), format, argptr);
 	va_end (argptr);
 
 	return string;
 }
 
-
-/// just for debugging
-int     memsearch (byte *start, int count, int search)
-{
-	int             i;
-
-	for (i=0 ; i<count ; i++)
-		if (start[i] == search)
-			return i;
-	return -1;
-}
 
 /*
 =============================================================================
@@ -1165,7 +1144,6 @@ QUAKE FILESYSTEM
 */
 
 int     com_filesize;
-
 
 //
 // in memory
@@ -1237,6 +1215,7 @@ void COM_Path_f (void)
 			Con_Printf ("%s\n", s->filename);
 	}
 }
+
 
 /*
 ============
@@ -1320,6 +1299,7 @@ void COM_CopyFile (char *netpath, char *cachepath)
 	Sys_FileClose (in);
 	Sys_FileClose (out);
 }
+
 
 /*
 ===========
@@ -1456,6 +1436,7 @@ int COM_OpenFile (char *filename, int *handle)
 	return COM_FindFile (filename, handle, NULL);
 }
 
+
 /*
 ===========
 COM_FOpenFile
@@ -1468,6 +1449,7 @@ int COM_FOpenFile (char *filename, FILE **file)
 {
 	return COM_FindFile (filename, NULL, file);
 }
+
 
 /*
 ============
@@ -1545,21 +1527,12 @@ byte *COM_LoadFile (char *path, int usehunk)
 	return buf;
 }
 
+
 byte *COM_LoadHunkFile (char *path)
 {
 	return COM_LoadFile (path, 1);
 }
 
-byte *COM_LoadTempFile (char *path)
-{
-	return COM_LoadFile (path, 2);
-}
-
-void COM_LoadCacheFile (char *path, struct cache_user_s *cu)
-{
-	loadcache = cu;
-	COM_LoadFile (path, 3);
-}
 
 // uses temp hunk if larger than bufsize
 byte *COM_LoadStackFile (char *path, void *buffer, int bufsize)
@@ -1572,6 +1545,7 @@ byte *COM_LoadStackFile (char *path, void *buffer, int bufsize)
 
 	return buf;
 }
+
 
 /*
 =================
@@ -1684,12 +1658,8 @@ void COM_AddGameDirectory (char *dir)
 		search->next = com_searchpaths;
 		com_searchpaths = search;
 	}
-
-//
-// add the contents of the parms.txt file to the end of the command line
-//
-
 }
+
 
 /*
 ================
@@ -1794,6 +1764,7 @@ void COM_InitFilesystem (void)
 		proghack = true;
 }
 
+
 // JPG 3.20 - model checking
 /*
 ================
@@ -1820,4 +1791,44 @@ void COM_ModelCRC (void)
 		}
 	}
 	com_searchpaths = search;
+}
+
+
+//============================================================================
+
+#undef snprintf
+#undef vsnprintf
+
+#ifdef _WIN32
+# define snprintf _snprintf
+# define vsnprintf _vsnprintf
+#endif
+
+
+// Code from Dark Places 20070707.
+int dpsnprintf (char *buffer, size_t buffersize, const char *format, ...)
+{
+	va_list args;
+	int result;
+
+	va_start (args, format);
+	result = dpvsnprintf (buffer, buffersize, format, args);
+	va_end (args);
+
+	return result;
+}
+
+
+int dpvsnprintf (char *buffer, size_t buffersize, const char *format, va_list args)
+{
+	int result;
+
+	result = vsnprintf (buffer, buffersize, format, args);
+	if (result < 0 || (size_t)result >= buffersize)
+	{
+		buffer[buffersize - 1] = '\0';
+		return -1;
+	}
+
+	return result;
 }

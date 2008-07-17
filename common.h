@@ -141,21 +141,16 @@ extern	qboolean	com_eof;
 
 char *COM_Parse (char *data);
 
-
 extern	int		com_argc;
 extern	char	**com_argv;
 
 int COM_CheckParm (char *parm);
 void COM_Init (char *path);
 void COM_InitArgv (int argc, char **argv);
-
-char *COM_SkipPath (char *pathname);
-void COM_StripExtension (char *in, char *out);
 void COM_FileBase (char *in, char *out);
-void COM_DefaultExtension (char *path, char *extension);
 
-char	*va(char *format, ...);
 // does a varargs printf into a temp buffer
+char	*va(char *format, ...);
 
 
 //============================================================================
@@ -171,11 +166,7 @@ int COM_FOpenFile (char *filename, FILE **file);
 void COM_CloseFile (int h);
 
 byte *COM_LoadStackFile (char *path, void *buffer, int bufsize);
-byte *COM_LoadTempFile (char *path);
 byte *COM_LoadHunkFile (char *path);
-void COM_LoadCacheFile (char *path, struct cache_user_s *cu);
-
 
 extern	struct cvar_s	registered;
-
 extern qboolean		standard_quake, rogue, hipnotic;

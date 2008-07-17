@@ -382,11 +382,11 @@ void Sys_Error (char *error, ...)
 	}
 
 	va_start (argptr, error);
-	vsprintf (text, error, argptr);
+	dpvsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
 	va_start (argptr, error);
-	vsprintf (text, error, argptr);
+	dpvsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
 	sprintf (text2, "ERROR: %s\n", text);
@@ -427,7 +427,7 @@ void Sys_Printf (char *fmt, ...)
 	DWORD		dummy;
 
 	va_start (argptr,fmt);
-	vsprintf (text, fmt, argptr);
+	dpvsnprintf (text, sizeof(text), fmt, argptr);
 	va_end (argptr);
 
 	// JPG 1.05 - translate to plain text

@@ -33,13 +33,10 @@ typedef struct cmdalias_s
 } cmdalias_t;
 
 cmdalias_t	*cmd_alias;
-
-int trashtest;
-int *trashspot;
-
 qboolean	cmd_wait;
 
 //=============================================================================
+
 
 /*
 ============
@@ -54,6 +51,7 @@ void Cmd_Wait_f (void)
 {
 	cmd_wait = true;
 }
+
 
 /*
 =============================================================================
@@ -135,6 +133,7 @@ void Cbuf_InsertText (char *text)
 	}
 }
 
+
 /*
 ============
 Cbuf_Execute
@@ -194,6 +193,7 @@ void Cbuf_Execute (void)
 	}
 }
 
+
 /*
 ==============================================================================
 
@@ -201,6 +201,7 @@ void Cbuf_Execute (void)
 
 ==============================================================================
 */
+
 
 /*
 ===============
@@ -323,6 +324,7 @@ void Cmd_Echo_f (void)
 	Con_Printf ("\n");
 }
 
+
 /*
 ===============
 Cmd_Alias_f
@@ -330,7 +332,6 @@ Cmd_Alias_f
 Creates a new command that executes a command string (possibly ; seperated)
 ===============
 */
-
 char *CopyString (char *in)
 {
 	char	*out;
@@ -339,6 +340,7 @@ char *CopyString (char *in)
 	strcpy (out, in);
 	return out;
 }
+
 
 void Cmd_Alias_f (void)
 {
@@ -394,6 +396,7 @@ void Cmd_Alias_f (void)
 	a->value = CopyString (cmd);
 }
 
+
 /*
 =============================================================================
 
@@ -402,13 +405,13 @@ void Cmd_Alias_f (void)
 =============================================================================
 */
 
+
 typedef struct cmd_function_s
 {
 	struct cmd_function_s	*next;
 	char					*name;
 	xcommand_t				function;
 } cmd_function_t;
-
 
 #define	MAX_ARGS		80
 
@@ -418,7 +421,6 @@ static	char		*cmd_null_string = "";
 static	char		*cmd_args = NULL;
 
 cmd_source_t	cmd_source;
-
 
 static	cmd_function_t	*cmd_functions;		// possible commands to execute
 
@@ -440,6 +442,7 @@ void Cmd_Init (void)
 	Cmd_AddCommand ("wait", Cmd_Wait_f);
 }
 
+
 /*
 ============
 Cmd_Argc
@@ -449,6 +452,7 @@ int		Cmd_Argc (void)
 {
 	return cmd_argc;
 }
+
 
 /*
 ============
@@ -461,6 +465,7 @@ char	*Cmd_Argv (int arg)
 		return cmd_null_string;
 	return cmd_argv[arg];
 }
+
 
 /*
 ============
@@ -562,6 +567,7 @@ void	Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	cmd_functions = cmd;
 }
 
+
 /*
 ============
 Cmd_Exists
@@ -580,32 +586,6 @@ qboolean	Cmd_Exists (char *cmd_name)
 	return false;
 }
 
-
-
-/*
-============
-Cmd_CompleteCommand
-============
-*/
-/*
-char *Cmd_CompleteCommand (char *partial)
-{
-	cmd_function_t	*cmd;
-	int				len;
-
-	len = strlen(partial);
-
-	if (!len)
-		return NULL;
-
-// check functions
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
-		if (!Q_strncmp (partial,cmd->name, len))
-			return cmd->name;
-
-	return NULL;
-}
-*/
 
 // JPG 1.05 - completely rewrote this; includes aliases
 char *Cmd_CompleteCommand (char *partial)
@@ -633,6 +613,7 @@ char *Cmd_CompleteCommand (char *partial)
 		return least;
 	return best;
 }
+
 
 /*
 ============
@@ -680,6 +661,7 @@ void	Cmd_ExecuteString (char *text, cmd_source_t src)
 
 }
 
+
 /*
 ===================
 Cmd_ForwardToServer
@@ -701,7 +683,6 @@ Returns the position (1 to argc-1) in the command's argument list
 where the given parameter apears, or 0 if not present
 ================
 */
-
 int Cmd_CheckParm (char *parm)
 {
 	int i;

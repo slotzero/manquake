@@ -20,34 +20,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // upper design bounds
 #define	MAX_MAP_HULLS		4
-#define	MAX_MAP_MODELS		256
-#define	MAX_MAP_BRUSHES		4096
-#define	MAX_MAP_ENTITIES	1024
-#define	MAX_MAP_ENTSTRING	65536
-#define	MAX_MAP_PLANES		32767
-#define	MAX_MAP_NODES		32767		// because negative shorts are contents
-#define	MAX_MAP_CLIPNODES	32767
 #define	MAX_MAP_LEAFS		8192
-#define	MAX_MAP_VERTS		65535
-#define	MAX_MAP_FACES		65535
-#define	MAX_MAP_MARKSURFACES 65535
-#define	MAX_MAP_TEXINFO		4096
-#define	MAX_MAP_EDGES		256000
-#define	MAX_MAP_SURFEDGES	512000
-#define	MAX_MAP_TEXTURES	512
-#define	MAX_MAP_MIPTEX		0x200000
-#define	MAX_MAP_LIGHTING	0x100000
-#define	MAX_MAP_VISIBILITY	0x100000
-#define	MAX_MAP_PORTALS		65536
-
-// key / value pair sizes
-#define	MAX_KEY		32
-#define	MAX_VALUE	1024
 
 //=============================================================================
 
 #define BSPVERSION	29
-#define	TOOLVERSION	2
 
 typedef struct
 {
@@ -101,31 +78,17 @@ typedef struct miptex_s
 	unsigned	offsets[MIPLEVELS];		// four mip maps stored
 } miptex_t;
 
-
 typedef struct
 {
 	float	point[3];
 } dvertex_t;
 
-
-// 0-2 are axial planes
-#define	PLANE_X			0
-#define	PLANE_Y			1
-#define	PLANE_Z			2
-
-// 3-5 are non-axial planes snapped to the nearest
-#define	PLANE_ANYX		3
-#define	PLANE_ANYY		4
-#define	PLANE_ANYZ		5
-
 typedef struct
 {
 	float	normal[3];
 	float	dist;
-	int		type;		// PLANE_X - PLANE_ANYZ ?remove? trivial to regenerate
+	int		type;
 } dplane_t;
-
-
 
 #define	CONTENTS_EMPTY		-1
 #define	CONTENTS_SOLID		-2
@@ -143,7 +106,6 @@ typedef struct
 #define	CONTENTS_CURRENT_UP		-13
 #define	CONTENTS_CURRENT_DOWN	-14
 
-
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct
 {
@@ -160,7 +122,6 @@ typedef struct
 	int			planenum;
 	short		children[2];	// negative numbers are contents
 } dclipnode_t;
-
 
 typedef struct texinfo_s
 {
@@ -192,14 +153,7 @@ typedef struct
 	int			lightofs;		// start of [numstyles*surfsize] samples
 } dface_t;
 
-
-
-#define	AMBIENT_WATER	0
-#define	AMBIENT_SKY		1
-#define	AMBIENT_SLIME	2
-#define	AMBIENT_LAVA	3
-
-#define	NUM_AMBIENTS			4		// automatic ambient sounds
+#define	NUM_AMBIENTS	4		// automatic ambient sounds
 
 // leaf 0 is the generic CONTENTS_SOLID leaf, used for all solid areas
 // all other leafs need visibility info
