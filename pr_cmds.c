@@ -1,4 +1,4 @@
-/* $Id: pr_cmds.c,v 1.1 2008/02/03 08:27:56 slotzero Exp $
+/* $Id: pr_cmds.c,v 1.2 2008/07/20 06:26:47 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -928,7 +928,7 @@ void PF_findradius (void)
 			continue;
 		for (j=0 ; j<3 ; j++)
 			eorg[j] = org[j] - (ent->v.origin[j] + (ent->v.mins[j] + ent->v.maxs[j])*0.5);
-		if (Length(eorg) > rad)
+		if (VectorLength(eorg) > rad)
 			continue;
 
 		ent->v.chain = EDICT_TO_PROG(chain);
