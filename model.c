@@ -1,4 +1,4 @@
-/* $Id: model.c,v 1.7 2008/07/20 06:26:47 slotzero Exp $
+/* $Id: model.c,v 1.8 2008/07/20 06:57:40 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -48,7 +48,6 @@ unsigned short	d_8to16table[256];
 // normalizing factor so player model works out to about 1 pixel per triangle
 #define ALIAS_BASE_SIZE_RATIO		(1.0 / 11.0)
 
-#define MAX_BTOFPOLYS	5000	// FIXME: tune this
 #define MAXALIASVERTS	2000	// TODO: tune this
 #define MAX_LBM_HEIGHT	480
 
@@ -235,24 +234,6 @@ model_t *Mod_FindName (char *name)
 	return mod;
 }
 
-/*
-==================
-Mod_TouchModel
-
-==================
-*/
-void Mod_TouchModel (char *name)
-{
-	model_t	*mod;
-
-	mod = Mod_FindName (name);
-
-	if (mod->needload == NL_PRESENT)
-	{
-		if (mod->type == mod_alias)
-			Cache_Check (&mod->cache);
-	}
-}
 
 /*
 ==================

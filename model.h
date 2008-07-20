@@ -1,4 +1,4 @@
-/* $Id: model.h,v 1.3 2008/02/15 05:34:15 slotzero Exp $
+/* $Id: model.h,v 1.4 2008/07/20 06:57:40 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -389,7 +389,6 @@ void	Mod_Init (void);
 void	Mod_ClearAll (void);
 model_t *Mod_ForName (char *name, qboolean crash);
 void	*Mod_Extradata (model_t *mod);	// handles caching
-void	Mod_TouchModel (char *name);
 
 mleaf_t *Mod_PointInLeaf (float *p, model_t *model);
 byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
