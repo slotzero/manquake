@@ -85,8 +85,6 @@ typedef struct dtriangle_s {
 	int					vertindex[3];
 } dtriangle_t;
 
-#define DT_FACES_FRONT				0x0010
-
 // This mirrors trivert_t in trilib.h, is present so Quake knows how to
 // load this data
 
@@ -127,5 +125,5 @@ typedef struct {
 	aliasskintype_t	type;
 } daliasskintype_t;
 
+// little-endian "IDPO"
 #define IDPOLYHEADER	(('O'<<24)+('P'<<16)+('D'<<8)+'I')
-														// little-endian "IDPO"

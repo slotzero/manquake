@@ -1,4 +1,4 @@
-/* $Id: model.h,v 1.4 2008/07/20 06:57:40 slotzero Exp $
+/* $Id: model.h,v 1.5 2008/07/21 06:48:24 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -300,16 +300,6 @@ typedef struct {
 //
 
 typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
-
-#define	EF_ROCKET	1			// leave a trail
-#define	EF_GRENADE	2			// leave a trail
-#define	EF_GIB		4			// leave a trail
-#define	EF_ROTATE	8			// rotate (bonus items)
-#define	EF_TRACER	16			// green split trail
-#define	EF_ZOMGIB	32			// small blood trail
-#define	EF_TRACER2	64			// orange split trail + rotate
-#define	EF_TRACER3	128			// purple trail
-
 
 typedef struct model_s
 {
