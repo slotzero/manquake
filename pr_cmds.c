@@ -1,4 +1,4 @@
-/* $Id: pr_cmds.c,v 1.3 2008/07/23 18:48:45 slotzero Exp $
+/* $Id: pr_cmds.c,v 1.4 2008/07/23 23:32:38 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -311,25 +311,22 @@ void PF_normalize (void)
 {
 	float	*value1;
 	vec3_t	newvalue;
-	float	new;
+	double	f;
 
 	value1 = G_VECTOR(OFS_PARM0);
 
-	new = value1[0] * value1[0] + value1[1] * value1[1] + value1[2]*value1[2];
-	new = sqrt(new);
-
-	if (new == 0)
-		newvalue[0] = newvalue[1] = newvalue[2] = 0;
-	else
+	f = DotProduct (value1, value1);
+	if (f)
 	{
-		new = 1/new;
-		newvalue[0] = value1[0] * new;
-		newvalue[1] = value1[1] * new;
-		newvalue[2] = value1[2] * new;
+		f = 1.0 / sqrt(f);
+		VectorScale(value1, f, newvalue);
 	}
+	else
+		VectorClear(newvalue);
 
 	VectorCopy (newvalue, G_VECTOR(OFS_RETURN));
 }
+
 
 /*
 =================
@@ -340,16 +337,9 @@ scalar vlen(vector)
 */
 void PF_vlen (void)
 {
-	float	*value1;
-	float	new;
-
-	value1 = G_VECTOR(OFS_PARM0);
-
-	new = value1[0] * value1[0] + value1[1] * value1[1] + value1[2]*value1[2];
-	new = sqrt(new);
-
-	G_FLOAT(OFS_RETURN) = new;
+	G_FLOAT(OFS_RETURN) = VectorLength(G_VECTOR(OFS_PARM0));
 }
+
 
 /*
 =================
@@ -403,12 +393,19 @@ void PF_vectoangles (void)
 	}
 	else
 	{
-		yaw = (int) (atan2(value1[1], value1[0]) * 180 / M_PI);
-		if (yaw < 0)
-			yaw += 360;
+		if (value1[0])
+		{
+			yaw = (atan2(value1[1], value1[0]) * 180 / M_PI);
+			if (yaw < 0)
+				yaw += 360;
+		}
+		else if (value1[1] > 0)
+			yaw = 90;
+		else
+			yaw = 270;
 
-		forward = sqrt (value1[0]*value1[0] + value1[1]*value1[1]);
-		pitch = (int) (atan2(value1[2], forward) * 180 / M_PI);
+		forward = sqrt(value1[0]*value1[0] + value1[1]*value1[1]);
+		pitch = (atan2(value1[2], forward) * 180 / M_PI);
 		if (pitch < 0)
 			pitch += 360;
 	}
@@ -417,6 +414,7 @@ void PF_vectoangles (void)
 	G_FLOAT(OFS_RETURN+1) = yaw;
 	G_FLOAT(OFS_RETURN+2) = 0;
 }
+
 
 /*
 =================
@@ -436,6 +434,7 @@ void PF_random (void)
 	G_FLOAT(OFS_RETURN) = num;
 }
 
+
 /*
 =================
 PF_particle
@@ -453,7 +452,7 @@ void PF_particle (void)
 	dir = G_VECTOR(OFS_PARM1);
 	color = G_FLOAT(OFS_PARM2);
 	count = G_FLOAT(OFS_PARM3);
-	SV_StartParticle (org, dir, color, count);
+	SV_StartParticle (org, dir, (int)color, (int)count);
 }
 
 
@@ -476,7 +475,7 @@ void PF_ambientsound (void)
 	vol = G_FLOAT(OFS_PARM2);
 	attenuation = G_FLOAT(OFS_PARM3);
 
-// check to see if samp was properly precached
+	// check to see if samp was properly precached
 	for (soundnum=0, check = sv.sound_precache ; *check ; check++, soundnum++)
 		if (!strcmp(*check,samp))
 			break;
@@ -487,18 +486,19 @@ void PF_ambientsound (void)
 		return;
 	}
 
-// add an svc_spawnambient command to the level signon packet
+	// add an svc_spawnambient command to the level signon packet
 
-	MSG_WriteByte (&sv.signon,svc_spawnstaticsound);
-	for (i=0 ; i<3 ; i++)
-		MSG_WriteCoord(&sv.signon, pos[i]);
+	MSG_WriteByte (&sv.signon, svc_spawnstaticsound);
+
+	MSG_WriteCoord(&sv.signon, pos[0]);
+	MSG_WriteCoord(&sv.signon, pos[1]);
+	MSG_WriteCoord(&sv.signon, pos[2]);
 
 	MSG_WriteByte (&sv.signon, soundnum);
-
-	MSG_WriteByte (&sv.signon, vol*255);
-	MSG_WriteByte (&sv.signon, attenuation*64);
-
+	MSG_WriteByte (&sv.signon, (int)vol*255);
+	MSG_WriteByte (&sv.signon, (int)attenuation*64);
 }
+
 
 /*
 =================
@@ -521,7 +521,7 @@ void PF_sound (void)
 	int			channel;
 	edict_t		*entity;
 	int 		volume;
-	float attenuation;
+	float		attenuation;
 
 	entity = G_EDICT(OFS_PARM0);
 	channel = G_FLOAT(OFS_PARM1);
@@ -541,6 +541,7 @@ void PF_sound (void)
 	SV_StartSound (entity, channel, sample, volume, attenuation);
 }
 
+
 /*
 =================
 PF_break
@@ -554,6 +555,7 @@ Con_Printf ("break statement\n");
 *(int *)-4 = 0;	// dump to debugger
 //	PR_RunError ("break statement");
 }
+
 
 /*
 =================
@@ -595,50 +597,6 @@ void PF_traceline (void)
 }
 
 
-#ifdef QUAKE2
-extern trace_t SV_Trace_Toss (edict_t *ent, edict_t *ignore);
-
-void PF_TraceToss (void)
-{
-	trace_t	trace;
-	edict_t	*ent;
-	edict_t	*ignore;
-
-	ent = G_EDICT(OFS_PARM0);
-	ignore = G_EDICT(OFS_PARM1);
-
-	trace = SV_Trace_Toss (ent, ignore);
-
-	pr_global_struct->trace_allsolid = trace.allsolid;
-	pr_global_struct->trace_startsolid = trace.startsolid;
-	pr_global_struct->trace_fraction = trace.fraction;
-	pr_global_struct->trace_inwater = trace.inwater;
-	pr_global_struct->trace_inopen = trace.inopen;
-	VectorCopy (trace.endpos, pr_global_struct->trace_endpos);
-	VectorCopy (trace.plane.normal, pr_global_struct->trace_plane_normal);
-	pr_global_struct->trace_plane_dist =  trace.plane.dist;
-	if (trace.ent)
-		pr_global_struct->trace_ent = EDICT_TO_PROG(trace.ent);
-	else
-		pr_global_struct->trace_ent = EDICT_TO_PROG(sv.edicts);
-}
-#endif
-
-
-/*
-=================
-PF_checkpos
-
-Returns true if the given entity can move to the given position from it's
-current position by walking or rolling.
-FIXME: make work...
-scalar checkpos (entity, vector)
-=================
-*/
-void PF_checkpos (void)
-{
-}
-
 //============================================================================
 
 byte	checkpvs[MAX_MAP_LEAFS/8];
@@ -651,7 +609,7 @@ int PF_newcheckclient (int check)
 	mleaf_t	*leaf;
 	vec3_t	org;
 
-// cycle to the next one
+	// cycle to the next one
 
 	if (check < 1)
 		check = 1;
@@ -680,11 +638,11 @@ int PF_newcheckclient (int check)
 		if ((int)ent->v.flags & FL_NOTARGET)
 			continue;
 
-	// anything that is a client, or has a client as an enemy
+		// anything that is a client, or has a client as an enemy
 		break;
 	}
 
-// get the PVS for the entity
+	// get the PVS for the entity
 	VectorAdd (ent->v.origin, ent->v.view_ofs, org);
 	leaf = Mod_PointInLeaf (org, sv.worldmodel);
 	pvs = Mod_LeafPVS (leaf, sv.worldmodel);
@@ -692,6 +650,7 @@ int PF_newcheckclient (int check)
 
 	return i;
 }
+
 
 /*
 =================
@@ -717,14 +676,14 @@ void PF_checkclient (void)
 	int		l;
 	vec3_t	view;
 
-// find a new check if on a new frame
+	// find a new check if on a new frame
 	if (sv.time - sv.lastchecktime >= 0.1)
 	{
 		sv.lastcheck = PF_newcheckclient (sv.lastcheck);
 		sv.lastchecktime = sv.time;
 	}
 
-// return check if it might be visible
+	// return check if it might be visible
 	ent = EDICT_NUM(sv.lastcheck);
 	if (ent->free || ent->v.health <= 0)
 	{
@@ -732,22 +691,23 @@ void PF_checkclient (void)
 		return;
 	}
 
-// if current entity can't possibly see the check entity, return 0
+	// if current entity can't possibly see the check entity, return 0
 	self = PROG_TO_EDICT(pr_global_struct->self);
 	VectorAdd (self->v.origin, self->v.view_ofs, view);
 	leaf = Mod_PointInLeaf (view, sv.worldmodel);
 	l = (leaf - sv.worldmodel->leafs) - 1;
 	if ( (l<0) || !(checkpvs[l>>3] & (1<<(l&7)) ) )
 	{
-c_notvis++;
+		c_notvis++;
 		RETURN_EDICT(sv.edicts);
 		return;
 	}
 
-// might be able to see it
-c_invis++;
+	// might be able to see it
+	c_invis++;
 	RETURN_EDICT(ent);
 }
+
 
 //============================================================================
 
@@ -774,9 +734,15 @@ void PF_stuffcmd (void)
 
 	old = host_client;
 	host_client = &svs.clients[entnum-1];
+
+	// no reason to stuffcmd to an inactive client
+	if (!host_client->active)
+		return;
+
 	Host_ClientCommands ("%s", str);
 	host_client = old;
 }
+
 
 /*
 =================
@@ -820,6 +786,7 @@ void PF_cvar (void)
 		G_FLOAT(OFS_RETURN) = Cvar_VariableValue (str);
 }
 
+
 /*
 =================
 PF_cvar_set
@@ -852,6 +819,7 @@ void PF_cvar_set (void)
 
 	Cvar_Set (var, val);
 }
+
 
 /*
 =================
@@ -905,6 +873,7 @@ void PF_dprint (void)
 	Con_DPrintf ("%s", PF_VarString(0));
 }
 
+
 void PF_ftos (void)
 {
 	float	v;
@@ -929,6 +898,7 @@ void PF_ftos (void)
 	G_INT(OFS_RETURN) = pr_string_temp - pr_strings;
 }
 
+
 // Slot Zero 3.50-1  Built-in function strftime. (#5)
 void PF_strftime (void)
 {
@@ -942,6 +912,7 @@ void PF_strftime (void)
 	G_INT (OFS_RETURN) = pr_string_temp - pr_strings;
 }
 
+
 void PF_fabs (void)
 {
 	float	v;
@@ -949,19 +920,13 @@ void PF_fabs (void)
 	G_FLOAT(OFS_RETURN) = fabs(v);
 }
 
+
 void PF_vtos (void)
 {
 	sprintf (pr_string_temp, "'%5.1f %5.1f %5.1f'", G_VECTOR(OFS_PARM0)[0], G_VECTOR(OFS_PARM0)[1], G_VECTOR(OFS_PARM0)[2]);
 	G_INT(OFS_RETURN) = pr_string_temp - pr_strings;
 }
 
-#ifdef QUAKE2
-void PF_etos (void)
-{
-	sprintf (pr_string_temp, "entity %i", G_EDICTNUM(OFS_PARM0));
-	G_INT(OFS_RETURN) = pr_string_temp - pr_strings;
-}
-#endif
 
 void PF_Spawn (void)
 {
@@ -970,10 +935,10 @@ void PF_Spawn (void)
 	RETURN_EDICT(ed);
 }
 
+
 void PF_Remove (void)
 {
 	edict_t	*ed;
-
 	ed = G_EDICT(OFS_PARM0);
 	ED_Free (ed);
 }
@@ -981,55 +946,6 @@ void PF_Remove (void)
 
 // entity (entity start, .string field, string match) find = #5;
 void PF_Find (void)
-#ifdef QUAKE2
-{
-	int		e;
-	int		f;
-	char	*s, *t;
-	edict_t	*ed;
-	edict_t	*first;
-	edict_t	*second;
-	edict_t	*last;
-
-	first = second = last = (edict_t *)sv.edicts;
-	e = G_EDICTNUM(OFS_PARM0);
-	f = G_INT(OFS_PARM1);
-	s = G_STRING(OFS_PARM2);
-	if (!s)
-		PR_RunError ("PF_Find: bad search string");
-
-	for (e++ ; e < sv.num_edicts ; e++)
-	{
-		ed = EDICT_NUM(e);
-		if (ed->free)
-			continue;
-		t = E_STRING(ed,f);
-		if (!t)
-			continue;
-		if (!strcmp(t,s))
-		{
-			if (first == (edict_t *)sv.edicts)
-				first = ed;
-			else if (second == (edict_t *)sv.edicts)
-				second = ed;
-			ed->v.chain = EDICT_TO_PROG(last);
-			last = ed;
-		}
-	}
-
-	if (first != last)
-	{
-		if (last != second)
-			first->v.chain = last->v.chain;
-		else
-			first->v.chain = EDICT_TO_PROG(last);
-		last->v.chain = EDICT_TO_PROG((edict_t *)sv.edicts);
-		if (second && second != last)
-			second->v.chain = EDICT_TO_PROG(last);
-	}
-	RETURN_EDICT(first);
-}
-#else
 {
 	int		e;
 	int		f;
@@ -1059,7 +975,7 @@ void PF_Find (void)
 
 	RETURN_EDICT(sv.edicts);
 }
-#endif
+
 
 void PR_CheckEmptyString (char *s)
 {
@@ -1067,10 +983,12 @@ void PR_CheckEmptyString (char *s)
 		PR_RunError ("Bad string");
 }
 
+
 void PF_precache_file (void)
 {	// precache_file is only used to copy files with qcc, it does nothing
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 }
+
 
 void PF_precache_sound (void)
 {
@@ -1078,7 +996,7 @@ void PF_precache_sound (void)
 	int		i;
 
 	if (sv.state != ss_loading)
-		PR_RunError ("PF_Precache_*: Precache can only be done in spawn functions");
+		PR_RunError ("PF_precache_sound: Precache can only be done in spawn functions");
 
 	s = G_STRING(OFS_PARM0);
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
@@ -1097,13 +1015,14 @@ void PF_precache_sound (void)
 	PR_RunError ("PF_precache_sound: overflow");
 }
 
+
 void PF_precache_model (void)
 {
 	char	*s;
 	int		i;
 
 	if (sv.state != ss_loading)
-		PR_RunError ("PF_Precache_*: Precache can only be done in spawn functions");
+		PR_RunError ("PF_precache_model: Precache can only be done in spawn functions");
 
 	s = G_STRING(OFS_PARM0);
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
@@ -1129,20 +1048,24 @@ void PF_coredump (void)
 	ED_PrintEdicts ();
 }
 
+
 void PF_traceon (void)
 {
 	pr_trace = true;
 }
+
 
 void PF_traceoff (void)
 {
 	pr_trace = false;
 }
 
+
 void PF_eprint (void)
 {
 	ED_PrintNum (G_EDICTNUM(OFS_PARM0));
 }
+
 
 /*
 ===============
@@ -1163,7 +1086,7 @@ void PF_walkmove (void)
 	yaw = G_FLOAT(OFS_PARM0);
 	dist = G_FLOAT(OFS_PARM1);
 
-	if ( !( (int)ent->v.flags & (FL_ONGROUND|FL_FLY|FL_SWIM) ) )
+	if (!((int)ent->v.flags & (FL_ONGROUND|FL_FLY|FL_SWIM)))
 	{
 		G_FLOAT(OFS_RETURN) = 0;
 		return;
@@ -1175,17 +1098,17 @@ void PF_walkmove (void)
 	move[1] = sin(yaw)*dist;
 	move[2] = 0;
 
-// save program state, because SV_movestep may call other progs
+	// save program state, because SV_movestep may call other progs
 	oldf = pr_xfunction;
 	oldself = pr_global_struct->self;
 
 	G_FLOAT(OFS_RETURN) = SV_movestep(ent, move, true);
 
-
-// restore program state
+	// restore program state
 	pr_xfunction = oldf;
 	pr_global_struct->self = oldself;
 }
+
 
 /*
 ===============
@@ -1219,6 +1142,7 @@ void PF_droptofloor (void)
 	}
 }
 
+
 /*
 ===============
 PF_lightstyle
@@ -1236,10 +1160,10 @@ void PF_lightstyle (void)
 	style = G_FLOAT(OFS_PARM0);
 	val = G_STRING(OFS_PARM1);
 
-// change the string in sv
+	// change the string in sv
 	sv.lightstyles[style] = val;
 
-// send message to all clients on this server
+	// send message to all clients on this server
 	if (sv.state != ss_active)
 		return;
 
@@ -1247,10 +1171,11 @@ void PF_lightstyle (void)
 		if (client->active || client->spawned)
 		{
 			MSG_WriteChar (&client->message, svc_lightstyle);
-			MSG_WriteChar (&client->message,style);
+			MSG_WriteChar (&client->message, style);
 			MSG_WriteString (&client->message, val);
 		}
 }
+
 
 void PF_rint (void)
 {
@@ -1261,10 +1186,14 @@ void PF_rint (void)
 	else
 		G_FLOAT(OFS_RETURN) = (int)(f - 0.5);
 }
+
+
 void PF_floor (void)
 {
 	G_FLOAT(OFS_RETURN) = floor(G_FLOAT(OFS_PARM0));
 }
+
+
 void PF_ceil (void)
 {
 	G_FLOAT(OFS_RETURN) = ceil(G_FLOAT(OFS_PARM0));
@@ -1285,6 +1214,7 @@ void PF_checkbottom (void)
 	G_FLOAT(OFS_RETURN) = SV_CheckBottom (ent);
 }
 
+
 /*
 =============
 PF_pointcontents
@@ -1298,6 +1228,7 @@ void PF_pointcontents (void)
 
 	G_FLOAT(OFS_RETURN) = SV_PointContents (v);
 }
+
 
 /*
 =============
@@ -1329,6 +1260,7 @@ void PF_nextent (void)
 	}
 }
 
+
 /*
 =============
 PF_aim
@@ -1337,7 +1269,7 @@ Pick a vector for the player to shoot along
 vector aim(entity, missilespeed)
 =============
 */
-cvar_t	sv_aim = {"sv_aim", "0.93"};
+cvar_t	sv_aim = {"sv_aim", "1"};
 void PF_aim (void)
 {
 	edict_t	*ent, *check, *bestent;
@@ -1353,7 +1285,7 @@ void PF_aim (void)
 	VectorCopy (ent->v.origin, start);
 	start[2] += 20;
 
-// try sending a trace straight
+	// try sending a trace straight
 	VectorCopy (pr_global_struct->v_forward, dir);
 	VectorMA (start, 2048, dir, end);
 	tr = SV_Move (start, vec3_origin, vec3_origin, end, false, ent);
@@ -1364,8 +1296,7 @@ void PF_aim (void)
 		return;
 	}
 
-
-// try all possible entities
+	// try all possible entities
 	VectorCopy (dir, bestdir);
 	bestdist = sv_aim.value;
 	bestent = NULL;
@@ -1409,6 +1340,7 @@ void PF_aim (void)
 		VectorCopy (bestdir, G_VECTOR(OFS_RETURN));
 	}
 }
+
 
 /*
 ==============
@@ -1454,49 +1386,6 @@ void PF_changeyaw (void)
 	ent->v.angles[1] = anglemod (current + move);
 }
 
-#ifdef QUAKE2
-/*
-==============
-PF_changepitch
-==============
-*/
-void PF_changepitch (void)
-{
-	edict_t		*ent;
-	float		ideal, current, move, speed;
-
-	ent = G_EDICT(OFS_PARM0);
-	current = anglemod( ent->v.angles[0] );
-	ideal = ent->v.idealpitch;
-	speed = ent->v.pitch_speed;
-
-	if (current == ideal)
-		return;
-	move = ideal - current;
-	if (ideal > current)
-	{
-		if (move >= 180)
-			move = move - 360;
-	}
-	else
-	{
-		if (move <= -180)
-			move = move + 360;
-	}
-	if (move > 0)
-	{
-		if (move > speed)
-			move = speed;
-	}
-	else
-	{
-		if (move < -speed)
-			move = -speed;
-	}
-
-	ent->v.angles[0] = anglemod (current + move);
-}
-#endif
 
 /*
 ===============================================================================
