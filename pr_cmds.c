@@ -1,4 +1,4 @@
-/* $Id: pr_cmds.c,v 1.2 2008/07/20 06:26:47 slotzero Exp $
+/* $Id: pr_cmds.c,v 1.3 2008/07/23 18:48:45 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 ===============================================================================
 */
 
+
 char *PF_VarString (int	first)
 {
 	int		i;
@@ -62,13 +63,13 @@ void PF_error (void)
 	edict_t	*ed;
 
 	s = PF_VarString(0);
-	Con_Printf ("======SERVER ERROR in %s:\n%s\n"
-	,pr_strings + pr_xfunction->s_name,s);
+	Con_Printf ("======SERVER ERROR in %s:\n%s\n", pr_strings + pr_xfunction->s_name, s);
 	ed = PROG_TO_EDICT(pr_global_struct->self);
 	ED_Print (ed);
 
 	Host_Error ("Program error");
 }
+
 
 /*
 =================
@@ -86,8 +87,7 @@ void PF_objerror (void)
 	edict_t	*ed;
 
 	s = PF_VarString(0);
-	Con_Printf ("======OBJECT ERROR in %s:\n%s\n"
-	,pr_strings + pr_xfunction->s_name,s);
+	Con_Printf ("======OBJECT ERROR in %s:\n%s\n", pr_strings + pr_xfunction->s_name, s);
 	ed = PROG_TO_EDICT(pr_global_struct->self);
 	ED_Print (ed);
 	ED_Free (ed);
@@ -95,7 +95,6 @@ void PF_objerror (void)
 	// Slot Zero 3.50-1  Don't crash the server!
 	// Host_Error ("Program error");	// Slot Zero 3.50-1  Removed this.
 }
-
 
 
 /*
@@ -111,11 +110,15 @@ void PF_makevectors (void)
 	AngleVectors (G_VECTOR(OFS_PARM0), pr_global_struct->v_forward, pr_global_struct->v_right, pr_global_struct->v_up);
 }
 
+
 /*
 =================
 PF_setorigin
 
-This is the only valid way to move an object without using the physics of the world (setting velocity and waiting).  Directly changing origin will not set internal links correctly, so clipping would be messed up.  This should be called when an object is spawned, and then only if it is teleported.
+This is the only valid way to move an object without using the physics of the
+world (setting velocity and waiting).  Directly changing origin will not set
+internal links correctly, so clipping would be messed up.  This should be called
+when an object is spawned, and then only if it is teleported.
 
 setorigin (entity, origin)
 =================
@@ -134,77 +137,20 @@ void PF_setorigin (void)
 
 void SetMinMaxSize (edict_t *e, float *min, float *max, qboolean rotate)
 {
-	float	*angles;
-	vec3_t	rmin, rmax;
-	float	bounds[2][3];
-	float	xvector[2], yvector[2];
-	float	a;
-	vec3_t	base, transformed;
-	int		i, j, k, l;
+	int i;
 
 	for (i=0 ; i<3 ; i++)
 		if (min[i] > max[i])
-			PR_RunError ("backwards mins/maxs");
+			PR_RunError ("SetMinMaxSize: backwards mins/maxs");
 
-	rotate = false;		// FIXME: implement rotation properly again
-
-	if (!rotate)
-	{
-		VectorCopy (min, rmin);
-		VectorCopy (max, rmax);
-	}
-	else
-	{
-	// find min / max for rotations
-		angles = e->v.angles;
-
-		a = angles[1]/180 * M_PI;
-
-		xvector[0] = cos(a);
-		xvector[1] = sin(a);
-		yvector[0] = -sin(a);
-		yvector[1] = cos(a);
-
-		VectorCopy (min, bounds[0]);
-		VectorCopy (max, bounds[1]);
-
-		rmin[0] = rmin[1] = rmin[2] = 9999;
-		rmax[0] = rmax[1] = rmax[2] = -9999;
-
-		for (i=0 ; i<= 1 ; i++)
-		{
-			base[0] = bounds[i][0];
-			for (j=0 ; j<= 1 ; j++)
-			{
-				base[1] = bounds[j][1];
-				for (k=0 ; k<= 1 ; k++)
-				{
-					base[2] = bounds[k][2];
-
-				// transform the point
-					transformed[0] = xvector[0]*base[0] + yvector[0]*base[1];
-					transformed[1] = xvector[1]*base[0] + yvector[1]*base[1];
-					transformed[2] = base[2];
-
-					for (l=0 ; l<3 ; l++)
-					{
-						if (transformed[l] < rmin[l])
-							rmin[l] = transformed[l];
-						if (transformed[l] > rmax[l])
-							rmax[l] = transformed[l];
-					}
-				}
-			}
-		}
-	}
-
-// set derived values
-	VectorCopy (rmin, e->v.mins);
-	VectorCopy (rmax, e->v.maxs);
+	// set derived values
+	VectorCopy (min, e->v.mins);
+	VectorCopy (max, e->v.maxs);
 	VectorSubtract (max, min, e->v.size);
 
 	SV_LinkEdict (e, false);
 }
+
 
 /*
 =================
@@ -226,6 +172,7 @@ void PF_setsize (void)
 	SetMinMaxSize (e, min, max, false);
 }
 
+
 /*
 =================
 PF_setmodel
@@ -243,7 +190,7 @@ void PF_setmodel (void)
 	e = G_EDICT(OFS_PARM0);
 	m = G_STRING(OFS_PARM1);
 
-// check to see if model was properly precached
+	// check to see if model was properly precached
 	for (i=0, check = sv.model_precache ; *check ; i++, check++)
 		if (!strcmp(*check, m))
 			break;
@@ -251,17 +198,17 @@ void PF_setmodel (void)
 	if (!*check)
 		PR_RunError ("no precache: %s\n", m);
 
-
 	e->v.model = m - pr_strings;
 	e->v.modelindex = i; //SV_ModelIndex (m);
 
-	mod = sv.models[ (int)e->v.modelindex];  // Mod_ForName (m, true);
+	mod = sv.models[(int)e->v.modelindex];  // Mod_ForName (m, true);
 
 	if (mod)
 		SetMinMaxSize (e, mod->mins, mod->maxs, true);
 	else
 		SetMinMaxSize (e, vec3_origin, vec3_origin, true);
 }
+
 
 /*
 =================
@@ -279,6 +226,7 @@ void PF_bprint (void)
 	s = PF_VarString(0);
 	SV_BroadcastPrintf ("%s", s);
 }
+
 
 /*
 =================
@@ -300,15 +248,19 @@ void PF_sprint (void)
 
 	if (entnum < 1 || entnum > svs.maxclients)
 	{
-		Con_Printf ("tried to sprint to a non-client\n");
-		SV_BroadcastPrintf ("sprint: %s", s);	// Slot Zero 3.50  Make debugging easier.
+		// appended '%s' to make debugging easier
+		Con_Printf ("tried to sprint to a non-client: '%s'\n", s);
 		return;
 	}
 
 	client = &svs.clients[entnum-1];
 
-	MSG_WriteChar (&client->message,svc_print);
-	MSG_WriteString (&client->message, s );
+	// no reason to sprint to an inactive client
+	if (!client->active)
+		return;
+
+	MSG_WriteChar (&client->message, svc_print);
+	MSG_WriteString (&client->message, s);
 }
 
 
@@ -332,12 +284,16 @@ void PF_centerprint (void)
 
 	if (entnum < 1 || entnum > svs.maxclients)
 	{
-		Con_Printf ("tried to centerprint to a non-client\n");
-		SV_BroadcastPrintf ("centerprint: %s", s);	// Slot Zero 3.50  Make debugging easier.
+		// appended '%s' to make debugging easier
+		Con_Printf ("tried to centerprint to a non-client: '%s'\n");
 		return;
 	}
 
 	client = &svs.clients[entnum-1];
+
+	// no reason to centerprint to an inactive client
+	if (!client->active)
+		return;
 
 	MSG_WriteChar (&client->message,svc_centerprint);
 	MSG_WriteString (&client->message, s );
