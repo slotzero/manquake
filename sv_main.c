@@ -1,4 +1,4 @@
-/* $Id: sv_main.c,v 1.6 2008/07/15 22:25:49 slotzero Exp $
+/*
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -303,8 +303,6 @@ void SV_ConnectClient (int clientnum)
 	if (unfun_match (ip_hidden2.string, client->netconnection->address))
 		strcpy (client->netconnection->address, ip_visible2.string);
 
-	if (sv.loadgame)
-		memcpy (spawn_parms, client->spawn_parms, sizeof(spawn_parms));
 	memset (client, 0, sizeof(*client));
 	client->netconnection = netconnection;
 
@@ -317,15 +315,10 @@ void SV_ConnectClient (int clientnum)
 	client->message.allowoverflow = true;		// we can catch it
 	client->privileged = false;
 
-	if (sv.loadgame)
-		memcpy (client->spawn_parms, spawn_parms, sizeof(spawn_parms));
-	else
-	{
 	// call the progs to get default spawn parms for the new client
-		PR_ExecuteProgram (pr_global_struct->SetNewParms);
-		for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
-			client->spawn_parms[i] = (&pr_global_struct->parm1)[i];
-	}
+	PR_ExecuteProgram (pr_global_struct->SetNewParms);
+	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
+		client->spawn_parms[i] = (&pr_global_struct->parm1)[i];
 
 	SV_SendServerinfo (client);
 }

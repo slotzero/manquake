@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define PROQUAKE_BUILD		2.29	// Slot Zero 3.50-1  Added this.
 #define PROQUAKE_VERSION	3.50	// JPG - added this
-#define	VERSION				1.09
+//#define	VERSION				1.09
 #define	LINUX_VERSION		1.30
 
 //define	PARANOID			// speed sapping error checking
@@ -46,12 +46,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define id386	1
 #else
 #define id386	0
-#endif
-
-#if id386
-#define UNALIGNED_OK	1	// set to 0 if unaligned accesses are not supported
-#else
-#define UNALIGNED_OK	0
 #endif
 
 #define	MINIMUM_MEMORY			0x550000
@@ -84,8 +78,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	MAX_LIGHTSTYLES	64
 #define	MAX_MODELS		256			// these are sent over the net as bytes
 #define	MAX_SOUNDS		256			// so they cannot be blindly increased
-
-#define	MAX_STYLESTRING	64
 
 //
 // stats are integers communicated to the client by the server
@@ -175,8 +167,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //===========================================
 
 #define	MAX_SCOREBOARD		16
-#define	MAX_SCOREBOARDNAME	32
-#define	SOUND_CHANNELS		8
 
 #include "common.h"
 #include "bspfile.h"
@@ -237,7 +227,6 @@ extern qboolean noclip_anglehack;
 extern	quakeparms_t host_parms;
 
 extern	cvar_t		sys_ticrate;
-extern	cvar_t		sys_nostdout;
 extern	cvar_t		developer;
 
 extern	qboolean	host_initialized;		// true if into command execution

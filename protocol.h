@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -92,7 +92,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	svc_stufftext		9	// [string] stuffed into client's console buffer
 								// the string should be \n terminated
 #define	svc_setangle		10	// [angle3] set the view angle to this absolute value
-	
+
 #define	svc_serverinfo		11	// [long] version
 						// [string] signon string
 						// [string]..[0]model cache
@@ -105,11 +105,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	svc_updatecolors	17	// [byte] [byte]
 #define	svc_particle		18	// [vec3] <variable>
 #define	svc_damage			19
-	
+
 #define	svc_spawnstatic		20
 //	svc_spawnbinary		21
 #define	svc_spawnbaseline	22
-	
+
 #define	svc_temp_entity		23
 
 #define	svc_setpause		24	// [byte] on / off
@@ -138,40 +138,3 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	clc_disconnect	2
 #define	clc_move		3			// [usercmd_t]
 #define	clc_stringcmd	4		// [string] message
-
-
-// JPG - added ProQuake commands
-#define pqc_nop			1
-#define pqc_new_team	2
-#define pqc_erase_team	3
-#define pqc_team_frags	4
-#define	pqc_match_time	5
-#define pqc_match_reset	6
-#define pqc_ping_times	7
-// JPG - end mod
-
-//
-// temp entity events
-//
-#define	TE_SPIKE			0
-#define	TE_SUPERSPIKE		1
-#define	TE_GUNSHOT			2
-#define	TE_EXPLOSION		3
-#define	TE_TAREXPLOSION		4
-#define	TE_LIGHTNING1		5
-#define	TE_LIGHTNING2		6
-#define	TE_WIZSPIKE			7
-#define	TE_KNIGHTSPIKE		8
-#define	TE_LIGHTNING3		9
-#define	TE_LAVASPLASH		10
-#define	TE_TELEPORT			11
-#define TE_EXPLOSION2		12
-
-// PGM 01/21/97 
-#define TE_BEAM				13
-// PGM 01/21/97 
-
-#ifdef QUAKE2
-#define TE_IMPLOSION		14
-#define TE_RAILTRAIL		15
-#endif
