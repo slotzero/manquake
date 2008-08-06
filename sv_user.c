@@ -586,8 +586,12 @@ nextmsg:
 					ret = 1;
 				else if (Q_strncasecmp(s, "ban", 3) == 0)
 					ret = 1;
+				else if (Q_strncasecmp(s, "impulse", 7) == 0)
+					ret = 3;
 
-				if (ret == 2)
+				if (ret == 3)
+					Cmd_ImpulseOverride (s);
+				else if (ret == 2)
 					Cbuf_InsertText (s);
 				else if (ret == 1)
 					Cmd_ExecuteString (s, src_client);

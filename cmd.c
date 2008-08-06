@@ -623,7 +623,7 @@ A complete command line has been parsed, so try to execute it
 FIXME: lookupnoadd the token to speed search?
 ============
 */
-void	Cmd_ExecuteString (char *text, cmd_source_t src)
+void Cmd_ExecuteString (char *text, cmd_source_t src)
 {
 	cmd_function_t	*cmd;
 	cmdalias_t		*a;
@@ -658,7 +658,33 @@ void	Cmd_ExecuteString (char *text, cmd_source_t src)
 // check cvars
 	if (!Cvar_Command ())
 		Con_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));
+}
 
+
+/*
+============
+Cmd_ImpulseOverride
+
+Override the client impulse command
+============
+*/
+void Cmd_ImpulseOverride (char *text)
+{
+	unsigned short i;
+
+	Cmd_TokenizeString (text);
+
+	if (!Cmd_Argc() || Cmd_Argc() < 2)
+		return;
+
+	if (Q_strcmp (cmd_argv[0], "impulse"))
+		return;
+
+	i = Q_atoi (cmd_argv[1]);
+	Con_DPrintf ("CMD: %s %i\n", cmd_argv[0], i); // prevent this message at some point
+
+	if (host_client->active)
+		host_client->edict->v.impulse = i;
 }
 
 
