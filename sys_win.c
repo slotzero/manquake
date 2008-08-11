@@ -60,7 +60,7 @@ void Sys_InitFloatTime (void);
 void Sys_PushFPCW_SetHigh (void);
 void Sys_PopFPCW (void);
 
-volatile int					sys_checksum;
+volatile int	sys_checksum;
 
 
 /*
@@ -274,20 +274,6 @@ SYSTEM IO
 
 ===============================================================================
 */
-
-/*
-================
-Sys_MakeCodeWriteable
-================
-*/
-void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
-{
-	DWORD  flOldProtect;
-
-	if (!VirtualProtect((LPVOID)startaddr, length, PAGE_READWRITE, &flOldProtect))
-   		Sys_Error("Protection change failed\n");
-}
-
 
 #ifndef _M_IX86
 
@@ -639,6 +625,7 @@ char *Sys_ConsoleInput (void)
 	return NULL;
 }
 
+
 void Sys_Sleep (void)
 {
 	Sleep (1);
@@ -678,7 +665,6 @@ WinMain
 */
 void SleepUntilInput (int time)
 {
-
 	MsgWaitForMultipleObjects(1, &tevent, FALSE, time, QS_ALLINPUT);
 }
 

@@ -59,22 +59,10 @@ C(unmaskexceptions):
 ceil_cw:	.long	0
 single_cw:	.long	0
 full_cw:	.long	0
-cw:			.long	0
+cw:		.long	0
 pushed_cw:	.long	0
 
 	.text
-
-.globl C(Sys_LowFPPrecision)
-C(Sys_LowFPPrecision):
-	fldcw	single_cw
-
-	ret
-
-.globl C(Sys_HighFPPrecision)
-C(Sys_HighFPPrecision):
-	fldcw	full_cw
-
-	ret
 
 .globl C(Sys_PushFPCW_SetHigh)
 C(Sys_PushFPCW_SetHigh):
