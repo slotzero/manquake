@@ -81,7 +81,7 @@ SQUAKE_OBJS = \
 	$(BUILDDIR)/squake/sys_linux.o \
 	$(BUILDDIR)/squake/math.o \
 	$(BUILDDIR)/squake/worlda.o \
-	$(BUILDDIR)/squake/sys_dosa.o
+	$(BUILDDIR)/squake/sys_a.o
 
 $(BUILDDIR)/bin/squake : $(SQUAKE_OBJS)
 	$(CC) $(CFLAGS) -o $@ $(SQUAKE_OBJS) $(LDFLAGS)
@@ -178,7 +178,7 @@ $(BUILDDIR)/squake/math.o :     $(MOUNT_DIR)/math.s
 $(BUILDDIR)/squake/worlda.o :   $(MOUNT_DIR)/worlda.s
 	$(DO_AS)
 
-$(BUILDDIR)/squake/sys_dosa.o : $(MOUNT_DIR)/sys_dosa.s
+$(BUILDDIR)/squake/sys_a.o : $(MOUNT_DIR)/sys_a.s
 	$(DO_AS)
 
 #############################################################################

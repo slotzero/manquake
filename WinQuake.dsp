@@ -235,18 +235,14 @@ SOURCE=.\sv_user.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\sys_win.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\sys_wina.s
+SOURCE=.\sys_a.s
 
 !IF  "$(CFG)" == "winquake - Win32 Release"
 
-# Begin Custom Build - mycoolbuild
+# Begin Custom Build
 OutDir=.\Release
-InputPath=.\sys_wina.s
-InputName=sys_wina
+InputPath=.\sys_a.s
+InputName=sys_a
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
@@ -258,10 +254,10 @@ InputName=sys_wina
 
 !ELSEIF  "$(CFG)" == "winquake - Win32 Debug"
 
-# Begin Custom Build - mycoolbuild
+# Begin Custom Build
 OutDir=.\Debug
-InputPath=.\sys_wina.s
-InputName=sys_wina
+InputPath=.\sys_a.s
+InputName=sys_a
 
 "$(OUTDIR)\$(InputName).obj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	cl /EP > $(OUTDIR)\$(InputName).spp $(InputPath) 
@@ -273,6 +269,10 @@ InputName=sys_wina
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\sys_win.c
 # End Source File
 # Begin Source File
 
