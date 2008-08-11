@@ -170,57 +170,6 @@ void Q_strncpy (char *dest, char *src, int count)
 }
 
 
-char *Q_strrchr(char *s, char c)
-{
-    int len = strlen(s);
-    s += len;
-    while (len--)
-	if (*--s == c) return s;
-    return 0;
-}
-
-
-void Q_strcat (char *dest, char *src)
-{
-	dest += strlen(dest);
-	Q_strcpy (dest, src);
-}
-
-
-int Q_strcmp (char *s1, char *s2)
-{
-	while (1)
-	{
-		if (*s1 != *s2)
-			return -1;              // strings not equal
-		if (!*s1)
-			return 0;               // strings are equal
-		s1++;
-		s2++;
-	}
-
-	return -1;
-}
-
-
-int Q_strncmp (char *s1, char *s2, int count)
-{
-	while (1)
-	{
-		if (!count--)
-			return 0;
-		if (*s1 != *s2)
-			return -1;              // strings not equal
-		if (!*s1)
-			return 0;               // strings are equal
-		s1++;
-		s2++;
-	}
-
-	return -1;
-}
-
-
 int Q_strncasecmp (char *s1, char *s2, int n)
 {
 	int             c1, c2;
@@ -948,7 +897,7 @@ int COM_CheckParm (char *parm)
 	{
 		if (!com_argv[i])
 			continue;               // NEXTSTEP sometimes clears appkit vars.
-		if (!Q_strcmp (parm,com_argv[i]))
+		if (!strcmp (parm,com_argv[i]))
 			return i;
 	}
 
@@ -1037,7 +986,7 @@ void COM_InitArgv (int argc, char **argv)
 		 com_argc++)
 	{
 		largv[com_argc] = argv[com_argc];
-		if (!Q_strcmp ("-safe", argv[com_argc]))
+		if (!strcmp ("-safe", argv[com_argc]))
 			safe = true;
 	}
 

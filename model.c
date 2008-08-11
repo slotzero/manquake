@@ -1,4 +1,4 @@
-/* $Id: model.c,v 1.8 2008/07/20 06:57:40 slotzero Exp $
+/* $Id: model.c,v 1.9 2008/08/11 06:16:30 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -794,13 +794,13 @@ void Mod_LoadFaces (lump_t *l)
 
 	// set the drawing flags flag
 
-		if (!Q_strncmp(out->texinfo->texture->name,"sky",3))	// sky
+		if (!strncmp(out->texinfo->texture->name,"sky",3))	// sky
 		{
 			out->flags |= (SURF_DRAWSKY | SURF_DRAWTILED);
 			continue;
 		}
 
-		if (!Q_strncmp(out->texinfo->texture->name,"*",1))		// turbulent
+		if (!strncmp(out->texinfo->texture->name,"*",1))		// turbulent
 		{
 			out->flags |= (SURF_DRAWTURB | SURF_DRAWTILED);
 			for (i=0 ; i<2 ; i++)

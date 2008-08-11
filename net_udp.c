@@ -1,4 +1,4 @@
-/* $Id: net_udp.c,v 1.2 2008/07/15 22:25:49 slotzero Exp $
+/* $Id: net_udp.c,v 1.3 2008/08/11 06:16:30 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -109,7 +109,7 @@ int UDP_Init (void)
 		qsmackAddr = INADDR_ANY;
 
 	// if the quake hostname isn't set, set it to the machine name
-	if (Q_strcmp(hostname.string, "UNNAMED") == 0)
+	if (strcmp(hostname.string, "UNNAMED") == 0)
 	{
 		buff[15] = 0;
 		Cvar_Set ("hostname", buff);
@@ -124,7 +124,7 @@ int UDP_Init (void)
 
 	UDP_GetSocketAddr (net_controlsocket, &addr);
 	Q_strcpy(my_tcpip_address,  UDP_AddrToString (&addr));
-	colon = Q_strrchr (my_tcpip_address, ':');
+	colon = strrchr (my_tcpip_address, ':');
 	if (colon)
 		*colon = 0;
 

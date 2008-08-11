@@ -19,10 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // quakedef.h -- primary header for client
 
-#define PROQUAKE_BUILD		2.31	// Slot Zero 3.50-1  Added this.
+#define PROQUAKE_BUILD		2.32	// Slot Zero 3.50-1  Added this.
 #define PROQUAKE_VERSION	3.50	// JPG - added this
 //#define	VERSION				1.09
-#define	LINUX_VERSION		1.30
+//#define	LINUX_VERSION		1.30
 
 //define	PARANOID			// speed sapping error checking
 #define	GAMENAME	"id1"		// directory to look in by default

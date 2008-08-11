@@ -187,7 +187,7 @@ int WINS_Init (void)
 	}
 
 	// if the quake hostname isn't set, set it to the machine name
-	if (Q_strcmp(hostname.string, "UNNAMED") == 0)
+	if (strcmp(hostname.string, "UNNAMED") == 0)
 	{
 		// see if it's a text IP address (well, close enough)
 		for (p = buff; *p; p++)

@@ -322,7 +322,7 @@ int main (int c, char **v)
 	else
 	{
 		fcntl(0, F_SETFL, fcntl (0, F_GETFL, 0) | FNDELAY);
-		printf ("Linux Quake -- Version %0.3f\n", LINUX_VERSION);
+		printf ("Linux ProQuake Version %4.2f\n", PROQUAKE_VERSION);
 	}
 
     oldtime = Sys_FloatTime () - 0.1;

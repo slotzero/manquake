@@ -153,7 +153,7 @@ void Cbuf_Execute (void)
 		text = (char *)cmd_text.data;
 
 		quotes = 0;
-		notcmd = Q_strncmp(text, "cmd ", 4);  // JPG - so that the ENTIRE line can be forwarded
+		notcmd = strncmp(text, "cmd ", 4);  // JPG - so that the ENTIRE line can be forwarded
 		for (i=0 ; i< cmd_text.cursize ; i++)
 		{
 			if (text[i] == '"')
@@ -225,7 +225,7 @@ void Cmd_StuffCmds_f (void)
 		return;
 	}
 
-// build the combined string to parse from
+	// build the combined string to parse from
 	s = 0;
 	for (i=1 ; i<com_argc ; i++)
 	{
@@ -242,12 +242,12 @@ void Cmd_StuffCmds_f (void)
 	{
 		if (!com_argv[i])
 			continue;		// NEXTSTEP nulls out -NXHost
-		Q_strcat (text,com_argv[i]);
+		strcat (text,com_argv[i]);
 		if (i != com_argc-1)
-			Q_strcat (text, " ");
+			strcat (text, " ");
 	}
 
-// pull out the commands
+	// pull out the commands
 	build = Z_Malloc (s+1);
 	build[0] = 0;
 
@@ -263,8 +263,8 @@ void Cmd_StuffCmds_f (void)
 			c = text[j];
 			text[j] = 0;
 
-			Q_strcat (build, text+i);
-			Q_strcat (build, "\n");
+			strcat (build, text+i);
+			strcat (build, "\n");
 			text[j] = c;
 			i = j-1;
 		}
@@ -553,7 +553,7 @@ void	Cmd_AddCommand (char *cmd_name, xcommand_t function)
 // fail if the command already exists
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
 	{
-		if (!Q_strcmp (cmd_name, cmd->name))
+		if (!strcmp (cmd_name, cmd->name))
 		{
 			Con_Printf ("Cmd_AddCommand: %s already defined\n", cmd_name);
 			return;
@@ -579,7 +579,7 @@ qboolean	Cmd_Exists (char *cmd_name)
 
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
 	{
-		if (!Q_strcmp (cmd_name,cmd->name))
+		if (!strcmp (cmd_name,cmd->name))
 			return true;
 	}
 
@@ -677,7 +677,7 @@ void Cmd_ImpulseOverride (char *text)
 	if (!Cmd_Argc() || Cmd_Argc() < 2)
 		return;
 
-	if (Q_strcmp (cmd_argv[0], "impulse"))
+	if (strcmp (cmd_argv[0], "impulse"))
 		return;
 
 	i = Q_atoi (cmd_argv[1]);

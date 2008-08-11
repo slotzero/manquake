@@ -405,14 +405,14 @@ void Host_Name_f (void)
 
 	if (cmd_source == src_command)
 	{
-		if (Q_strcmp(cl_name.string, newName) == 0)
+		if (strcmp(cl_name.string, newName) == 0)
 			return;
 		Cvar_Set ("cl_name", newName);
 		return;
 	}
 
 	if (host_client->name[0] && strcmp(host_client->name, "unconnected") )
-		if (Q_strcmp(host_client->name, newName) != 0)
+		if (strcmp(host_client->name, newName) != 0)
 			Con_Printf ("%s renamed to %s\n", host_client->name, newName);
 	Q_strcpy (host_client->name, newName);
 	host_client->edict->v.netname = host_client->name - pr_strings;
@@ -596,7 +596,7 @@ void Host_Tell_f(void)
 		return;
 
 	Q_strcpy(text, host_client->name);
-	Q_strcat(text, ": ");
+	strcat(text, ": ");
 
 	p = Cmd_Args();
 
@@ -997,7 +997,7 @@ void Host_Kick_f (void)
 
 	save = host_client;
 
-	if (Cmd_Argc() > 2 && Q_strcmp(Cmd_Argv(1), "#") == 0)
+	if (Cmd_Argc() > 2 && strcmp(Cmd_Argv(1), "#") == 0)
 	{
 		i = Q_atof(Cmd_Argv(2)) - 1;
 		if (i < 0 || i >= svs.maxclients)
