@@ -85,6 +85,9 @@ cvar_t	pq_mute_spam_client = {"pq_mute_spam_client", "0"};
 // Slot Zero 3.50-2  IP masking.
 cvar_t	pq_ipmask = {"pq_ipmask", "1"};
 
+// Slot Zero 3.50-2  RQ support.
+cvar_t	mod_protocol = {"mod_protocol", "1"};
+
 
 /*
 ================
@@ -255,6 +258,7 @@ void Host_InitLocal (void)
 	Cvar_RegisterVariable (&pq_logbinds);			// JPG 3.20 - log player binds
 	Cvar_RegisterVariable (&pq_mute_spam_client);	// Slot Zero 3.50-2  Mute spamming client.
 	Cvar_RegisterVariable (&pq_ipmask);				// Slot Zero 3.50-2  IP masking.
+	Cvar_RegisterVariable (&mod_protocol);			// Slot Zero 3.50-2  RQ Support.
 
 	Host_FindMaxClients ();
 	Host_InitDeQuake();	// JPG 1.05 - initialize dequake array
