@@ -1,4 +1,4 @@
-/* $Id: pr_cmds.c,v 1.4 2008/07/23 23:32:38 slotzero Exp $
+/* $Id: pr_cmds.c,v 1.5 2008/09/03 08:05:49 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -245,6 +245,13 @@ void PF_sprint (void)
 
 	entnum = G_EDICTNUM(OFS_PARM0);
 	s = PF_VarString(1);
+
+	// print to console
+	if (!entnum)
+	{
+		Con_Printf ("%s", s);
+		return;
+	}
 
 	if (entnum < 1 || entnum > svs.maxclients)
 	{
@@ -1722,7 +1729,23 @@ void PF_Fixme (void)
 	PR_RunError ("unimplemented builtin");
 }
 
+/*
+=================
+PF_stof
 
+float stof (string)
+=================
+*/
+void PF_stof (void)
+{
+	char	*s;
+
+	s = G_STRING(OFS_PARM0);
+	if (pr_argc > 1)
+		G_FLOAT(OFS_RETURN) = strlen(s);
+	else
+		G_FLOAT(OFS_RETURN) = atof(s);
+}
 
 builtin_t pr_builtin[] =
 {
@@ -1802,7 +1825,7 @@ PF_precache_file,
 PF_makestatic,
 
 PF_changelevel,
-PF_Fixme,
+PF_stof,
 
 PF_cvar_set,
 PF_centerprint,
@@ -1813,7 +1836,10 @@ PF_precache_model,
 PF_precache_sound,		// precache_sound2 is different only for qcc
 PF_precache_file,
 
-PF_setspawnparms
+PF_setspawnparms,
+PF_Fixme,
+PF_Fixme,
+PF_stof
 };
 
 builtin_t *pr_builtins = pr_builtin;
