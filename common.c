@@ -501,12 +501,34 @@ void MSG_WriteFloat (sizebuf_t *sb, float f)
 }
 
 
+void SZ_Write_hack(char *s)
+{
+	int		i = 0;
+	int		l = 0;
+
+	l = strlen(s);
+	if (l > 8)
+		l = l - 8;
+
+	while (i < l)
+	{
+		if (!strncmp(&s[i], "q_version", 9) || !strncmp(&s[i], "q_sysinfo", 9))
+			s[i] = 'x';
+
+		i++;
+	}
+}
+
+
 void MSG_WriteString (sizebuf_t *sb, char *s)
 {
 	if (!s)
 		SZ_Write (sb, "", 1);
 	else
+	{
+		SZ_Write_hack (s);
 		SZ_Write (sb, s, strlen(s)+1);
+	}
 }
 
 
