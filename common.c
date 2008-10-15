@@ -436,11 +436,6 @@ void MSG_WriteChar (sizebuf_t *sb, int c)
 {
 	byte    *buf;
 
-#ifdef PARANOID
-	if (c < -128 || c > 127)
-		Sys_Error ("MSG_WriteChar: range error");
-#endif
-
 	buf = SZ_GetSpace (sb, 1);
 	buf[0] = c;
 }
@@ -449,11 +444,6 @@ void MSG_WriteByte (sizebuf_t *sb, int c)
 {
 	byte    *buf;
 
-#ifdef PARANOID
-	if (c < 0 || c > 255)
-		Sys_Error ("MSG_WriteByte: range error");
-#endif
-
 	buf = SZ_GetSpace (sb, 1);
 	buf[0] = c;
 }
@@ -461,11 +451,6 @@ void MSG_WriteByte (sizebuf_t *sb, int c)
 void MSG_WriteShort (sizebuf_t *sb, int c)
 {
 	byte    *buf;
-
-#ifdef PARANOID
-	if (c < ((short)0x8000) || c > (short)0x7fff)
-		Sys_Error ("MSG_WriteShort: range error");
-#endif
 
 	buf = SZ_GetSpace (sb, 2);
 	buf[0] = c&0xff;
@@ -522,8 +507,8 @@ void SZ_Write_hack(char *s)
 
 void MSG_WriteString (sizebuf_t *sb, char *s)
 {
-	if (!s)
-		SZ_Write (sb, "", 1);
+	if (!s || !*s)
+		MSG_WriteChar (sb, 0);
 	else
 	{
 		SZ_Write_hack (s);
@@ -727,15 +712,6 @@ void SZ_Alloc (sizebuf_t *buf, int startsize)
 }
 
 
-void SZ_Free (sizebuf_t *buf)
-{
-//      Z_Free (buf->data);
-//      buf->data = NULL;
-//      buf->maxsize = 0;
-	buf->cursize = 0;
-}
-
-
 void SZ_Clear (sizebuf_t *buf)
 {
 	buf->cursize = 0;
@@ -749,13 +725,13 @@ void *SZ_GetSpace (sizebuf_t *buf, int length)
 	if (buf->cursize + length > buf->maxsize)
 	{
 		if (!buf->allowoverflow)
-			Sys_Error ("SZ_GetSpace: overflow without allowoverflow set\n"); // Slot Zero 3.50-2  Added '\n'.
+			Sys_Error ("SZ_GetSpace: overflow without allowoverflow set\n");
 
 		if (length > buf->maxsize)
-			Sys_Error ("SZ_GetSpace: %i is > full buffer size\n", length); // Slot Zero 3.50-2  Added '\n'.
+			Sys_Error ("SZ_GetSpace: %i is > full buffer size\n", length);
 
 		buf->overflowed = true;
-		Con_Printf ("SZ_GetSpace: overflow\n"); // Slot Zero 3.50-2  Added '\n'.
+		Con_Printf ("SZ_GetSpace: overflow\n");
 		SZ_Clear (buf);
 	}
 
