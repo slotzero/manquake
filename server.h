@@ -182,8 +182,9 @@ typedef struct client_s
 #define	FL_JUMPRELEASED				4096	// for jump debouncing
 
 // Slot Zero 3.50-2  Rune Quake flags.
-#define	FL_LOW_BANDWIDTH_CLIENT			8192
+#define	FL_LOW_BANDWIDTH_CLIENT	8192
 #define FL_OBSERVER				16384
+#define FL_IGNORE_MUTE_CLIENT	32768
 
 // entity effects
 
@@ -195,6 +196,7 @@ typedef struct client_s
 // Slot Zero 3.50-2  Rune Quake effects.
 #define EF_ZERO_VELOCITY		32
 #define	EF_MAYBE_DRAW			32768
+#define EF_MUTE_CLIENT			65536
 
 #define	SPAWNFLAG_NOT_EASY			256
 #define	SPAWNFLAG_NOT_MEDIUM		512
