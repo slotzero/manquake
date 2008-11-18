@@ -541,7 +541,7 @@ void Host_Say(qboolean teamonly)
 		if (teamonly && (int)save->edict->v.flags & FL_OBSERVER && !((int)client->edict->v.flags & FL_OBSERVER && (int)save->edict->v.flags & FL_OBSERVER))
 			continue;
 
-		if (!fromServer && ((int)client->edict->v.flags & FL_IGNORE_MUTE_CLIENT && (int)save->edict->v.effects & EF_MUTE_CLIENT))
+		if (!fromServer && ((int)client->edict->v.flags & FL_IGNORE_MUTE_CLIENT && (int)save->edict->v.flags & FL_MUTE_CLIENT))
 			continue;
 
 		host_client = client;
