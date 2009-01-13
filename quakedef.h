@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // quakedef.h -- primary header for client
 
-#define PROQUAKE_BUILD		2.39	// Slot Zero 3.50-1  Added this.
+#define PROQUAKE_BUILD		2.40	// Slot Zero 3.50-1  Added this.
 #define PROQUAKE_VERSION	3.50	// JPG - added this
 //#define	VERSION				1.09
 //#define	LINUX_VERSION		1.30
