@@ -165,4 +165,4 @@ byte *COM_LoadStackFile (char *path, void *buffer, int bufsize);
 byte *COM_LoadHunkFile (char *path);
 
 extern	struct cvar_s	registered;
-extern qboolean		standard_quake, rogue, hipnotic;
+extern qboolean		standard_quake, rogue, hipnotic, nehahra;

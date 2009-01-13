@@ -22,24 +22,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	PROTOCOL_VERSION	15
 
 // if the high bit of the servercmd is set, the low bits are fast update flags:
-#define	U_MOREBITS	(1<<0)
-#define	U_ORIGIN1	(1<<1)
-#define	U_ORIGIN2	(1<<2)
-#define	U_ORIGIN3	(1<<3)
-#define	U_ANGLE2	(1<<4)
-#define	U_NOLERP	(1<<5)		// don't interpolate movement
-#define	U_FRAME		(1<<6)
-#define U_SIGNAL	(1<<7)		// just differentiates from other updates
+#define	U_MOREBITS		(1<<0)
+#define	U_ORIGIN1		(1<<1)
+#define	U_ORIGIN2		(1<<2)
+#define	U_ORIGIN3		(1<<3)
+#define	U_ANGLE2		(1<<4)
+#define	U_NOLERP		(1<<5)		// don't interpolate movement
+#define	U_FRAME			(1<<6)
+#define U_SIGNAL		(1<<7)		// just differentiates from other updates
 
 // svc_update can pass all of the fast update bits, plus more
-#define	U_ANGLE1	(1<<8)
-#define	U_ANGLE3	(1<<9)
-#define	U_MODEL		(1<<10)
-#define	U_COLORMAP	(1<<11)
-#define	U_SKIN		(1<<12)
-#define	U_EFFECTS	(1<<13)
+#define	U_ANGLE1		(1<<8)
+#define	U_ANGLE3		(1<<9)
+#define	U_MODEL			(1<<10)
+#define	U_COLORMAP		(1<<11)
+#define	U_SKIN			(1<<12)
+#define	U_EFFECTS		(1<<13)
 #define	U_LONGENTITY	(1<<14)
-
+#define	U_TRANS			(1<<15)		// nehahra support
 
 #define	SU_VIEWHEIGHT	(1<<0)
 #define	SU_IDEALPITCH	(1<<1)
@@ -49,7 +49,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	SU_VELOCITY1	(1<<5)
 #define	SU_VELOCITY2	(1<<6)
 #define	SU_VELOCITY3	(1<<7)
-//define	SU_AIMENT		(1<<8)  AVAILABLE BIT
+//define	SU_AIMENT	(1<<8)  	// AVAILABLE BIT
 #define	SU_ITEMS		(1<<9)
 #define	SU_ONGROUND		(1<<10)		// no data follows, the bit is it
 #define	SU_INWATER		(1<<11)		// no data follows, the bit is it

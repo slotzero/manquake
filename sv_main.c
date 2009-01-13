@@ -732,12 +732,12 @@ SV_WriteEntitiesToClient
 */
 void SV_WriteEntitiesToClient (edict_t	*clent, sizebuf_t *msg, qboolean nomap)
 {
-	int		e, i;
-	int		bits;
+	int		e, i, bits;
 	byte	*pvs;
 	vec3_t	org;
-	float	miss;
+	float	miss, alpha, fullbright;
 	edict_t	*ent;
+	eval_t  *val;
 
 // find the client's PVS
 	VectorAdd (clent->v.origin, clent->v.view_ofs, org);
@@ -827,6 +827,22 @@ void SV_WriteEntitiesToClient (edict_t	*clent, sizebuf_t *msg, qboolean nomap)
 		if (ent->baseline.modelindex != ent->v.modelindex)
 			bits |= U_MODEL;
 
+		if (nehahra)
+		{
+			if ((val = GetEdictFieldValue(ent, "alpha")))
+				alpha = val->_float;
+			else
+				alpha = 1;
+
+			if ((val = GetEdictFieldValue(ent, "fullbright")))
+				fullbright = val->_float;
+			else
+				fullbright = 0;
+
+			if ((alpha < 1 && alpha > 0) || fullbright)
+				bits |= U_TRANS;
+		}
+
 		if (e >= 256)
 			bits |= U_LONGENTITY;
 
@@ -867,6 +883,16 @@ void SV_WriteEntitiesToClient (edict_t	*clent, sizebuf_t *msg, qboolean nomap)
 			MSG_WriteCoord (msg, ent->v.origin[2]);
 		if (bits & U_ANGLE3)
 			MSG_WriteAngle(msg, ent->v.angles[2]);
+
+		if (nehahra)
+		{
+			if (bits & U_TRANS)
+			{
+				MSG_WriteFloat (msg, 2);
+				MSG_WriteFloat (msg, alpha);
+				MSG_WriteFloat (msg, fullbright);
+			}
+		}
 	}
 }
 

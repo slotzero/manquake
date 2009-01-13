@@ -51,7 +51,7 @@ char	**com_argv;
 #define CMDLINE_LENGTH	256
 char	com_cmdline[CMDLINE_LENGTH];
 
-qboolean		standard_quake = true, rogue, hipnotic;
+qboolean		standard_quake = true, rogue, hipnotic, nehahra;
 
 // this graphic needs to be in the pak file to use registered features
 unsigned short pop[] =
@@ -1013,6 +1013,9 @@ void COM_InitArgv (int argc, char **argv)
 		hipnotic = true;
 		standard_quake = false;
 	}
+
+	if (COM_CheckParm ("-nehahra"))
+		nehahra = true;
 }
 
 
