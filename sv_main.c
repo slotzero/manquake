@@ -68,7 +68,7 @@ void SV_Init (void)
     Cvar_RegisterVariable (&pq_wallhackprotect);
 
 	for (i=0 ; i<MAX_MODELS ; i++)
-		sprintf (localmodels[i], "*%i", i);
+		dpsnprintf (localmodels[i], sizeof(localmodels[i]), "*%i", i);
 }
 
 /*
@@ -205,11 +205,11 @@ void SV_SendServerinfo (client_t *client)
 
 	// JPG - This used to be VERSION 1.09 SERVER (xxxxx CRC)
 	MSG_WriteByte (&client->message, svc_print);
-	sprintf (message, "\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n"
+	dpsnprintf (message, sizeof(message), "\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n"
 					  "\n   \01\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\03");
 	MSG_WriteString (&client->message,message);
 	MSG_WriteByte (&client->message, svc_print);
-	sprintf (message, "\02\n   \04ProQuake Server Version %4.2f\06"
+	dpsnprintf (message, sizeof(message), "\02\n   \04ProQuake Server Version %4.2f\06"
 					  "\n   \07\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\11", PROQUAKE_VERSION);
 	MSG_WriteString (&client->message,message);
 
@@ -222,7 +222,7 @@ void SV_SendServerinfo (client_t *client)
 	else
 		MSG_WriteByte (&client->message, GAME_COOP);
 
-	sprintf (message, pr_strings+sv.edicts->v.message);
+	dpsnprintf (message, sizeof(message), pr_strings+sv.edicts->v.message);
 
 	MSG_WriteString (&client->message,message);
 
@@ -1467,7 +1467,7 @@ void SV_SpawnServer (char *server)
 	sv.time = 1.0;
 
 	strcpy (sv.name, server);
-	sprintf (sv.modelname,"maps/%s.bsp", server);
+	dpsnprintf (sv.modelname, sizeof(sv.modelname), "maps/%s.bsp", server);
 	sv.worldmodel = Mod_ForName (sv.modelname, false);
 	if (!sv.worldmodel)
 	{

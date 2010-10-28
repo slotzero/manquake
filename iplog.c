@@ -1,4 +1,4 @@
-// $Id: iplog.c,v 1.1 2008/02/03 08:27:52 slotzero Exp $
+// $Id: iplog.c,v 1.2 2010/10/28 00:17:31 slotzero Exp $
 // iplog.c
 //
 // JPG 1.05
@@ -285,7 +285,7 @@ void IPLog_DumpTree (iplog_t *root, FILE *f)
 		return;
 	IPLog_DumpTree(root->children[0], f);
 
-	sprintf(address, "%d.%d.%d.xxx", root->addr >> 16, (root->addr >> 8) & 0xff, root->addr & 0xff);
+	dpsnprintf(address, sizeof(address), "%d.%d.%d.xxx", root->addr >> 16, (root->addr >> 8) & 0xff, root->addr & 0xff);
 	strcpy(name, root->name);
 	for (ch = name ; *ch ; ch++)
 	{

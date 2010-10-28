@@ -1,4 +1,4 @@
-/* $Id: pr_cmds.c,v 1.5 2008/09/03 08:05:49 slotzero Exp $
+/* $Id: pr_cmds.c,v 1.6 2010/10/28 00:17:31 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -786,7 +786,7 @@ void PF_cvar (void)
 	// Slot Zero 3.50-2  Read string data in QuakeC. (6 lines)
 	if (pr_argc > 1)
 	{
-		sprintf (pr_string_temp, "%s", Cvar_VariableString (str));
+		dpsnprintf (pr_string_temp, sizeof(pr_string_temp), "%s", Cvar_VariableString (str));
 		G_INT (OFS_RETURN) = pr_string_temp - pr_strings;
 	}
 	else
@@ -889,13 +889,13 @@ void PF_ftos (void)
 	v = G_FLOAT(OFS_PARM0);
 
 	if (v == (int)v)
-		sprintf (pr_string_temp, "%d",(int)v);
+		dpsnprintf (pr_string_temp, sizeof(pr_string_temp), "%d",(int)v);
 	else
 	{
-		// sprintf (pr_string_temp, "%5.1f",v);	// Slot Zero 3.50-1  Removed this.
+		// dpsnprintf (pr_string_temp, sizeof(pr_string_temp), "%5.1f",v);	// Slot Zero 3.50-1  Removed this.
 
 		// Slot Zero 3.50-1  Quake Info Pool's ftos() precision fix.
-		sprintf (pr_string_temp, "%1f", v);
+		dpsnprintf (pr_string_temp, sizeof(pr_string_temp), "%1f", v);
 		for (i=strlen(pr_string_temp)-1 ; i>0 && pr_string_temp[i]=='0' && pr_string_temp[i-1]!='.' ; i--)
 		{
 			pr_string_temp[i] = 0;
@@ -930,7 +930,7 @@ void PF_fabs (void)
 
 void PF_vtos (void)
 {
-	sprintf (pr_string_temp, "'%5.1f %5.1f %5.1f'", G_VECTOR(OFS_PARM0)[0], G_VECTOR(OFS_PARM0)[1], G_VECTOR(OFS_PARM0)[2]);
+	dpsnprintf (pr_string_temp, sizeof(pr_string_temp), "'%5.1f %5.1f %5.1f'", G_VECTOR(OFS_PARM0)[0], G_VECTOR(OFS_PARM0)[1], G_VECTOR(OFS_PARM0)[2]);
 	G_INT(OFS_RETURN) = pr_string_temp - pr_strings;
 }
 

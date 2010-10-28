@@ -497,11 +497,11 @@ void Host_Say(qboolean teamonly)
 
 		// Slot Zero 3.50-2  Observer Say (2 lines)
 		if (teamonly && (int)save->edict->v.flags & FL_OBSERVER)
-			sprintf (text, "%c[%s]: ", 1, save->name);
+			dpsnprintf (text, sizeof(text), "%c[%s]: ", 1, save->name);
 		else if (teamplay.value && teamonly) // JPG - added () for mm2
-			sprintf (text, "%c(%s): ", 1, save->name);
+			dpsnprintf (text, sizeof(text), "%c(%s): ", 1, save->name);
 		else
-			sprintf (text, "%c%s: ", 1, save->name);
+			dpsnprintf (text, sizeof(text), "%c%s: ", 1, save->name);
 
 		// JPG 3.20 - optionally remove '\r'
 		if (pq_removecr.value)
@@ -516,7 +516,7 @@ void Host_Say(qboolean teamonly)
 	}
 	else
 		// Slot Zero 3.50-2  Server uses cl_name instead of hostname.string.
-		sprintf (text, "%c<%s> ", 1, cl_name.string);
+		dpsnprintf (text, sizeof(text), "%c<%s> ", 1, cl_name.string);
 
 	j = sizeof(text) - 2 - strlen(text);  // -2 for /n and null terminator
 	if (strlen(p) > j)

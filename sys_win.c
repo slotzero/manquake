@@ -375,7 +375,7 @@ void Sys_Error (char *error, ...)
 	dpvsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
-	sprintf (text2, "ERROR: %s\n", text);
+	dpsnprintf (text2, sizeof(text2), "ERROR: %s\n", text);
 	WriteFile (houtput, text5, strlen (text5), &dummy, NULL);
 	WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
 	WriteFile (houtput, text2, strlen (text2), &dummy, NULL);

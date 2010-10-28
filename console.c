@@ -176,16 +176,16 @@ void Con_Init (void)
 				do
 				{
 					n = n + 1;
-					sprintf(logfilename, com_argv[con_debuglog+1], n);
+					dpsnprintf(logfilename, sizeof(logfilename), com_argv[con_debuglog+1], n);
 					strcat(logfilename, ".log");
-					sprintf(temp, "%s/%s", com_gamedir, logfilename);
+					dpsnprintf(temp, sizeof(temp), "%s/%s", com_gamedir, logfilename);
 					fd = open(temp, O_CREAT | O_EXCL | O_WRONLY, 0666);
 				}
 				while (fd == -1);
 				close(fd);
 			}
 			else
-				sprintf(logfilename, "%s.log", com_argv[con_debuglog+1]);
+				dpsnprintf(logfilename, sizeof(logfilename), "%s.log", com_argv[con_debuglog+1]);
 		}
 		else
 			strcpy(logfilename, "qconsole.log");
@@ -193,7 +193,7 @@ void Con_Init (void)
 		// JPG - changed t2 to logfilename
 		if (strlen (com_gamedir) < (MAXGAMEDIRLEN - strlen (logfilename)))
 		{
-			sprintf (temp, "%s/%s", com_gamedir, logfilename); // JPG - added the '/'
+			dpsnprintf (temp, sizeof(temp), "%s/%s", com_gamedir, logfilename); // JPG - added the '/'
 			unlink (temp);
 		}
 

@@ -1,4 +1,4 @@
-/* $Id: model.c,v 1.9 2008/08/11 06:16:30 slotzero Exp $
+/* $Id: model.c,v 1.10 2010/10/28 00:17:31 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -1265,7 +1265,7 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		{	// duplicate the basic information
 			char	name[10];
 
-			sprintf (name, "*%i", i+1);
+			dpsnprintf (name, sizeof(name), "*%i", i+1);
 			loadmodel = Mod_FindName (name);
 			*loadmodel = *mod;
 			strcpy (loadmodel->name, name);
