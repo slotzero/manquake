@@ -1085,6 +1085,46 @@ char    *va(char *format, ...)
 }
 
 
+//============================================================================
+
+#undef snprintf
+#undef vsnprintf
+
+#ifdef _WIN32
+# define snprintf _snprintf
+# define vsnprintf _vsnprintf
+#endif
+
+
+// Code from Dark Places 20070707.
+int dpsnprintf (char *buffer, size_t buffersize, const char *format, ...)
+{
+	va_list args;
+	int result;
+
+	va_start (args, format);
+	result = dpvsnprintf (buffer, buffersize, format, args);
+	va_end (args);
+
+	return result;
+}
+
+
+int dpvsnprintf (char *buffer, size_t buffersize, const char *format, va_list args)
+{
+	int result;
+
+	result = vsnprintf (buffer, buffersize, format, args);
+	if (result < 0 || (size_t)result >= buffersize)
+	{
+		buffer[buffersize - 1] = '\0';
+		return -1;
+	}
+
+	return result;
+}
+
+
 /*
 =============================================================================
 
@@ -1743,42 +1783,3 @@ void COM_ModelCRC (void)
 	com_searchpaths = search;
 }
 
-
-//============================================================================
-
-#undef snprintf
-#undef vsnprintf
-
-#ifdef _WIN32
-# define snprintf _snprintf
-# define vsnprintf _vsnprintf
-#endif
-
-
-// Code from Dark Places 20070707.
-int dpsnprintf (char *buffer, size_t buffersize, const char *format, ...)
-{
-	va_list args;
-	int result;
-
-	va_start (args, format);
-	result = dpvsnprintf (buffer, buffersize, format, args);
-	va_end (args);
-
-	return result;
-}
-
-
-int dpvsnprintf (char *buffer, size_t buffersize, const char *format, va_list args)
-{
-	int result;
-
-	result = vsnprintf (buffer, buffersize, format, args);
-	if (result < 0 || (size_t)result >= buffersize)
-	{
-		buffer[buffersize - 1] = '\0';
-		return -1;
-	}
-
-	return result;
-}
