@@ -149,16 +149,6 @@ void InsertLinkAfter (link_t *l, link_t *after)
 */
 
 
-void Q_strcpy (char *dest, char *src)
-{
-	while (*src)
-	{
-		*dest++ = *src++;
-	}
-	*dest++ = 0;
-}
-
-
 void Q_strncpy (char *dest, char *src, int count)
 {
 	while (*src && count--)
@@ -1782,4 +1772,3 @@ void COM_ModelCRC (void)
 	}
 	com_searchpaths = search;
 }
-

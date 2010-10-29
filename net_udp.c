@@ -1,4 +1,4 @@
-/* $Id: net_udp.c,v 1.4 2010/10/28 00:17:31 slotzero Exp $
+/* $Id: net_udp.c,v 1.5 2010/10/29 06:35:11 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -123,7 +123,7 @@ int UDP_Init (void)
 	((struct sockaddr_in *)&broadcastaddr)->sin_port = htons(net_hostport);
 
 	UDP_GetSocketAddr (net_controlsocket, &addr);
-	Q_strcpy(my_tcpip_address,  UDP_AddrToString (&addr));
+	strcpy(my_tcpip_address,  UDP_AddrToString (&addr));
 	colon = strrchr (my_tcpip_address, ':');
 	if (colon)
 		*colon = 0;
@@ -416,7 +416,7 @@ int UDP_GetNameFromAddr (struct qsockaddr *addr, char *name)
 	}
 	*/
 
-	Q_strcpy (name, UDP_AddrToString (addr));
+	strcpy (name, UDP_AddrToString (addr));
 	return 0;
 }
 

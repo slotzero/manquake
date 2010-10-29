@@ -537,7 +537,7 @@ int WINS_GetNameFromAddr (struct qsockaddr *addr, char *name)
 	}
 	*/
 
-	Q_strcpy (name, WINS_AddrToString (addr));
+	strcpy (name, WINS_AddrToString (addr));
 	return 0;
 }
 
