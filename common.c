@@ -1007,33 +1007,6 @@ void COM_Path_f (void)
 
 /*
 ============
-COM_WriteFile
-
-The filename will be prefixed by the current game directory
-============
-*/
-void COM_WriteFile (char *filename, void *data, int len)
-{
-	int             handle;
-	char    name[MAX_OSPATH];
-
-	dpsnprintf (name, sizeof(name), "%s/%s", com_gamedir, filename);
-
-	handle = Sys_FileOpenWrite (name);
-	if (handle == -1)
-	{
-		Sys_Printf ("COM_WriteFile: failed on %s\n", name);
-		return;
-	}
-
-	Sys_Printf ("COM_WriteFile: %s\n", name);
-	Sys_FileWrite (handle, data, len);
-	Sys_FileClose (handle);
-}
-
-
-/*
-============
 COM_CreatePath
 
 Only used for CopyFile
