@@ -161,7 +161,7 @@ void Host_FindMaxClients (void)
 	if (i)
 	{
 		if (i != (com_argc - 1))
-			svs.maxclients = Q_atoi (com_argv[i+1]);
+			svs.maxclients = atoi (com_argv[i+1]);
 		else
 			svs.maxclients = 8;
 	}

@@ -1,4 +1,4 @@
-// $Id: iplog.c,v 1.2 2010/10/28 00:17:31 slotzero Exp $
+// $Id: iplog.c,v 1.3 2010/10/29 07:26:46 slotzero Exp $
 // iplog.c
 //
 // JPG 1.05
@@ -36,7 +36,7 @@ void IPLog_Init (void)
 	if (!p)
 		return;
 	if (p < com_argc - 1)
-		iplog_size = Q_atoi(com_argv[p+1]) * 1024 / sizeof(iplog_t);
+		iplog_size = atoi(com_argv[p+1]) * 1024 / sizeof(iplog_t);
 	if (!iplog_size)
 		iplog_size = DEFAULT_IPLOGSIZE;
 

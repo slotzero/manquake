@@ -1,4 +1,4 @@
-/* $Id: net_udp.c,v 1.7 2010/10/29 07:08:33 slotzero Exp $
+/* $Id: net_udp.c,v 1.8 2010/10/29 07:26:46 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -248,7 +248,7 @@ static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 	}
 
 	if (*b++ == ':')
-		port = Q_atoi(b);
+		port = atoi(b);
 	else
 		port = net_hostport;
 

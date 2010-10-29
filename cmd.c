@@ -680,7 +680,7 @@ void Cmd_ImpulseOverride (char *text)
 	if (strcmp (cmd_argv[0], "impulse"))
 		return;
 
-	i = Q_atoi (cmd_argv[1]);
+	i = atoi (cmd_argv[1]);
 	Con_DPrintf ("CMD: %s %i\n", cmd_argv[0], i); // prevent this message at some point
 
 	if (host_client->active)

@@ -128,9 +128,6 @@ float MSG_ReadPreciseAngle (void); // JPG - precise aim!!
 # define strncasecmp strnicmp
 #endif
 
-int	Q_atoi (char *str);
-float Q_atof (char *str);
-
 //============================================================================
 
 extern	char		com_token[1024];
