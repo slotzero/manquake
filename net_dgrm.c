@@ -1622,7 +1622,7 @@ static qsocket_t *_Datagram_Connect (char *host)
 	{
 		reason = MSG_ReadString();
 		Con_Printf(reason);
-		Q_strncpy(m_return_reason, reason, 31);
+		strncpy(m_return_reason, reason, 31);
 		goto ErrorReturn;
 	}
 

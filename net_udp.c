@@ -1,4 +1,4 @@
-/* $Id: net_udp.c,v 1.5 2010/10/29 06:35:11 slotzero Exp $
+/* $Id: net_udp.c,v 1.6 2010/10/29 06:47:26 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -411,7 +411,7 @@ int UDP_GetNameFromAddr (struct qsockaddr *addr, char *name)
 	hostentry = gethostbyaddr ((char *)&((struct sockaddr_in *)addr)->sin_addr, sizeof(struct in_addr), AF_INET);
 	if (hostentry)
 	{
-		Q_strncpy (name, (char *)hostentry->h_name, NET_NAMELEN - 1);
+		strncpy (name, (char *)hostentry->h_name, NET_NAMELEN - 1);
 		return 0;
 	}
 	*/

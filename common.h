@@ -123,7 +123,6 @@ float MSG_ReadPreciseAngle (void); // JPG - precise aim!!
 
 //============================================================================
 
-void Q_strncpy (char *dest, char *src, int count);
 int Q_strcasecmp (char *s1, char *s2);
 int Q_strncasecmp (char *s1, char *s2, int n);
 int	Q_atoi (char *str);
