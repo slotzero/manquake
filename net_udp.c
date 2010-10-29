@@ -1,4 +1,4 @@
-/* $Id: net_udp.c,v 1.6 2010/10/29 06:47:26 slotzero Exp $
+/* $Id: net_udp.c,v 1.7 2010/10/29 07:08:33 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
