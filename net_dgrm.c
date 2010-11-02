@@ -285,12 +285,6 @@ qboolean Datagram_CanSendMessage (qsocket_t *sock)
 }
 
 
-qboolean Datagram_CanSendUnreliableMessage (qsocket_t *sock)
-{
-	return true;
-}
-
-
 int Datagram_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 {
 	int 	packetLen;

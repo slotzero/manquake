@@ -165,12 +165,6 @@ qboolean Loop_CanSendMessage (qsocket_t *sock)
 }
 
 
-qboolean Loop_CanSendUnreliableMessage (qsocket_t *sock)
-{
-	return true;
-}
-
-
 void Loop_Close (qsocket_t *sock)
 {
 	if (sock->driverdata)

@@ -213,7 +213,6 @@ typedef struct
 	int			(*QSendMessage) (qsocket_t *sock, sizebuf_t *data);
 	int			(*SendUnreliableMessage) (qsocket_t *sock, sizebuf_t *data);
 	qboolean	(*CanSendMessage) (qsocket_t *sock);
-	qboolean	(*CanSendUnreliableMessage) (qsocket_t *sock);
 	void		(*Close) (qsocket_t *sock);
 	void		(*Shutdown) (void);
 	int			controlSock;
