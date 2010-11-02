@@ -208,7 +208,6 @@ typedef struct
 	qboolean	initialized;
 	int			(*Init) (void);
 	void		(*Listen) (qboolean state);
-	void		(*SearchForHosts) (qboolean xmit);
 	qsocket_t 	*(*CheckNewConnections) (void);
 	int			(*QGetMessage) (qsocket_t *sock);
 	int			(*QSendMessage) (qsocket_t *sock, sizebuf_t *data);
