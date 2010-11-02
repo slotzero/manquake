@@ -195,10 +195,6 @@ SOURCE=.\net_wins.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\net_wipx.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\pr_cmds.c
 # End Source File
 # Begin Source File
@@ -390,10 +386,6 @@ SOURCE=.\net_loop.h
 # Begin Source File
 
 SOURCE=.\net_wins.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\net_wipx.h
 # End Source File
 # Begin Source File
 

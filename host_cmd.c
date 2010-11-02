@@ -96,8 +96,6 @@ void Host_Status_f (void)
 	print ("version: ProQuake %4.2f %s\n", PROQUAKE_VERSION, pq_cheatfree ? "cheat-free" : ""); // JPG - added ProQuake
 	if (tcpipAvailable)
 		print ("tcp/ip:  %s\n", my_tcpip_address);
-	if (ipxAvailable)
-		print ("ipx:     %s\n", my_ipx_address);
 	print ("map:     %s\n", sv.name);
 	print ("players: %i active (%i max)\n\n", net_activeconnections, svs.maxclients);
 	for (j=0, client = svs.clients ; j<svs.maxclients ; j++, client++)

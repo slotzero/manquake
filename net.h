@@ -327,7 +327,5 @@ typedef struct _PollProcedure
 
 void SchedulePollProcedure(PollProcedure *pp, double timeOffset);
 
-extern	qboolean	ipxAvailable;
 extern	qboolean	tcpipAvailable;
-extern	char		my_ipx_address[NET_NAMELEN];
 extern	char		my_tcpip_address[NET_NAMELEN];
