@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -30,7 +30,6 @@ net_driver_t net_drivers[MAX_NET_DRIVERS] =
 	Loop_Init,
 	Loop_Listen,
 	Loop_SearchForHosts,
-	Loop_Connect,
 	Loop_CheckNewConnections,
 	Loop_GetMessage,
 	Loop_SendMessage,
@@ -47,7 +46,6 @@ net_driver_t net_drivers[MAX_NET_DRIVERS] =
 	Datagram_Init,
 	Datagram_Listen,
 	Datagram_SearchForHosts,
-	Datagram_Connect,
 	Datagram_CheckNewConnections,
 	Datagram_GetMessage,
 	Datagram_SendMessage,
