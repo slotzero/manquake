@@ -76,13 +76,10 @@ net_landriver_t	net_landrivers[MAX_NET_DRIVERS] =
 	WINS_Write,
 	WINS_Broadcast,
 	WINS_AddrToString,
-	WINS_StringToAddr,
 	WINS_GetSocketAddr,
-	WINS_GetNameFromAddr,
 	WINS_GetAddrFromName,
 	WINS_AddrCompare,
 	WINS_GetSocketPort,
-	WINS_SetSocketPort
 	},
 	{
 	"Winsock IPX",
@@ -99,13 +96,10 @@ net_landriver_t	net_landrivers[MAX_NET_DRIVERS] =
 	WIPX_Write,
 	WIPX_Broadcast,
 	WIPX_AddrToString,
-	WIPX_StringToAddr,
 	WIPX_GetSocketAddr,
-	WIPX_GetNameFromAddr,
 	WIPX_GetAddrFromName,
 	WIPX_AddrCompare,
 	WIPX_GetSocketPort,
-	WIPX_SetSocketPort
 	}
 
 };

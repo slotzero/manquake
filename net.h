@@ -189,16 +189,13 @@ typedef struct
 	int 		(*Write) (int socket, byte *buf, int len, struct qsockaddr *addr);
 	int 		(*Broadcast) (int socket, byte *buf, int len);
 	char *		(*AddrToString) (struct qsockaddr *addr);
-	int 		(*StringToAddr) (char *string, struct qsockaddr *addr);
 	int 		(*GetSocketAddr) (int socket, struct qsockaddr *addr);
-	int 		(*GetNameFromAddr) (struct qsockaddr *addr, char *name);
 	int 		(*GetAddrFromName) (char *name, struct qsockaddr *addr);
 	int			(*AddrCompare) (struct qsockaddr *addr1, struct qsockaddr *addr2);
 	int			(*GetSocketPort) (struct qsockaddr *addr);
-	int			(*SetSocketPort) (struct qsockaddr *addr, int port);
 } net_landriver_t;
 
-#define	MAX_NET_DRIVERS		8
+#define	MAX_NET_DRIVERS		2
 extern int 				net_numlandrivers;
 extern net_landriver_t	net_landrivers[MAX_NET_DRIVERS];
 

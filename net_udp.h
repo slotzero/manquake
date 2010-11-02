@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -32,8 +32,6 @@ int  UDP_Broadcast (int socket, byte *buf, int len);
 char *UDP_AddrToString (struct qsockaddr *addr);
 int  UDP_StringToAddr (char *string, struct qsockaddr *addr);
 int  UDP_GetSocketAddr (int socket, struct qsockaddr *addr);
-int  UDP_GetNameFromAddr (struct qsockaddr *addr, char *name);
 int  UDP_GetAddrFromName (char *name, struct qsockaddr *addr);
 int  UDP_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2);
 int  UDP_GetSocketPort (struct qsockaddr *addr);
-int  UDP_SetSocketPort (struct qsockaddr *addr, int port);

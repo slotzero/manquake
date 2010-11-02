@@ -1,4 +1,4 @@
-/* $Id: net_udp.c,v 1.8 2010/10/29 07:26:46 slotzero Exp $
+/* $Id: net_udp.c,v 1.9 2010/11/02 07:20:01 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -403,25 +403,6 @@ int UDP_GetSocketAddr (int socket, struct qsockaddr *addr)
 
 //=============================================================================
 
-int UDP_GetNameFromAddr (struct qsockaddr *addr, char *name)
-{
-	struct hostent *hostentry;
-
-	/* JPG 2.01 - commented this out because it's slow and completely useless
-	hostentry = gethostbyaddr ((char *)&((struct sockaddr_in *)addr)->sin_addr, sizeof(struct in_addr), AF_INET);
-	if (hostentry)
-	{
-		strncpy (name, (char *)hostentry->h_name, NET_NAMELEN - 1);
-		return 0;
-	}
-	*/
-
-	strcpy (name, UDP_AddrToString (addr));
-	return 0;
-}
-
-//=============================================================================
-
 int UDP_GetAddrFromName(char *name, struct qsockaddr *addr)
 {
 	struct hostent *hostentry;
@@ -461,13 +442,6 @@ int UDP_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2)
 int UDP_GetSocketPort (struct qsockaddr *addr)
 {
 	return ntohs(((struct sockaddr_in *)addr)->sin_port);
-}
-
-
-int UDP_SetSocketPort (struct qsockaddr *addr, int port)
-{
-	((struct sockaddr_in *)addr)->sin_port = htons(port);
-	return 0;
 }
 
 //=============================================================================

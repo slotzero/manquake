@@ -524,25 +524,6 @@ int WINS_GetSocketAddr (int socket, struct qsockaddr *addr)
 
 //=============================================================================
 
-int WINS_GetNameFromAddr (struct qsockaddr *addr, char *name)
-{
-	struct hostent *hostentry;
-
-	/* JPG 2.01 - commented this out because it's slow and completely useless
-	hostentry = pgethostbyaddr ((char *)&((struct sockaddr_in *)addr)->sin_addr, sizeof(struct in_addr), AF_INET);
-	if (hostentry)
-	{
-		strncpy (name, (char *)hostentry->h_name, NET_NAMELEN - 1);
-		return 0;
-	}
-	*/
-
-	strcpy (name, WINS_AddrToString (addr));
-	return 0;
-}
-
-//=============================================================================
-
 int WINS_GetAddrFromName(char *name, struct qsockaddr *addr)
 {
 	struct hostent *hostentry;
@@ -582,13 +563,6 @@ int WINS_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2)
 int WINS_GetSocketPort (struct qsockaddr *addr)
 {
 	return ntohs(((struct sockaddr_in *)addr)->sin_port);
-}
-
-
-int WINS_SetSocketPort (struct qsockaddr *addr, int port)
-{
-	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)port);
-	return 0;
 }
 
 //=============================================================================

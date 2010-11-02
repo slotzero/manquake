@@ -365,14 +365,6 @@ int WIPX_GetSocketAddr (int handle, struct qsockaddr *addr)
 
 //=============================================================================
 
-int WIPX_GetNameFromAddr (struct qsockaddr *addr, char *name)
-{
-	strcpy(name, WIPX_AddrToString(addr));
-	return 0;
-}
-
-//=============================================================================
-
 int WIPX_GetAddrFromName(char *name, struct qsockaddr *addr)
 {
 	int n;
@@ -420,13 +412,6 @@ int WIPX_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2)
 int WIPX_GetSocketPort (struct qsockaddr *addr)
 {
 	return ntohs(((struct sockaddr_ipx *)addr)->sa_socket);
-}
-
-
-int WIPX_SetSocketPort (struct qsockaddr *addr, int port)
-{
-	((struct sockaddr_ipx *)addr)->sa_socket = htons((unsigned short)port);
-	return 0;
 }
 
 //=============================================================================
