@@ -72,7 +72,6 @@ net_landriver_t	net_landrivers[MAX_NET_DRIVERS] =
 	UDP_CheckNewConnections,
 	UDP_Read,
 	UDP_Write,
-	UDP_Broadcast,
 	UDP_AddrToString,
 	UDP_GetSocketAddr,
 	UDP_GetAddrFromName,

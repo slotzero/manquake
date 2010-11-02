@@ -187,7 +187,6 @@ typedef struct
 	int 		(*CheckNewConnections) (void);
 	int 		(*Read) (int socket, byte *buf, int len, struct qsockaddr *addr);
 	int 		(*Write) (int socket, byte *buf, int len, struct qsockaddr *addr);
-	int 		(*Broadcast) (int socket, byte *buf, int len);
 	char *		(*AddrToString) (struct qsockaddr *addr);
 	int 		(*GetSocketAddr) (int socket, struct qsockaddr *addr);
 	int 		(*GetAddrFromName) (char *name, struct qsockaddr *addr);

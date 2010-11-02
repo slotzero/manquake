@@ -73,7 +73,6 @@ net_landriver_t	net_landrivers[MAX_NET_DRIVERS] =
 	WINS_CheckNewConnections,
 	WINS_Read,
 	WINS_Write,
-	WINS_Broadcast,
 	WINS_AddrToString,
 	WINS_GetSocketAddr,
 	WINS_GetAddrFromName,

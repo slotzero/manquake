@@ -444,28 +444,6 @@ int WINS_MakeSocketBroadcastCapable (int socket)
 
 //=============================================================================
 
-int WINS_Broadcast (int socket, byte *buf, int len)
-{
-	int ret;
-
-	if (socket != net_broadcastsocket)
-	{
-		if (net_broadcastsocket != 0)
-			Sys_Error("Attempted to use multiple broadcasts sockets\n");
-		WINS_GetLocalAddress();
-		ret = WINS_MakeSocketBroadcastCapable (socket);
-		if (ret == -1)
-		{
-			Con_Printf("Unable to make socket broadcast capable\n");
-			return ret;
-		}
-	}
-
-	return WINS_Write (socket, buf, len, &broadcastaddr);
-}
-
-//=============================================================================
-
 int WINS_Write (int socket, byte *buf, int len, struct qsockaddr *addr)
 {
 	int ret;
@@ -488,22 +466,6 @@ char *WINS_AddrToString (struct qsockaddr *addr)
 	haddr = ntohl(((struct sockaddr_in *)addr)->sin_addr.s_addr);
 	dpsnprintf(buffer, sizeof(buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff, (haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff, ntohs(((struct sockaddr_in *)addr)->sin_port));
 	return buffer;
-}
-
-//=============================================================================
-
-int WINS_StringToAddr (char *string, struct qsockaddr *addr)
-{
-	int ha1, ha2, ha3, ha4, hp;
-	int ipaddr;
-
-	sscanf(string, "%d.%d.%d.%d:%d", &ha1, &ha2, &ha3, &ha4, &hp);
-	ipaddr = (ha1 << 24) | (ha2 << 16) | (ha3 << 8) | ha4;
-
-	addr->sa_family = AF_INET;
-	((struct sockaddr_in *)addr)->sin_addr.s_addr = htonl(ipaddr);
-	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)hp);
-	return 0;
 }
 
 //=============================================================================

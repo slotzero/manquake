@@ -1,4 +1,4 @@
-/* $Id: net_udp.c,v 1.9 2010/11/02 07:20:01 slotzero Exp $
+/* $Id: net_udp.c,v 1.10 2010/11/02 08:04:00 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -326,27 +326,6 @@ int UDP_MakeSocketBroadcastCapable (int socket)
 
 //=============================================================================
 
-int UDP_Broadcast (int socket, byte *buf, int len)
-{
-	int ret;
-
-	if (socket != net_broadcastsocket)
-	{
-		if (net_broadcastsocket != 0)
-			Sys_Error("Attempted to use multiple broadcasts sockets\n");
-		ret = UDP_MakeSocketBroadcastCapable (socket);
-		if (ret == -1)
-		{
-			Con_Printf("Unable to make socket broadcast capable\n");
-			return ret;
-		}
-	}
-
-	return UDP_Write (socket, buf, len, &broadcastaddr);
-}
-
-//=============================================================================
-
 int UDP_Write (int socket, byte *buf, int len, struct qsockaddr *addr)
 {
 	int ret;
@@ -367,22 +346,6 @@ char *UDP_AddrToString (struct qsockaddr *addr)
 	haddr = ntohl(((struct sockaddr_in *)addr)->sin_addr.s_addr);
 	dpsnprintf(buffer, sizeof(buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff, (haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff, ntohs(((struct sockaddr_in *)addr)->sin_port));
 	return buffer;
-}
-
-//=============================================================================
-
-int UDP_StringToAddr (char *string, struct qsockaddr *addr)
-{
-	int ha1, ha2, ha3, ha4, hp;
-	int ipaddr;
-
-	sscanf(string, "%d.%d.%d.%d:%d", &ha1, &ha2, &ha3, &ha4, &hp);
-	ipaddr = (ha1 << 24) | (ha2 << 16) | (ha3 << 8) | ha4;
-
-	addr->sa_family = AF_INET;
-	((struct sockaddr_in *)addr)->sin_addr.s_addr = htonl(ipaddr);
-	((struct sockaddr_in *)addr)->sin_port = htons(hp);
-	return 0;
 }
 
 //=============================================================================
