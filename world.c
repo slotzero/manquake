@@ -283,6 +283,11 @@ void SV_TouchLinks ( edict_t *ent, areanode_t *node )
 // touch linked edicts
 	for (l = node->trigger_edicts.next ; l != &node->trigger_edicts ; l = next)
 	{
+		if (!l)
+		{
+			Con_Printf ("SV_TouchLinks: NULL link\n");
+			break;
+		}
 		next = l->next;
 		touch = EDICT_FROM_AREA(l);
 		if (touch == ent)
