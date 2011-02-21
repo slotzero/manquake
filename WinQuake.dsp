@@ -94,6 +94,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
+SOURCE=.\banlog.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\cmd.c
 # End Source File
 # Begin Source File
@@ -327,6 +331,10 @@ SOURCE=.\zone.c
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
+# Begin Source File
+
+SOURCE=.\banlog.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\bspfile.h

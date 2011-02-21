@@ -710,6 +710,7 @@ void Host_Init (quakeparms_t *parms)
 	NET_Init ();
 	SV_Init ();
 	IPLog_Init ();	// JPG 1.05 - ip address logging
+	BANLog_Init ();
 
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 	Con_Printf ("%4.1f megabyte heap\n",parms->memsize/ (1024*1024.0));
@@ -747,5 +748,6 @@ void Host_Shutdown(void)
 	isdown = true;
 
 	IPLog_WriteLog ();	// JPG 1.05 - ip loggging
+	BANLog_WriteLog ();
 	NET_Shutdown ();
 }
