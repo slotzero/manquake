@@ -1,4 +1,4 @@
-/*  $Id: banlog.h,v 1.1 2011/02/21 08:11:22 slotzero Exp $
+/*  $Id: banlog.h,v 1.2 2011/02/22 08:02:43 slotzero Exp $
 
     Copyright (C) 2011  David 'Slot Zero' Roberts.
 
@@ -32,8 +32,7 @@ void BANLog_WriteLog (void);
 void BANLog_Add (int addr, char *name);
 void BANLog_Delete (banlog_t *node);
 banlog_t *BANLog_Merge (banlog_t *left, banlog_t *right);
-void BANLog_Identify (int addr);
+int BANLog_Identify (int addr);
 void BANLog_Dump (void);
 void BANLog_Import (void);
-
 

@@ -1,4 +1,4 @@
-/*  $Id: banlog.c,v 1.1 2011/02/21 08:11:22 slotzero Exp $
+/*  $Id: banlog.c,v 1.2 2011/02/22 08:02:43 slotzero Exp $
 
     Copyright (C) 2011  David 'Slot Zero' Roberts.
 
@@ -145,7 +145,7 @@ void BANLog_WriteLog (void)
 	Sys_ReleaseLock();
 }
 
-#define MAX_REPITITION	64
+#define MAX_REPITITION	1
 
 /*
 ====================
@@ -159,8 +159,6 @@ void BANLog_Add (int addr, char *name)
 	banlog_t *parent;
 	char name2[16];
 	char *ch;
-	int cmatch;		// limit 128 entries per BAN
-	banlog_t *match[MAX_REPITITION];
 	int i;
 
 	if (!banlog_size)
@@ -177,24 +175,14 @@ void BANLog_Add (int addr, char *name)
 
 	banlog_new = &banlogs[banlog_next];
 
-	cmatch = 0;
 	parent = NULL;
 	ppnew = &banlog_head;
 	while (*ppnew)
 	{
 		if ((*ppnew)->addr == addr)
 		{
-			if (!strcmp(name2, (*ppnew)->name))
-				return;
-			match[cmatch] = *ppnew;
-			if (++cmatch == MAX_REPITITION)
-			{
-				// shift up the names and replace the last one
-				for (i = 0 ; i < MAX_REPITITION - 1 ; i++)
-					strcpy(match[i]->name, match[i+1]->name);
-				strcpy(match[i]->name, name2);
-				return;
-			}
+			Con_Printf ("IP address already exists!\n"); // XXX
+			return;
 		}
 		parent = *ppnew;
 		ppnew = &(*ppnew)->children[addr > (*ppnew)->addr];
@@ -205,6 +193,8 @@ void BANLog_Add (int addr, char *name)
 	banlog_new->parent = parent;
 	banlog_new->children[0] = NULL;
 	banlog_new->children[1] = NULL;
+
+	Con_Printf ("IP address added!\n"); // XXX
 
 	if (++banlog_next == banlog_size)
 	{
@@ -261,7 +251,7 @@ banlog_t *BANLog_Merge (banlog_t *left, banlog_t *right)
 BANLog_Identify
 ====================
 */
-void BANLog_Identify (int addr)
+int BANLog_Identify (int addr)
 {
 	banlog_t *node;
 	int count = 0;
@@ -271,12 +261,16 @@ void BANLog_Identify (int addr)
 	{
 		if (node->addr == addr)
 		{
-			Con_Printf("%s\n", node->name);
+			Con_Printf ("Banning IP address\n"); // XXX
+			return 1;
+			//Con_Printf("%s\n", node->name);
 			count++;
+
 		}
 		node = node->children[addr > node->addr];
 	}
-	Con_Printf("%d %s found\n", count, (count == 1) ? "entry" : "entries");
+	//Con_Printf("%d %s found\n", count, (count == 1) ? "entry" : "entries");
+	return 0;
 }
 
 /*
@@ -302,7 +296,11 @@ void BANLog_DumpTree (banlog_t *root, FILE *f)
 		if (*ch == 10 || *ch == 13)
 			*ch = ' ';
 	}
-	fprintf(f, "%-16s  %s\n", address, name);
+
+	if (!f)
+		Con_Printf ("%-16s  %s\n", address, name); // XXX Con_Printf?
+	else
+		fprintf(f, "%-16s  %s\n", address, name);
 
 	BANLog_DumpTree(root->children[1], f);
 }

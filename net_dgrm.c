@@ -107,11 +107,14 @@ extern	cvar_t ip_hidden;
 extern	cvar_t ip_visible2;
 extern	cvar_t ip_hidden2;
 
+extern banlog_head;
+
 void NET_Ban_f (void)
 {
 	char	addrStr [32];
 	char	maskStr [32];
 	void	(*print) (char *fmt, ...);
+	int		a,b,c;
 
 	if (cmd_source == src_command)
 	{
@@ -132,31 +135,19 @@ void NET_Ban_f (void)
 	switch (Cmd_Argc ())
 	{
 		case 1:
-			if (((struct in_addr *)&banAddr)->s_addr)
-			{
-				strcpy(addrStr, inet_ntoa(*(struct in_addr *)&banAddr));
-				strcpy(maskStr, inet_ntoa(*(struct in_addr *)&banMask));
-				print("Banning %s [%s]\n", addrStr, maskStr);
-			}
-			else
-				print("Banning not active\n");
+			print ("Banned IP addresses:\n\n");
+			BANLog_DumpTree(banlog_head, NULL);
 			break;
 
 		case 2:
-			if (strcasecmp(Cmd_Argv(1), "off") == 0)
-				banAddr = 0x00000000;
+			if (sscanf(Cmd_Argv(1), "%d.%d.%d", &a, &b, &c) == 3)
+				BANLog_Add((a << 16) | (b << 8) | c, "Server"); // XXX If 2 argument specified, assume name.
 			else
-				banAddr = inet_addr(Cmd_Argv(1));
-			banMask = 0xffffffff;
-			break;
-
-		case 3:
-			banAddr = inet_addr(Cmd_Argv(1));
-			banMask = inet_addr(Cmd_Argv(2));
+				print ("Invalid IP address.\n"); // XXX
 			break;
 
 		default:
-			print("BAN ip_address [mask]\n");
+			print("BAN ip_address\n");
 			break;
 	}
 }
@@ -1249,9 +1240,17 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	if (clientaddr.sa_family == AF_INET)
 	{
 		unsigned long testAddr;
+		char addrStr [32];
+		int a,b,c;
+
 		testAddr = ((struct sockaddr_in *)&clientaddr)->sin_addr.s_addr;
-		if ((testAddr & banMask) == banAddr)
-			return Datagram_Reject("You have been banned.\n", acceptsock, &clientaddr);
+		strcpy(addrStr, inet_ntoa(*(struct in_addr *)&testAddr));
+		//if ((testAddr & banMask) == banAddr)
+		if (sscanf(addrStr, "%d.%d.%d", &a, &b, &c) == 3)
+		{
+			if (BANLog_Identify((a << 16) | (b << 8) | c))
+				return Datagram_Reject("You have been banned.\n", acceptsock, &clientaddr);
+		}
 	}
 #endif
 
