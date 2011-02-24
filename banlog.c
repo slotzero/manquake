@@ -1,4 +1,4 @@
-/*  $Id: banlog.c,v 1.3 2011/02/24 07:22:18 slotzero Exp $
+/*  $Id: banlog.c,v 1.4 2011/02/24 08:01:27 slotzero Exp $
 
     Copyright (C) 2011  David 'Slot Zero' Roberts.
 
@@ -221,6 +221,7 @@ void BANLog_Remove (int addr)
 	{
 		if ((*ppnew)->addr == addr)
 		{
+			strcpy ((*ppnew)->name, ""); // hack
 			BANLog_Delete((*ppnew));
 			Con_Printf ("ip address removed\n");
 			return;
