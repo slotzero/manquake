@@ -111,8 +111,6 @@ extern banlog_head;
 
 void NET_Ban_f (void)
 {
-	char	addrStr [32];
-	char	maskStr [32];
 	void	(*print) (char *fmt, ...);
 	int		a,b,c;
 
@@ -140,14 +138,20 @@ void NET_Ban_f (void)
 			break;
 
 		case 2:
+		case 3:
 			if (sscanf(Cmd_Argv(1), "%d.%d.%d", &a, &b, &c) == 3)
-				BANLog_Add((a << 16) | (b << 8) | c, "Server"); // XXX If 2 argument specified, assume name.
+			{
+				if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
+					print("ban: ip address out of range\n");
+				else
+					BANLog_Add((a << 16) | (b << 8) | c, (Cmd_Argv(2) == "") ? "Console" : Cmd_Argv(2));
+			}
 			else
-				print ("Invalid IP address.\n"); // XXX
+				print("ban: invalid ip address\n");
 			break;
 
 		default:
-			print("BAN ip_address\n");
+			print("usage: ban <ip address> [banned by]\n");
 			break;
 	}
 }
