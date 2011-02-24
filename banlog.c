@@ -1,4 +1,4 @@
-/*  $Id: banlog.c,v 1.2 2011/02/22 08:02:43 slotzero Exp $
+/*  $Id: banlog.c,v 1.3 2011/02/24 07:22:18 slotzero Exp $
 
     Copyright (C) 2011  David 'Slot Zero' Roberts.
 
@@ -115,14 +115,14 @@ void BANLog_WriteLog (void)
 
 	Sys_GetLock();
 
-	// first merge
+	/*// first merge
 	f = fopen(va("%s/banlog.dat",com_gamedir), "r");
 	if (f)
 	{
 		while(fread(&temp, 20, 1, f))
 			BANLog_Add(temp.addr, temp.name);
 		fclose(f);
-	}
+	}*/
 
 	// then write
 	f = fopen(va("%s/banlog.dat",com_gamedir), "w");
@@ -145,7 +145,6 @@ void BANLog_WriteLog (void)
 	Sys_ReleaseLock();
 }
 
-#define MAX_REPITITION	1
 
 /*
 ====================
@@ -181,7 +180,7 @@ void BANLog_Add (int addr, char *name)
 	{
 		if ((*ppnew)->addr == addr)
 		{
-			Con_Printf ("IP address already exists!\n"); // XXX
+			Con_Printf ("ban: ip address already exists\n");
 			return;
 		}
 		parent = *ppnew;
@@ -194,7 +193,7 @@ void BANLog_Add (int addr, char *name)
 	banlog_new->children[0] = NULL;
 	banlog_new->children[1] = NULL;
 
-	Con_Printf ("IP address added!\n"); // XXX
+	Con_Printf ("ip address added\n");
 
 	if (++banlog_next == banlog_size)
 	{
@@ -203,6 +202,32 @@ void BANLog_Add (int addr, char *name)
 	}
 	if (banlog_full)
 		BANLog_Delete(&banlogs[banlog_next]);
+}
+
+/*
+====================
+BANLog_Remove
+====================
+*/
+void BANLog_Remove (int addr)
+{
+	banlog_t **ppnew;
+
+	if (!banlog_size)
+		return;
+
+	ppnew = &banlog_head;
+	while (*ppnew)
+	{
+		if ((*ppnew)->addr == addr)
+		{
+			BANLog_Delete((*ppnew));
+			Con_Printf ("ip address removed\n");
+			return;
+		}
+		ppnew = &(*ppnew)->children[addr > (*ppnew)->addr];
+	}
+	Con_Printf ("unban: ip address not found\n");
 }
 
 /*

@@ -155,6 +155,48 @@ void NET_Ban_f (void)
 			break;
 	}
 }
+
+
+void NET_unBan_f (void)
+{
+	void	(*print) (char *fmt, ...);
+	int		a,b,c;
+
+	if (cmd_source == src_command)
+	{
+		if (!sv.active)
+		{
+			Cmd_ForwardToServer ();
+			return;
+		}
+		print = Con_Printf;
+	}
+	else
+	{
+		if (pr_global_struct->deathmatch && !host_client->privileged)
+			return;
+		print = SV_ClientPrintf;
+	}
+
+	switch (Cmd_Argc ())
+	{
+		case 2:
+			if (sscanf(Cmd_Argv(1), "%d.%d.%d", &a, &b, &c) == 3)
+			{
+				if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
+					print("unban: ip address out of range\n");
+				else
+					BANLog_Remove((a << 16) | (b << 8) | c);
+			}
+			else
+				print("unban: invalid ip address\n");
+			break;
+
+		default:
+			print("usage: unban <ip address>\n");
+			break;
+	}
+}
 #endif
 
 
@@ -989,6 +1031,7 @@ int Datagram_Init (void)
 
 #ifdef BAN_TEST
 	Cmd_AddCommand ("ban", NET_Ban_f);
+	Cmd_AddCommand ("unban", NET_unBan_f);
 #endif
 	Cmd_AddCommand ("test", Test_f);
 	Cmd_AddCommand ("test2", Test2_f);
