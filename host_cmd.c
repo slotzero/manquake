@@ -1373,4 +1373,6 @@ void Host_InitCommands (void)
 	Cmd_AddCommand ("identify", Host_Identify_f);	// JPG 1.05 - player IP logging
 	Cmd_AddCommand ("ipdump", IPLog_Dump);			// JPG 1.05 - player IP logging
 	Cmd_AddCommand ("ipmerge", IPLog_Import);		// JPG 3.00 - import an IP data file
+	Cmd_AddCommand ("bandump", BANLog_Dump);
+	Cmd_AddCommand ("banmerge", BANLog_Import);
 }

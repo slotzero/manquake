@@ -130,6 +130,12 @@ void NET_Ban_f (void)
 		print = SV_ClientPrintf;
 	}
 
+	if (!banlog_size)
+	{
+		print ("BAN logging not available\nUse -banlog command line option\n");
+		return;
+	}
+
 	switch (Cmd_Argc ())
 	{
 		case 1:
@@ -140,14 +146,9 @@ void NET_Ban_f (void)
 		case 2:
 		case 3:
 			if (sscanf(Cmd_Argv(1), "%d.%d.%d", &a, &b, &c) == 3)
-			{
-				if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
-					print("ban: ip address out of range\n");
-				else
 					BANLog_Add((a << 16) | (b << 8) | c, (Cmd_Argv(2) == "") ? "Console" : Cmd_Argv(2));
-			}
 			else
-				print("ban: invalid ip address\n");
+				print("ban: invalid ip address [%s]\n", Cmd_Argv(1));
 			break;
 
 		default:
@@ -178,18 +179,19 @@ void NET_unBan_f (void)
 		print = SV_ClientPrintf;
 	}
 
+	if (!banlog_size)
+	{
+		print ("BAN logging not available\nUse -banlog command line option\n");
+		return;
+	}
+
 	switch (Cmd_Argc ())
 	{
 		case 2:
 			if (sscanf(Cmd_Argv(1), "%d.%d.%d", &a, &b, &c) == 3)
-			{
-				if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
-					print("unban: ip address out of range\n");
-				else
-					BANLog_Remove((a << 16) | (b << 8) | c);
-			}
+				BANLog_Remove((a << 16) | (b << 8) | c);
 			else
-				print("unban: invalid ip address\n");
+				print("unban: invalid ip address [%s]\n", Cmd_Argv(1));
 			break;
 
 		default:

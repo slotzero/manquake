@@ -1,4 +1,4 @@
-/*  $Id: banlog.c,v 1.4 2011/02/24 08:01:27 slotzero Exp $
+/*  $Id: banlog.c,v 1.5 2011/02/25 09:39:31 slotzero Exp $
 
     Copyright (C) 2011  David 'Slot Zero' Roberts.
 
@@ -115,15 +115,6 @@ void BANLog_WriteLog (void)
 
 	Sys_GetLock();
 
-	/*// first merge
-	f = fopen(va("%s/banlog.dat",com_gamedir), "r");
-	if (f)
-	{
-		while(fread(&temp, 20, 1, f))
-			BANLog_Add(temp.addr, temp.name);
-		fclose(f);
-	}*/
-
 	// then write
 	f = fopen(va("%s/banlog.dat",com_gamedir), "w");
 	if (f)
@@ -153,15 +144,24 @@ BANLog_Add
 */
 void BANLog_Add (int addr, char *name)
 {
-	banlog_t	*banlog_new;
+	banlog_t *banlog_new;
 	banlog_t **ppnew;
 	banlog_t *parent;
 	char name2[16];
 	char *ch;
-	int i;
+	int a,b,c;
 
 	if (!banlog_size)
 		return;
+
+	a = addr >> 16;
+	b = (addr >> 8) & 0xff;
+	c = addr & 0xff;
+	if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
+	{
+		Con_Printf ("ban: ip address [%d.%d.%d.xxx] out of range\n", a, b, c);
+		return;
+	}
 
 	// delete trailing spaces
 	strncpy(name2, name, 15);
@@ -180,7 +180,7 @@ void BANLog_Add (int addr, char *name)
 	{
 		if ((*ppnew)->addr == addr)
 		{
-			Con_Printf ("ban: ip address already exists\n");
+			Con_Printf ("ban: ip address [%d.%d.%d.xxx] already exists\n", a, b, c);
 			return;
 		}
 		parent = *ppnew;
@@ -193,7 +193,7 @@ void BANLog_Add (int addr, char *name)
 	banlog_new->children[0] = NULL;
 	banlog_new->children[1] = NULL;
 
-	Con_Printf ("ip address added\n");
+	Con_Printf ("ip address [%d.%d.%d.xxx] added by %s\n", a, b, c, name2);
 
 	if (++banlog_next == banlog_size)
 	{
@@ -212,9 +212,19 @@ BANLog_Remove
 void BANLog_Remove (int addr)
 {
 	banlog_t **ppnew;
+	int a,b,c;
 
 	if (!banlog_size)
 		return;
+
+	a = addr >> 16;
+	b = (addr >> 8) & 0xff;
+	c = addr & 0xff;
+	if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
+	{
+		Con_Printf ("unban: ip address [%d.%d.%d.xxx] out of range\n", a, b, c);
+		return;
+	}
 
 	ppnew = &banlog_head;
 	while (*ppnew)
@@ -223,12 +233,12 @@ void BANLog_Remove (int addr)
 		{
 			strcpy ((*ppnew)->name, ""); // hack
 			BANLog_Delete((*ppnew));
-			Con_Printf ("ip address removed\n");
+			Con_Printf ("ip address [%d.%d.%d.xxx] removed\n", a, b, c);
 			return;
 		}
 		ppnew = &(*ppnew)->children[addr > (*ppnew)->addr];
 	}
-	Con_Printf ("unban: ip address not found\n");
+	Con_Printf ("unban: ip address [%d.%d.%d.xxx] not found\n", a, b, c);
 }
 
 /*
