@@ -1,4 +1,4 @@
-/*  $Id: banlog.c,v 1.6 2011/02/26 06:03:06 slotzero Exp $
+/*  $Id: banlog.c,v 1.7 2011/02/26 07:25:12 slotzero Exp $
 
     Copyright (C) 2011  David 'Slot Zero' Roberts.
 
@@ -133,7 +133,7 @@ void BANLog_WriteLog (void)
 		}
 
 		fclose(f);
-		Con_Printf("Wrote banlog.dat\n");	// Slot Zero 3.50-1  Wrote banlog.dat message.
+		Con_Printf("Wrote banlog.dat\n");
 	}
 	else
 		Con_Printf("Could not write banlog.dat\n");
@@ -298,22 +298,17 @@ BANLog_Identify
 int BANLog_Identify (int addr)
 {
 	banlog_t *node;
-	int count = 0;
 
 	node = banlog_head;
 	while (node)
 	{
 		if (node->addr == addr)
 		{
-			Con_Printf ("Banning IP address\n"); // XXX
+			Con_Printf ("Banning IP address [%d.%d.%d.xxx]\n", addr >> 16, (addr >> 8) & 0xff, addr & 0xff);
 			return 1;
-			//Con_Printf("%s\n", node->name);
-			count++;
-
 		}
 		node = node->children[addr > node->addr];
 	}
-	//Con_Printf("%d %s found\n", count, (count == 1) ? "entry" : "entries");
 	return 0;
 }
 
@@ -342,7 +337,7 @@ void BANLog_DumpTree (banlog_t *root, FILE *f)
 	}
 
 	if (!f)
-		Con_Printf ("%-16s  %s\n", address, name); // XXX Con_Printf?
+		Con_Printf ("%-16s  %s\n", address, name);
 	else
 		fprintf(f, "%-16s  %s\n", address, name);
 
@@ -375,5 +370,5 @@ void BANLog_Dump (void)
 	fclose(f);
 	Con_Printf("Wrote banlog.txt\n");
 
-	BANLog_WriteLog ();	// Slot Zero 3.50-1  Write banlog.dat.
+	BANLog_WriteLog ();
 }
