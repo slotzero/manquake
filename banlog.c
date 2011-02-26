@@ -1,4 +1,4 @@
-/*  $Id: banlog.c,v 1.5 2011/02/25 09:39:31 slotzero Exp $
+/*  $Id: banlog.c,v 1.6 2011/02/26 06:03:06 slotzero Exp $
 
     Copyright (C) 2011  David 'Slot Zero' Roberts.
 
@@ -115,17 +115,22 @@ void BANLog_WriteLog (void)
 
 	Sys_GetLock();
 
-	// then write
 	f = fopen(va("%s/banlog.dat",com_gamedir), "w");
 	if (f)
 	{
 		if (banlog_full)
 		{
 			for (i = banlog_next + 1 ; i < banlog_size ; i++)
-				fwrite(&banlogs[i], 20, 1, f);
+			{
+				if (strcmp (banlogs[i].name, "")) // hack
+					fwrite(&banlogs[i], 20, 1, f);
+			}
 		}
 		for (i = 0 ; i < banlog_next ; i++)
-			fwrite(&banlogs[i], 20, 1, f);
+		{
+			if (strcmp (banlogs[i].name, "")) // hack
+				fwrite(&banlogs[i], 20, 1, f);
+		}
 
 		fclose(f);
 		Con_Printf("Wrote banlog.dat\n");	// Slot Zero 3.50-1  Wrote banlog.dat message.
@@ -170,7 +175,10 @@ void BANLog_Add (int addr, char *name)
 	while (ch >= name2 && (*ch == 0 || *ch == ' '))
 		*ch-- = 0;
 	if (ch < name2)
+	{
+		Con_Printf ("ban: invalid name [%s]\n", name);
 		return;
+	}
 
 	banlog_new = &banlogs[banlog_next];
 
