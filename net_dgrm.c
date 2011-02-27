@@ -98,8 +98,6 @@ char *StrAddr (struct qsockaddr *addr)
 
 
 #ifdef BAN_TEST
-unsigned long banAddr = 0x00000000;
-unsigned long banMask = 0xffffffff;
 
 // Slot Zero 3.50-1  Change client IP.  [3.40 and above]
 extern	cvar_t ip_visible;
@@ -107,11 +105,16 @@ extern	cvar_t ip_hidden;
 extern	cvar_t ip_visible2;
 extern	cvar_t ip_hidden2;
 
+// banlog.c
 extern banlog_head;
+
+// runequake
+#define AQ_ADMIN	128
 
 void NET_Ban_f (void)
 {
 	void	(*print) (char *fmt, ...);
+	eval_t	*qc;
 	int		a,b,c;
 
 	if (cmd_source == src_command)
@@ -125,7 +128,8 @@ void NET_Ban_f (void)
 	}
 	else
 	{
-		if (pr_global_struct->deathmatch && !host_client->privileged)
+		qc = GetEdictFieldValue(host_client->edict, "aqflags"); // runequake
+		if (!(qc && (int)qc->_float & AQ_ADMIN) && (pr_global_struct->deathmatch && !host_client->privileged))
 			return;
 		print = SV_ClientPrintf;
 	}
@@ -144,58 +148,26 @@ void NET_Ban_f (void)
 			break;
 
 		case 2:
-		case 3:
 			if (sscanf(Cmd_Argv(1), "%d.%d.%d", &a, &b, &c) == 3)
-					BANLog_Add((a << 16) | (b << 8) | c, (Cmd_Argv(2) == "") ? "Console" : Cmd_Argv(2));
+					BANLog_Add((a << 16) | (b << 8) | c, (print == SV_ClientPrintf) ? host_client->name : cl_name.string);
 			else
 				print("ban: invalid ip address [%s]\n", Cmd_Argv(1));
 			break;
 
-		default:
-			print("usage: ban <ip address> [banned by]\n");
-			break;
-	}
-}
-
-
-void NET_unBan_f (void)
-{
-	void	(*print) (char *fmt, ...);
-	int		a,b,c;
-
-	if (cmd_source == src_command)
-	{
-		if (!sv.active)
-		{
-			Cmd_ForwardToServer ();
-			return;
-		}
-		print = Con_Printf;
-	}
-	else
-	{
-		if (pr_global_struct->deathmatch && !host_client->privileged)
-			return;
-		print = SV_ClientPrintf;
-	}
-
-	if (!banlog_size)
-	{
-		print ("BAN logging not available\nUse -banlog command line option\n");
-		return;
-	}
-
-	switch (Cmd_Argc ())
-	{
-		case 2:
-			if (sscanf(Cmd_Argv(1), "%d.%d.%d", &a, &b, &c) == 3)
-				BANLog_Remove((a << 16) | (b << 8) | c);
+		case 3:
+			if (strcasecmp(Cmd_Argv(2), "off") == 0)
+			{
+				if (sscanf(Cmd_Argv(1), "%d.%d.%d", &a, &b, &c) == 3)
+					BANLog_Remove((a << 16) | (b << 8) | c);
+				else
+					print("ban: invalid ip address [%s]\n", Cmd_Argv(1));
+			}
 			else
-				print("unban: invalid ip address [%s]\n", Cmd_Argv(1));
+					print("usage: ban <ip address> [off]\n");
 			break;
 
 		default:
-			print("usage: unban <ip address>\n");
+			print("usage: ban <ip address> [off]\n");
 			break;
 	}
 }
@@ -1033,7 +1005,6 @@ int Datagram_Init (void)
 
 #ifdef BAN_TEST
 	Cmd_AddCommand ("ban", NET_Ban_f);
-	Cmd_AddCommand ("unban", NET_unBan_f);
 #endif
 	Cmd_AddCommand ("test", Test_f);
 	Cmd_AddCommand ("test2", Test2_f);
