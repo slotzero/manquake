@@ -1,4 +1,4 @@
-// $Id: iplog.c,v 1.3 2010/10/29 07:26:46 slotzero Exp $
+// $Id: iplog.c,v 1.4 2011/02/27 04:01:26 slotzero Exp $
 // iplog.c
 //
 // JPG 1.05
@@ -106,14 +106,14 @@ void IPLog_WriteLog (void)
 
 	Sys_GetLock();
 
-	// first merge
+	/*	// first merge
 	f = fopen(va("%s/iplog.dat",com_gamedir), "r");
 	if (f)
 	{
 		while(fread(&temp, 20, 1, f))
 			IPLog_Add(temp.addr, temp.name);
 		fclose(f);
-	}
+	}	*/
 
 	// then write
 	f = fopen(va("%s/iplog.dat",com_gamedir), "w");
