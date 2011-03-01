@@ -1,4 +1,4 @@
-/*  $Id: banlog.c,v 1.7 2011/02/26 07:25:12 slotzero Exp $
+/*
 
     Copyright (C) 2011  David 'Slot Zero' Roberts.
 
@@ -41,10 +41,10 @@ void BANLog_Init (void)
 
 	// Allocate space for the BAN logs
 	banlog_size = 0;
-	p = COM_CheckParm ("-banlog");
-	if (!p)
+	if (COM_CheckParm ("-nobanlog"))
 		return;
-	if (p < com_argc - 1)
+	p = COM_CheckParm ("-banlogsize");
+	if (p && p < com_argc - 1)
 		banlog_size = atoi(com_argv[p+1]) * 1024 / sizeof(banlog_t);
 	if (!banlog_size)
 		banlog_size = DEFAULT_BANLOGSIZE;
@@ -78,7 +78,7 @@ void BANLog_Import (void)
 
 	if (!banlog_size)
 	{
-		Con_Printf("BAN logging not available\nUse -banlog command line option\n");
+		Con_Printf("BAN logging not available\nRemove -nobanlog command line option\n");
 		return;
 	}
 
@@ -149,6 +149,7 @@ BANLog_Add
 */
 void BANLog_Add (int addr, char *name)
 {
+	void (*print) (char *fmt, ...);
 	banlog_t *banlog_new;
 	banlog_t **ppnew;
 	banlog_t *parent;
@@ -159,12 +160,18 @@ void BANLog_Add (int addr, char *name)
 	if (!banlog_size)
 		return;
 
+	if (cmd_source == src_client && sv.active)
+		print = SV_ClientPrintf;
+	else
+		print = Con_Printf;
+
+
 	a = addr >> 16;
 	b = (addr >> 8) & 0xff;
 	c = addr & 0xff;
 	if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
 	{
-		Con_Printf ("ban: ip address [%d.%d.%d.xxx] out of range\n", a, b, c);
+		print ("ip address [%d.%d.%d.xxx] out of range\n", a, b, c);
 		return;
 	}
 
@@ -176,7 +183,7 @@ void BANLog_Add (int addr, char *name)
 		*ch-- = 0;
 	if (ch < name2)
 	{
-		Con_Printf ("ban: invalid name [%s]\n", name);
+		print ("invalid name [%s]\n", name);
 		return;
 	}
 
@@ -188,7 +195,7 @@ void BANLog_Add (int addr, char *name)
 	{
 		if ((*ppnew)->addr == addr)
 		{
-			Con_Printf ("ban: ip address [%d.%d.%d.xxx] already exists\n", a, b, c);
+			print ("ip address [%d.%d.%d.xxx] already exists\n", a, b, c);
 			return;
 		}
 		parent = *ppnew;
@@ -201,7 +208,9 @@ void BANLog_Add (int addr, char *name)
 	banlog_new->children[0] = NULL;
 	banlog_new->children[1] = NULL;
 
-	Con_Printf ("ip address [%d.%d.%d.xxx] added by %s\n", a, b, c, name2);
+	print ("ip address [%d.%d.%d.xxx] added by %s\n", a, b, c, name2);
+	if (print == SV_ClientPrintf)
+		Con_Printf ("ip address [%d.%d.%d.xxx] added by %s [%s]\n", a, b, c, name2, host_client->netconnection->address);
 
 	if (++banlog_next == banlog_size)
 	{
@@ -219,18 +228,24 @@ BANLog_Remove
 */
 void BANLog_Remove (int addr)
 {
+	void (*print) (char *fmt, ...);
 	banlog_t **ppnew;
 	int a,b,c;
 
 	if (!banlog_size)
 		return;
 
+	if (cmd_source == src_client)
+		print = SV_ClientPrintf;
+	else
+		print = Con_Printf;
+
 	a = addr >> 16;
 	b = (addr >> 8) & 0xff;
 	c = addr & 0xff;
 	if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
 	{
-		Con_Printf ("unban: ip address [%d.%d.%d.xxx] out of range\n", a, b, c);
+		print ("ip address [%d.%d.%d.xxx] out of range\n", a, b, c);
 		return;
 	}
 
@@ -241,12 +256,12 @@ void BANLog_Remove (int addr)
 		{
 			strcpy ((*ppnew)->name, ""); // hack
 			BANLog_Delete((*ppnew));
-			Con_Printf ("ip address [%d.%d.%d.xxx] removed\n", a, b, c);
+			print ("ip address [%d.%d.%d.xxx] removed\n", a, b, c);
 			return;
 		}
 		ppnew = &(*ppnew)->children[addr > (*ppnew)->addr];
 	}
-	Con_Printf ("unban: ip address [%d.%d.%d.xxx] not found\n", a, b, c);
+	print ("ip address [%d.%d.%d.xxx] not found\n", a, b, c);
 }
 
 /*
@@ -337,7 +352,12 @@ void BANLog_DumpTree (banlog_t *root, FILE *f)
 	}
 
 	if (!f)
-		Con_Printf ("%-16s  %s\n", address, name);
+	{
+		if (cmd_source == src_client)
+			SV_ClientPrintf ("%-16s  %s\n", address, name);
+		else
+			Con_Printf ("%-16s  %s\n", address, name);
+	}
 	else
 		fprintf(f, "%-16s  %s\n", address, name);
 
@@ -355,7 +375,7 @@ void BANLog_Dump (void)
 
 	if (!banlog_size)
 	{
-		Con_Printf("BAN logging not available\nUse -banlog command line option\n");
+		Con_Printf("BAN logging not available\nRemove -nobanlog command line option\n");
 		return;
 	}
 

@@ -1,4 +1,4 @@
-/*  $Id: banlog.h,v 1.3 2011/02/24 07:22:18 slotzero Exp $
+/*
 
     Copyright (C) 2011  David 'Slot Zero' Roberts.
 
