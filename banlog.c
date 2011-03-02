@@ -76,6 +76,9 @@ void BANLog_Import (void)
 	FILE *f;
 	banlog_t temp;
 
+	if (cmd_source == src_client)
+		return;
+
 	if (!banlog_size)
 	{
 		Con_Printf("BAN logging not available\nRemove -nobanlog command line option\n");
@@ -372,6 +375,9 @@ BANLog_Dump
 void BANLog_Dump (void)
 {
 	FILE *f;
+
+	if (cmd_source == src_client)
+		return;
 
 	if (!banlog_size)
 	{
