@@ -23,8 +23,7 @@
 
 	* Remove the wrote message from DPrint, or only print it when it's
 	  purposely done.
-	* Added wildcard IP addresses.
-	* Rewrite the banlog.txt so that it's a cfg file in ban <ip> fashion.
+	* Add wildcard IP addresses.
 
 */
 
@@ -409,7 +408,7 @@ void BANLog_DumpTree (banlog_t *root, FILE *f)
 			Con_Printf ("%-16s  %s\n", address, name);
 	}
 	else
-		fprintf(f, "%-16s  %s\n", address, name);
+		fprintf(f, "ban %s\n", address);
 
 	BANLog_DumpTree(root->children[1], f);
 }
