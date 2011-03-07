@@ -17,6 +17,17 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
+/* =========================================>
+
+	Things perhaps needed to be addressed:
+
+	* Remove the wrote message from DPrint, or only print it when it's
+	  purposely done.
+	* Added wildcard IP addresses.
+	* Rewrite the banlog.txt so that it's a cfg file in ban <ip> fashion.
+
+*/
+
 #include "quakedef.h"
 
 banlog_t *banlogs;
@@ -60,7 +71,7 @@ void BANLog_Init (void)
 	if (f)
 	{
 		while(fread(&temp, 20, 1, f))
-			BANLog_Add(temp.addr, temp.name);
+			BANLog_Add(temp.addr, temp.name, false);
 		fclose(f);
 	}
 	Sys_ReleaseLock();
@@ -94,9 +105,10 @@ void BANLog_Import (void)
 	if (f)
 	{
 		while(fread(&temp, 20, 1, f))
-			BANLog_Add(temp.addr, temp.name);
+			BANLog_Add(temp.addr, temp.name, false);
 		fclose(f);
 		Con_Printf("Merged %s\n", Cmd_Argv(1));
+		BANLog_WriteLog();
 	}
 	else
 		Con_Printf("Could not open %s\n", Cmd_Argv(1));
@@ -136,21 +148,46 @@ void BANLog_WriteLog (void)
 		}
 
 		fclose(f);
-		Con_Printf("Wrote banlog.dat\n");
+		Con_DPrintf("Wrote banlog.dat\n");
 	}
 	else
-		Con_Printf("Could not write banlog.dat\n");
+		Con_DPrintf("Could not write banlog.dat\n");
 
 	Sys_ReleaseLock();
 }
 
+/*
+====================
+BANLog_Read
+====================
+*/
+void BANLog_Read (void)
+{
+	banlog_t temp;
+	FILE *f;
+
+	// Attempt to load log data from banlog.dat
+	Sys_GetLock();
+	f = fopen(va("%s/banlog.dat",com_gamedir), "r");
+	if (f)
+	{
+		banlog_next = 0;
+		banlog_head = NULL;
+		banlog_full = 0;
+
+		while(fread(&temp, 20, 1, f))
+			BANLog_Add(temp.addr, temp.name, false);
+		fclose(f);
+	}
+	Sys_ReleaseLock();
+}
 
 /*
 ====================
 BANLog_Add
 ====================
 */
-void BANLog_Add (int addr, char *name)
+void BANLog_Add (int addr, char *name, qboolean writelog)
 {
 	void (*print) (char *fmt, ...);
 	banlog_t *banlog_new;
@@ -174,7 +211,8 @@ void BANLog_Add (int addr, char *name)
 	c = addr & 0xff;
 	if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
 	{
-		print ("ip address [%d.%d.%d.xxx] out of range\n", a, b, c);
+		if (writelog)
+			print ("ip address [%d.%d.%d.xxx] out of range\n", a, b, c);
 		return;
 	}
 
@@ -186,7 +224,8 @@ void BANLog_Add (int addr, char *name)
 		*ch-- = 0;
 	if (ch < name2)
 	{
-		print ("invalid name [%s]\n", name);
+		if (writelog)
+			print ("invalid name [%s]\n", name);
 		return;
 	}
 
@@ -198,7 +237,8 @@ void BANLog_Add (int addr, char *name)
 	{
 		if ((*ppnew)->addr == addr)
 		{
-			print ("ip address [%d.%d.%d.xxx] already exists\n", a, b, c);
+			if (writelog)
+				print ("ip address [%d.%d.%d.xxx] already exists\n", a, b, c);
 			return;
 		}
 		parent = *ppnew;
@@ -211,9 +251,12 @@ void BANLog_Add (int addr, char *name)
 	banlog_new->children[0] = NULL;
 	banlog_new->children[1] = NULL;
 
-	print ("ip address [%d.%d.%d.xxx] added by %s\n", a, b, c, name2);
-	if (print == SV_ClientPrintf)
-		Con_Printf ("ip address [%d.%d.%d.xxx] added by %s [%s]\n", a, b, c, name2, host_client->netconnection->address);
+	if (writelog)
+	{
+		print ("ip address [%d.%d.%d.xxx] added by %s\n", a, b, c, name2);
+		if (print == SV_ClientPrintf)
+			Con_Printf ("ip address [%d.%d.%d.xxx] added by %s [%s]\n", a, b, c, name2, host_client->netconnection->address);
+	}
 
 	if (++banlog_next == banlog_size)
 	{
@@ -222,6 +265,9 @@ void BANLog_Add (int addr, char *name)
 	}
 	if (banlog_full)
 		BANLog_Delete(&banlogs[banlog_next]);
+
+	if (writelog)
+		BANLog_WriteLog();
 }
 
 /*
@@ -260,6 +306,7 @@ void BANLog_Remove (int addr)
 			strcpy ((*ppnew)->name, ""); // hack
 			BANLog_Delete((*ppnew));
 			print ("ip address [%d.%d.%d.xxx] removed\n", a, b, c);
+			BANLog_WriteLog();
 			return;
 		}
 		ppnew = &(*ppnew)->children[addr > (*ppnew)->addr];
@@ -394,7 +441,7 @@ void BANLog_Dump (void)
 
 	BANLog_DumpTree(banlog_head, f);
 	fclose(f);
-	Con_Printf("Wrote banlog.txt\n");
+	Con_DPrintf("Wrote banlog.txt\n");
 
 	BANLog_WriteLog ();
 }

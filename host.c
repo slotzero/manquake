@@ -748,6 +748,5 @@ void Host_Shutdown(void)
 	isdown = true;
 
 	IPLog_WriteLog ();	// JPG 1.05 - ip loggging
-	BANLog_WriteLog ();
 	NET_Shutdown ();
 }

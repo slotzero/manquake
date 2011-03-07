@@ -29,7 +29,8 @@ extern int banlog_size;
 
 void BANLog_Init (void);
 void BANLog_WriteLog (void);
-void BANLog_Add (int addr, char *name);
+void BANLog_Read (void);
+void BANLog_Add (int addr, char *name, qboolean writelog);
 void BANLog_Remove (int addr);
 void BANLog_Delete (banlog_t *node);
 banlog_t *BANLog_Merge (banlog_t *left, banlog_t *right);

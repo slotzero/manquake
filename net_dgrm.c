@@ -107,6 +107,7 @@ extern	cvar_t ip_hidden2;
 
 // banlog.c
 extern banlog_head;
+extern banlog_next;
 
 // runequake
 #define AQ_ADMIN	128
@@ -143,8 +144,10 @@ void NET_Ban_f (void)
 	switch (Cmd_Argc ())
 	{
 		case 1:
+			BANLog_Read();
 			print("Banned IP addresses:\n\n");
 			BANLog_DumpTree(banlog_head, NULL);
+			print ("\n%i %s found\n", banlog_next, (banlog_next == 1) ? "entry" : "entries");
 			break;
 
 		case 2:
@@ -153,7 +156,10 @@ void NET_Ban_f (void)
 				if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
 					print("ip address [%d.%d.%d.xxx] out of range\n", a, b, c);
 				else
-					BANLog_Add((a << 16) | (b << 8) | c, (print == SV_ClientPrintf) ? host_client->name : cl_name.string);
+				{
+					BANLog_Read();
+					BANLog_Add((a << 16) | (b << 8) | c, (print == SV_ClientPrintf) ? host_client->name : cl_name.string, true);
+				}
 			}
 			else
 				print("invalid ip address [%s]\n", Cmd_Argv(1));
@@ -167,7 +173,10 @@ void NET_Ban_f (void)
 					if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
 						print("ip address [%d.%d.%d.xxx] out of range\n", a, b, c);
 					else
+					{
+						BANLog_Read();
 						BANLog_Remove((a << 16) | (b << 8) | c);
+					}
 				}
 				else
 					print("invalid ip address [%s]\n", Cmd_Argv(1));

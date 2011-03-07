@@ -1515,6 +1515,9 @@ void SV_SpawnServer (char *server)
 
 	ED_LoadFromFile (sv.worldmodel->entities);
 
+// read banlog.dat each level
+	BANLog_Read();
+
 	sv.active = true;
 
 // all setup is completed, any further precache statements are errors
