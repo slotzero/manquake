@@ -91,31 +91,6 @@ cvar_t	mod_protocol = {"mod_protocol", "1"};
 
 /*
 ================
-Host_EndGame
-================
-*/
-void Host_EndGame (char *message, ...)
-{
-	va_list		argptr;
-	char		string[1024];
-
-	va_start (argptr,message);
-	dpvsnprintf (string, sizeof(string), message, argptr);
-	va_end (argptr);
-
-	Con_DPrintf ("Host_EndGame: %s\n",string);
-
-	if (sv.active)
-		Host_ShutdownServer (false);
-
-	Sys_Error ("Host_EndGame: %s\n",string);	// dedicated servers exit
-
-	longjmp (host_abortserver, 1);
-}
-
-
-/*
-================
 Host_Error
 
 This shuts down the server

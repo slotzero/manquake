@@ -187,7 +187,6 @@ void Host_Notarget_f (void)
 		SV_ClientPrintf ("notarget ON\n");
 }
 
-qboolean noclip_anglehack;
 
 void Host_Noclip_f (void)
 {
@@ -202,13 +201,11 @@ void Host_Noclip_f (void)
 
 	if (sv_player->v.movetype != MOVETYPE_NOCLIP)
 	{
-		noclip_anglehack = true;
 		sv_player->v.movetype = MOVETYPE_NOCLIP;
 		SV_ClientPrintf ("noclip ON\n");
 	}
 	else
 	{
-		noclip_anglehack = false;
 		sv_player->v.movetype = MOVETYPE_WALK;
 		SV_ClientPrintf ("noclip OFF\n");
 	}
