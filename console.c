@@ -218,98 +218,7 @@ void Con_Init (void)
 	con_initialized = true;
 }
 
-
-/*
-===============
-Con_Linefeed
-===============
-*/
-void Con_Linefeed (void)
-{
-	con_x = 0;
-	con_current++;
-	memset (&con_text[(con_current%con_totallines)*con_linewidth], ' ', con_linewidth);
-
-	// JPG - fix backscroll
-	if (con_backscroll)
-		con_backscroll++;
-}
-
 #define DIGIT(x) ((x) >= '0' && (x) <= '9')
-
-/*
-================
-Con_Print
-
-Handles cursor positioning, line wrapping, etc
-All console printing must go through this in order to be logged to disk
-If no console is visible, the notify window will pop up.
-================
-*/
-void Con_Print (char *txt)
-{
-	int		y;
-	int		c, l;
-	static int	cr;
-	int		mask;
-
-	//con_backscroll = 0;  // JPG - half of a fix for an annoying problem
-
-	if (txt[0] == 1 || txt[0] == 2)
-	{
-		mask = 128;		// go to colored text
-		txt++;
-	}
-	else
-		mask = 0;
-
-	while ( (c = *txt) )
-	{
-	// count word length
-		for (l=0 ; l< con_linewidth ; l++)
-			if ( txt[l] <= ' ')
-				break;
-
-	// word wrap
-		if (l != con_linewidth && (con_x + l > con_linewidth) )
-			con_x = 0;
-
-		txt++;
-
-		if (cr)
-		{
-			con_current--;
-			cr = false;
-		}
-
-		if (!con_x)
-		{
-			Con_Linefeed ();
-		// mark time for transparent overlay
-			if (con_current >= 0)
-				con_times[con_current % NUM_CON_TIMES] = realtime;
-		}
-
-		switch (c)
-		{
-		case '\n':
-			con_x = 0;
-			break;
-
-		case '\r':
-			c += 128;
-
-		default:	// display character and advance
-			y = con_current % con_totallines;
-			con_text[y*con_linewidth+con_x] = c | mask;
-			con_x++;
-			if (con_x >= con_linewidth)
-				con_x = 0;
-			break;
-		}
-	}
-}
-
 
 // JPG - increased this from 4096 to 16384 and moved it up here
 // See http://www.inside3d.com/qip/q1/bugs.htm, NVidia 5.16 drivers can cause crash
@@ -320,7 +229,7 @@ void Con_Print (char *txt)
 Con_DebugLog
 ================
 */
-void Con_DebugLog( /* char *file, */ char *fmt, ...)
+void Con_DebugLog(char *fmt, ...)
 {
     va_list argptr;
     static char data[MAXPRINTMSG];	// JPG 3.02 - changed from 1024 to MAXPRINTMSG
@@ -357,7 +266,7 @@ void Con_Printf (char *fmt, ...)
 
 // log all messages to file
 	if (con_debuglog)
-		Con_DebugLog( /* va("%s/qconsole.log",com_gamedir), */ "%s", msg);  // JPG - got rid of filename
+		Con_DebugLog("%s", msg);  // JPG - got rid of filename
 
 	if (!con_initialized)
 		return;

@@ -28,7 +28,6 @@ extern qboolean con_initialized;
 
 void Con_CheckResize (void);
 void Con_Init (void);
-void Con_Print (char *txt);
 void Con_Printf (char *fmt, ...);
 void Con_DPrintf (char *fmt, ...);
 void Con_SafePrintf (char *fmt, ...);
