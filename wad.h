@@ -8,7 +8,7 @@ of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 See the GNU General Public License for more details.
 
@@ -39,10 +39,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 typedef struct
 {
 	int			width, height;
-	byte		data[4];			// variably sized
+	byte		data[4];				// variably sized
 } qpic_t;
-
-
 
 typedef struct
 {
@@ -68,8 +66,4 @@ extern	byte		*wad_base;
 
 void	W_LoadWadFile (char *filename);
 void	W_CleanupName (char *in, char *out);
-lumpinfo_t	*W_GetLumpinfo (char *name);
-void	*W_GetLumpName (char *name);
-void	*W_GetLumpNum (int num);
-
-void SwapPic (qpic_t *pic);
+void	SwapPic (qpic_t *pic);
