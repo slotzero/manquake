@@ -1,4 +1,4 @@
-/* $Id: pr_cmds.c,v 1.6 2010/10/28 00:17:31 slotzero Exp $
+/* $Id: pr_cmds.c,v 1.7 2011/03/09 06:41:49 slotzero Exp $
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or
@@ -742,11 +742,9 @@ void PF_stuffcmd (void)
 	old = host_client;
 	host_client = &svs.clients[entnum-1];
 
-	// no reason to stuffcmd to an inactive client
-	if (!host_client->active)
-		return;
-
-	Host_ClientCommands ("%s", str);
+	// stuffcmd to an active client
+	if (host_client->active)
+		Host_ClientCommands ("%s", str);
 	host_client = old;
 }
 
