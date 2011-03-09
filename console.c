@@ -123,7 +123,7 @@ void Con_Init (void)
 Con_DebugLog
 ================
 */
-void Con_DebugLog(char *fmt, ...)
+void Con_DebugLog (char *fmt, ...)
 {
     va_list argptr;
     static char data[MAXPRINTMSG];
