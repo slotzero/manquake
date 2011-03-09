@@ -28,39 +28,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fcntl.h>
 #include "quakedef.h"
 
-#include <time.h> // JPG - needed for console log
-
-int 		con_linewidth;
-
-float		con_cursorspeed = 4;
+// JPG - needed for console log
+#include <time.h>
 
 // JPG - upped CON_TEXTSIZE from 16384 to 65536
 #define		CON_TEXTSIZE	65536
 
-qboolean 	con_forcedup;		// because no entities to refresh
-
-int			con_totallines;		// total lines in console scrollback
-int			con_backscroll;		// lines up from bottom to display
-int			con_current;		// where next message will be printed
-int			con_x;				// offset in current line for next print
 char		*con_text=0;
-
-#define	NUM_CON_TIMES 4
-float		con_times[NUM_CON_TIMES];	// realtime time the line was generated
-								// for transparent notify lines
-
-int			con_vislines;
+char		logfilename[128];
 
 qboolean	con_debuglog;
-
-#define		MAXCMDLINE	256
-extern	char	key_lines[32][MAXCMDLINE];
-extern	int		key_linepos;
-
-qboolean	con_initialized;
-
-char logfilename[128];	// JPG - support for different filenames
-
 
 /*
 ================
@@ -73,82 +50,6 @@ void Con_Clear_f (void)
 		memset (con_text, ' ', CON_TEXTSIZE);
 }
 
-
-/*
-================
-Con_ClearNotify
-================
-*/
-void Con_ClearNotify (void)
-{
-	int		i;
-
-	for (i=0 ; i<NUM_CON_TIMES ; i++)
-		con_times[i] = 0;
-}
-
-
-/*
-================
-Con_CheckResize
-
-If the line width has changed, reformat the buffer.
-================
-*/
-void Con_CheckResize (void)
-{
-	int		i, j, width, oldwidth, oldtotallines, numlines, numchars;
-	char	tbuf[CON_TEXTSIZE];
-
-	width = (0 >> 3) - 2;
-
-	if (width == con_linewidth)
-		return;
-
-	if (width < 1)			// video hasn't been initialized yet
-	{
-		width = 38;
-		con_linewidth = width;
-		con_totallines = CON_TEXTSIZE / con_linewidth;
-		memset (con_text, ' ', CON_TEXTSIZE);
-	}
-	else
-	{
-		oldwidth = con_linewidth;
-		con_linewidth = width;
-		oldtotallines = con_totallines;
-		con_totallines = CON_TEXTSIZE / con_linewidth;
-		numlines = oldtotallines;
-
-		if (con_totallines < numlines)
-			numlines = con_totallines;
-
-		numchars = oldwidth;
-
-		if (con_linewidth < numchars)
-			numchars = con_linewidth;
-
-		memcpy (tbuf, con_text, CON_TEXTSIZE);
-		memset (con_text, ' ', CON_TEXTSIZE);
-
-		for (i=0 ; i<numlines ; i++)
-		{
-			for (j=0 ; j<numchars ; j++)
-			{
-				con_text[(con_totallines - 1 - i) * con_linewidth + j] =
-						tbuf[((con_current - i + oldtotallines) %
-							  oldtotallines) * oldwidth + j];
-			}
-		}
-
-		Con_ClearNotify ();
-	}
-
-	con_backscroll = 0;
-	con_current = con_totallines - 1;
-}
-
-
 /*
 ================
 Con_Init
@@ -158,7 +59,6 @@ void Con_Init (void)
 {
 #define MAXGAMEDIRLEN	1000
 	char	temp[MAXGAMEDIRLEN+1];
-	// char	*t2 = "/qconsole.log"; // JPG - don't need this
 	char	*ch;	// JPG - added this
 	int		fd, n;	// JPG - added these
     time_t  ltime;		// JPG - for console log file
@@ -204,27 +104,21 @@ void Con_Init (void)
 		Con_Printf( "%s\n", ctime( &ltime ) );
 	}
 
+	// used by some mods
 	con_text = Hunk_AllocName (CON_TEXTSIZE, "context");
 	memset (con_text, ' ', CON_TEXTSIZE);
-	con_linewidth = -1;
-	Con_CheckResize ();
 
 	Con_Printf ("Console initialized.\n");
 
-//
-// register our commands
-//
+	// register our commands
 	Cmd_AddCommand ("clear", Con_Clear_f);
-	con_initialized = true;
 }
-
-#define DIGIT(x) ((x) >= '0' && (x) <= '9')
 
 // JPG - increased this from 4096 to 16384 and moved it up here
 // See http://www.inside3d.com/qip/q1/bugs.htm, NVidia 5.16 drivers can cause crash
 #define	MAXPRINTMSG	16384
 
-/* JPG - took *file out of the argument list and used logfilename instead
+/*
 ================
 Con_DebugLog
 ================
@@ -232,7 +126,7 @@ Con_DebugLog
 void Con_DebugLog(char *fmt, ...)
 {
     va_list argptr;
-    static char data[MAXPRINTMSG];	// JPG 3.02 - changed from 1024 to MAXPRINTMSG
+    static char data[MAXPRINTMSG];
     int fd;
 
     va_start(argptr, fmt);
@@ -242,7 +136,6 @@ void Con_DebugLog(char *fmt, ...)
     write(fd, data, strlen(data));
     close(fd);
 }
-
 
 /*
 ================
@@ -261,17 +154,13 @@ void Con_Printf (char *fmt, ...)
 	dpvsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 
-// also echo to debugging console
-	Sys_Printf ("%s", msg);	// also echo to debugging console
+	// also echo to debugging console
+	Sys_Printf ("%s", msg);
 
-// log all messages to file
+	// log all messages to file
 	if (con_debuglog)
-		Con_DebugLog("%s", msg);  // JPG - got rid of filename
-
-	if (!con_initialized)
-		return;
+		Con_DebugLog("%s", msg);
 }
-
 
 /*
 ================
@@ -285,8 +174,9 @@ void Con_DPrintf (char *fmt, ...)
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
 
+	// don't confuse non-developers with techie stuff...
 	if (!developer.value)
-		return;			// don't confuse non-developers with techie stuff...
+		return;
 
 	va_start (argptr,fmt);
 	dpvsnprintf (msg, sizeof(msg), fmt, argptr);
@@ -294,7 +184,6 @@ void Con_DPrintf (char *fmt, ...)
 
 	Con_Printf ("%s", msg);
 }
-
 
 /*
 ==================

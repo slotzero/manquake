@@ -21,15 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 // console
 //
-extern int con_totallines;
-extern int con_backscroll;
-extern qboolean con_forcedup;	// because no entities to refresh
-extern qboolean con_initialized;
 
-void Con_CheckResize (void);
+void Con_Clear_f (void);
 void Con_Init (void);
 void Con_Printf (char *fmt, ...);
 void Con_DPrintf (char *fmt, ...);
 void Con_SafePrintf (char *fmt, ...);
-void Con_Clear_f (void);
-void Con_ClearNotify (void);
