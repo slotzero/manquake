@@ -184,22 +184,3 @@ void Con_DPrintf (char *fmt, ...)
 
 	Con_Printf ("%s", msg);
 }
-
-/*
-==================
-Con_SafePrintf
-
-Okay to call even when the screen can't be updated
-==================
-*/
-void Con_SafePrintf (char *fmt, ...)
-{
-	va_list		argptr;
-	char		msg[1024];
-
-	va_start (argptr,fmt);
-	dpvsnprintf (msg, sizeof(msg), fmt, argptr);
-	va_end (argptr);
-
-	Con_Printf ("%s", msg);
-}

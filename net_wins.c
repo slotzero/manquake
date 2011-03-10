@@ -129,7 +129,7 @@ int WINS_Init (void)
 
 	if (hInst == NULL)
 	{
-		Con_SafePrintf ("Failed to load winsock.dll\n");
+		Con_Printf ("Failed to load winsock.dll\n");
 		winsock_lib_initialized = false;
 		return -1;
 	}
@@ -156,7 +156,7 @@ int WINS_Init (void)
 		!pgethostname || !pgethostbyname || !pgethostbyaddr ||
 		!pgetsockname)
 	{
-		Con_SafePrintf ("Couldn't GetProcAddress from winsock.dll\n");
+		Con_Printf ("Couldn't GetProcAddress from winsock.dll\n");
 		return -1;
 	}
 
@@ -171,7 +171,7 @@ int WINS_Init (void)
 
 		if (r)
 		{
-			Con_SafePrintf ("Winsock initialization failed.\n");
+			Con_Printf ("Winsock initialization failed.\n");
 			return -1;
 		}
 	}
