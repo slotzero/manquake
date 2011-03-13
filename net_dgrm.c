@@ -99,6 +99,10 @@ char *StrAddr (struct qsockaddr *addr)
 
 #ifdef BAN_TEST
 
+// old style banning
+unsigned long banAddr = 0x00000000;
+unsigned long banMask = 0xffffffff;
+
 // Slot Zero 3.50-1  Change client IP.  [3.40 and above]
 extern	cvar_t ip_visible;
 extern	cvar_t ip_hidden;
@@ -110,11 +114,14 @@ extern banlog_head;
 extern banlog_next;
 
 // runequake
+#define RUNEQUAKE
 #define AQ_ADMIN	128
 
 void NET_Ban_f (void)
 {
 	void	(*print) (char *fmt, ...);
+	char	addrStr [32];
+	char	maskStr [32];
 	eval_t	*qc;
 	int		a,b,c;
 
@@ -129,64 +136,104 @@ void NET_Ban_f (void)
 	}
 	else
 	{
-		qc = GetEdictFieldValue(host_client->edict, "aqflags"); // runequake
+#ifdef RUNEQUAKE
+		qc = GetEdictFieldValue(host_client->edict, "aqflags");
 		if (!(qc && (int)qc->_float & AQ_ADMIN) && (pr_global_struct->deathmatch && !host_client->privileged))
+#else
+		if (pr_global_struct->deathmatch && !host_client->privileged)
+#endif
 			return;
 		print = SV_ClientPrintf;
 	}
 
-	if (!banlog_size)
+	/*if (!banlog_size)
 	{
 		print("BAN logging not available\nRemove -nobanlog command line option\n");
 		return;
-	}
+	}*/
 
 	switch (Cmd_Argc ())
 	{
 		case 1:
-			BANLog_Read();
-			print("Banned IP addresses:\n\n");
-			BANLog_DumpTree(banlog_head, NULL);
-			print ("\n%i %s found\n", banlog_next, (banlog_next == 1) ? "entry" : "entries");
+			if (!banlog_size)
+			{
+				if (((struct in_addr *)&banAddr)->s_addr)
+				{
+					strcpy(addrStr, inet_ntoa(*(struct in_addr *)&banAddr));
+					strcpy(maskStr, inet_ntoa(*(struct in_addr *)&banMask));
+					print("Banning %s [%s]\n", addrStr, maskStr);
+				}
+				else
+					print("Banning not active\n");
+			}
+			else
+			{
+				BANLog_Read();
+				print("Banned IP addresses:\n\n");
+				BANLog_DumpTree(banlog_head, NULL);
+				print ("\n%i %s found\n", banlog_next, (banlog_next == 1) ? "entry" : "entries");
+			}
 			break;
 
 		case 2:
-			if (sscanf(Cmd_Argv(1), "%d.%d.%d", &a, &b, &c) == 3)
+			if (!banlog_size)
 			{
-				if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
-					print("ip address [%d.%d.%d.xxx] out of range\n", a, b, c);
+				if (strcasecmp(Cmd_Argv(1), "off") == 0)
+					banAddr = 0x00000000;
 				else
-				{
-					BANLog_Read();
-					BANLog_Add((a << 16) | (b << 8) | c, (print == SV_ClientPrintf) ? host_client->name : cl_name.string, true);
-				}
+					banAddr = inet_addr(Cmd_Argv(1));
+				banMask = 0xffffffff;
 			}
 			else
-				print("invalid ip address [%s]\n", Cmd_Argv(1));
-			break;
-
-		case 3:
-			if (strcasecmp(Cmd_Argv(2), "off") == 0)
 			{
 				if (sscanf(Cmd_Argv(1), "%d.%d.%d", &a, &b, &c) == 3)
 				{
 					if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
 						print("ip address [%d.%d.%d.xxx] out of range\n", a, b, c);
-					else
+						else
 					{
 						BANLog_Read();
-						BANLog_Remove((a << 16) | (b << 8) | c);
+						BANLog_Add((a << 16) | (b << 8) | c, (print == SV_ClientPrintf) ? host_client->name : cl_name.string, true);
 					}
 				}
 				else
 					print("invalid ip address [%s]\n", Cmd_Argv(1));
 			}
+			break;
+
+		case 3:
+			if (!banlog_size)
+			{
+				banAddr = inet_addr(Cmd_Argv(1));
+				banMask = inet_addr(Cmd_Argv(2));
+			}
 			else
+			{
+				if (strcasecmp(Cmd_Argv(2), "off") == 0)
+				{
+					if (sscanf(Cmd_Argv(1), "%d.%d.%d", &a, &b, &c) == 3)
+					{
+						if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255)
+							print("ip address [%d.%d.%d.xxx] out of range\n", a, b, c);
+						else
+						{
+							BANLog_Read();
+							BANLog_Remove((a << 16) | (b << 8) | c);
+						}
+					}
+					else
+						print("invalid ip address [%s]\n", Cmd_Argv(1));
+				}
+				else
 					print("usage: ban <ip address> [off]\n");
+			}
 			break;
 
 		default:
-			print("usage: ban <ip address> [off]\n");
+			if (!banlog_size)
+				print("BAN ip_address [mask]\n");
+			else
+				print("usage: ban <ip address> [off]\n");
 			break;
 	}
 }
@@ -1282,13 +1329,21 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 		char addrStr [32];
 		int a,b,c;
 
-		testAddr = ((struct sockaddr_in *)&clientaddr)->sin_addr.s_addr;
-		strcpy(addrStr, inet_ntoa(*(struct in_addr *)&testAddr));
-		//if ((testAddr & banMask) == banAddr)
-		if (sscanf(addrStr, "%d.%d.%d", &a, &b, &c) == 3)
+		if (!banlog_size)
 		{
-			if (BANLog_Identify((a << 16) | (b << 8) | c))
+			testAddr = ((struct sockaddr_in *)&clientaddr)->sin_addr.s_addr;
+			if ((testAddr & banMask) == banAddr)
 				return Datagram_Reject("You have been banned.\n", acceptsock, &clientaddr);
+		}
+		else
+		{
+			testAddr = ((struct sockaddr_in *)&clientaddr)->sin_addr.s_addr;
+			strcpy(addrStr, inet_ntoa(*(struct in_addr *)&testAddr));
+			if (sscanf(addrStr, "%d.%d.%d", &a, &b, &c) == 3)
+			{
+				if (BANLog_Identify((a << 16) | (b << 8) | c))
+					return Datagram_Reject("You have been banned.\n", acceptsock, &clientaddr);
+			}
 		}
 	}
 #endif
@@ -1341,9 +1396,9 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	if (mod != MOD_QSMACK)
 	{
 		if (pq_password.value && (len <= 18 || pq_password.value != MSG_ReadLong()))
-			return Datagram_Reject("Óåòöåò éó ðáóó÷ïòä ðòïôåãôåäŸ\nYou must use ProQuake v3.1 or above\n(http://planetquake.com/proquake) and set pq_password to the server password\n", acceptsock, &clientaddr);
+			return Datagram_Reject("Óåòöåò éó ðáóó÷ïòä ðòïôåãôåäŸ\nYou must use ProQuake v3.1 or above\n(http://www.proquake.com/) and set pq_password to the server password\n", acceptsock, &clientaddr);
 		if (pq_cheatfree && (mod != MOD_PROQUAKE || mod_version < 32))
-			return Datagram_Reject("Ôèéó éó á ãèåáô­æòåå óåòöåòŸ\nYou must use ProQuake v3.2 or above\n(http://planetquake.com/proquake)\n", acceptsock, &clientaddr);
+			return Datagram_Reject("Ôèéó éó á ãèåáô­æòåå óåòöåòŸ\nYou must use ProQuake v3.2 or above\n(http://www.proquake.com/)\n", acceptsock, &clientaddr);
 	}
 
 	// allocate a QSocket

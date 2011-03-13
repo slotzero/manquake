@@ -209,7 +209,7 @@ void SV_SendServerinfo (client_t *client)
 					  "\n   \01\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\02\03");
 	MSG_WriteString (&client->message,message);
 	MSG_WriteByte (&client->message, svc_print);
-	dpsnprintf (message, sizeof(message), "\02\n   \04ProQuake Server Version %4.2f\06"
+	dpsnprintf (message, sizeof(message), "\02\n   \04ManQuake Server Version %4.2f\06"
 					  "\n   \07\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\10\11", PROQUAKE_VERSION);
 	MSG_WriteString (&client->message,message);
 
