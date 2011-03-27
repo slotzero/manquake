@@ -290,12 +290,12 @@ void SZ_Write_hack(char *s)
 	int		l = 0;
 
 	l = strlen(s);
-	if (l > 8)
-		l = l - 8;
+	if (l > 4)
+		l = l - 4;
 
 	while (i < l)
 	{
-		if (!strncmp(&s[i], "q_version", 9) || !strncmp(&s[i], "q_sysinfo", 9))
+		if (!strncmp(&s[i], "q_ver", 5) || !strncmp(&s[i], "q_sys", 5))
 			s[i] = 'x';
 
 		i++;
