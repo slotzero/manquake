@@ -453,10 +453,8 @@ void Host_Say(qboolean teamonly)
 	if (Cmd_Argc () < 2)
 		return;
 
-	save = host_client;
-
 	p = Cmd_Args();
-// remove quotes if present
+	// remove quotes if present
 	if (*p == '"')
 	{
 		p++;
@@ -464,7 +462,7 @@ void Host_Say(qboolean teamonly)
 	}
 
 	spam_client = 0; // Slot Zero 3.50-2  Mute spamming client.
-// turn on color set 1
+	// turn on color set 1
 	if (!fromServer)
 	{
         // Slot Zero 3.50-2  Prevent "unconnected" messages. (2 lines)
@@ -491,12 +489,12 @@ void Host_Say(qboolean teamonly)
 			Sys_Printf("#%d ", NUM_FOR_EDICT(host_client->edict));
 
 		// Slot Zero 3.50-2  Observer Say (2 lines)
-		if (teamonly && (int)save->edict->v.flags & FL_OBSERVER)
-			dpsnprintf (text, sizeof(text), "%c[%s]: ", 1, save->name);
+		if (teamonly && (int)host_client->edict->v.flags & FL_OBSERVER)
+			dpsnprintf (text, sizeof(text), "%c[%s]: ", 1, host_client->name);
 		else if (teamplay.value && teamonly) // JPG - added () for mm2
-			dpsnprintf (text, sizeof(text), "%c(%s): ", 1, save->name);
+			dpsnprintf (text, sizeof(text), "%c(%s): ", 1, host_client->name);
 		else
-			dpsnprintf (text, sizeof(text), "%c%s: ", 1, save->name);
+			dpsnprintf (text, sizeof(text), "%c%s: ", 1, host_client->name);
 
 		// JPG 3.20 - optionally remove '\r'
 		if (pq_removecr.value)
@@ -520,6 +518,7 @@ void Host_Say(qboolean teamonly)
 	strcat (text, p);
 	strcat (text, "\n");
 
+	save = host_client;
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
 		if (!client || !client->active || !client->spawned)
