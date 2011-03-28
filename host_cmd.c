@@ -438,13 +438,12 @@ void Host_Say(qboolean teamonly)
 {
 	client_t *client;
 	client_t *save;
-	int		j;
-	char	*p;
-	unsigned char	text[64];
-	qboolean	fromServer = false;
-	qboolean	spam_client = false;
-	qboolean	host_client_obs = false;
-	qboolean	client_obs = false;
+	int j;
+	int host_client_obs, client_obs = 0;
+	char *p;
+	unsigned char text[64];
+	qboolean fromServer = false;
+	qboolean spam_client = false;
 
 	if (cmd_source == src_command)
 	{
