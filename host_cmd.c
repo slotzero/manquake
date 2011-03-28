@@ -439,10 +439,12 @@ void Host_Say(qboolean teamonly)
 	client_t *client;
 	client_t *save;
 	int		j;
-	int		spam_client; // Slot Zero 3.50-2  Added this.
 	char	*p;
 	unsigned char	text[64];
 	qboolean	fromServer = false;
+	qboolean	spam_client = false;
+	qboolean	host_client_obs = false;
+	qboolean	client_obs = false;
 
 	if (cmd_source == src_command)
 	{
@@ -461,7 +463,6 @@ void Host_Say(qboolean teamonly)
 		p[strlen(p)-1] = 0;
 	}
 
-	spam_client = 0; // Slot Zero 3.50-2  Mute spamming client.
 	// turn on color set 1
 	if (!fromServer)
 	{
@@ -474,11 +475,11 @@ void Host_Say(qboolean teamonly)
 			host_client->spam_time = sv.time - pq_spam_rate.value * pq_spam_grace.value;
 		host_client->spam_time += pq_spam_rate.value;
 		if (host_client->spam_time > sv.time)
-			spam_client = 1;
+			spam_client = true;
 
 		// JPG 3.00 - don't allow messages right after a colour/name change
 		if (pq_tempmute.value && sv.time - host_client->change_time < 1 && host_client->netconnection->mod != MOD_QSMACK)
-			spam_client = 1;
+			spam_client = true;
 
 		// Slot Zero 3.50-2  Mute spamming client. (2 lines)
 		if (pq_mute_spam_client.value && spam_client)
@@ -487,9 +488,11 @@ void Host_Say(qboolean teamonly)
 		// JPG 3.11 - feature request from Slot Zero
 		if (pq_showedict.value && !spam_client) // Slot Zero 3.50-2  Mute spamming client.
 			Sys_Printf("#%d ", NUM_FOR_EDICT(host_client->edict));
-
+#ifdef RUNEQUAKE
+		host_client_obs = (int)host_client->edict->v.flags & FL_OBSERVER;
+#endif
 		// Slot Zero 3.50-2  Observer Say (2 lines)
-		if (teamonly && (int)host_client->edict->v.flags & FL_OBSERVER)
+		if (teamonly && host_client_obs)
 			dpsnprintf (text, sizeof(text), "%c[%s]: ", 1, host_client->name);
 		else if (teamplay.value && teamonly) // JPG - added () for mm2
 			dpsnprintf (text, sizeof(text), "%c(%s): ", 1, host_client->name);
@@ -523,19 +526,33 @@ void Host_Say(qboolean teamonly)
 	{
 		if (!client || !client->active || !client->spawned)
 			continue;
+#ifdef RUNEQUAKE
+		client_obs = (int)client->edict->v.flags & FL_OBSERVER;
+		if (teamonly)
+		{
+			// allow observers to chat only with each other using say_team
+			if (host_client_obs && !client_obs)
+				continue;
 
-		if (teamplay.value && teamonly && client->edict->v.team != save->edict->v.team)
-			continue;
+			if (teamplay.value)
+			{
+				// prevent observers from seeing player chat messages and vice versa
+				if (host_client_obs != client_obs)
+					continue;
 
-		// Slot Zero 3.50-2  Mute spamming client. (2 lines)
-		if (spam_client && client != save)
-			continue;
-
-		// Slot Zero 3.50-2  Observer Say (3 lines)
-		if (teamonly && (int)save->edict->v.flags & FL_OBSERVER && !((int)client->edict->v.flags & FL_OBSERVER && (int)save->edict->v.flags & FL_OBSERVER))
-			continue;
+				// prevent chat messages whose team colors are different except when both are observers
+				if (client->edict->v.team != save->edict->v.team  && !(host_client_obs && client_obs))
+					continue;
+			}
+		}
 
 		if (!fromServer && ((int)client->edict->v.flags & FL_IGNORE_MUTE_CLIENT && (int)save->edict->v.flags & FL_MUTE_CLIENT))
+			continue;
+#else
+		if (teamplay.value && teamonly && client->edict->v.team != save->edict->v.team)
+			continue;
+#endif
+		if (spam_client && client != save)
 			continue;
 
 		host_client = client;

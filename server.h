@@ -203,6 +203,13 @@ typedef struct client_s
 #define	SPAWNFLAG_NOT_HARD			1024
 #define	SPAWNFLAG_NOT_DEATHMATCH	2048
 
+// build runequake compatible server
+#define RUNEQUAKE
+
+// runequake qc constants
+#define AQ_ADMIN	128
+
+
 //============================================================================
 
 extern	cvar_t	teamplay;

@@ -113,10 +113,6 @@ extern	cvar_t ip_hidden2;
 extern banlog_head;
 extern banlog_next;
 
-// runequake
-#define RUNEQUAKE
-#define AQ_ADMIN	128
-
 void NET_Ban_f (void)
 {
 	void	(*print) (char *fmt, ...);
