@@ -297,7 +297,7 @@ char *PR_ValueString (etype_t type, eval_t *val)
 		dpsnprintf (line, sizeof(line), "%s", pr_strings + val->string);
 		break;
 	case ev_entity:
-		dpsnprintf (line, sizeof(line), "entity %i", NUM_FOR_EDICT(PROG_TO_EDICT(val->edict)) );
+		dpsnprintf (line, sizeof(line), "entity %i", NUM_FOR_EDICT_SAFE(PROG_TO_EDICT(val->edict)) );
 		break;
 	case ev_function:
 		f = pr_functions + val->function;
@@ -924,6 +924,19 @@ edict_t *EDICT_NUM(int n)
 	if (n < 0 || n >= sv.max_edicts)
 		Sys_Error ("EDICT_NUM: bad number %i", n);
 	return (edict_t *)((byte *)sv.edicts+ (n)*pr_edict_size);
+}
+
+
+int NUM_FOR_EDICT_SAFE(edict_t *e)
+{
+	int		b;
+
+	b = (byte *)e - (byte *)sv.edicts;
+	b = b / pr_edict_size;
+
+	if (b < 0 || b >= sv.num_edicts)
+		Con_Printf ("bad pointer: ");
+	return b;
 }
 
 
