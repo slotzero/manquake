@@ -14,3 +14,6 @@ gas2masm/
 kit/
 scitech/
 
+# perl script
+
+find.log
