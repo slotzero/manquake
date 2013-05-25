@@ -1,1 +1,16 @@
+# linux
+
 release-i386/
+
+# windows
+
+Release/
+WinQuake.ncb
+WinQuake.plg
+data/
+docs/
+dxsdk/
+gas2masm/
+kit/
+scitech/
+
