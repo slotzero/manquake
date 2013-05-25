@@ -292,7 +292,7 @@ void PF_centerprint (void)
 	if (entnum < 1 || entnum > svs.maxclients)
 	{
 		// appended '%s' to make debugging easier
-		Con_Printf ("tried to centerprint to a non-client: '%s'\n");
+		Con_Printf ("tried to centerprint to a non-client: '%s'\n", s);
 		return;
 	}
 
