@@ -1471,9 +1471,17 @@ void SV_SpawnServer (char *server)
 	sv.worldmodel = Mod_ForName (sv.modelname, false);
 	if (!sv.worldmodel)
 	{
-		Con_Printf ("Couldn't spawn server %s\n", sv.modelname);
-		sv.active = false;
-		return;
+		// Default to start map when map can't be found. [XXX Maybe use cvar?]
+		strcpy (sv.name, "start");
+		dpsnprintf (sv.modelname, sizeof(sv.modelname), "maps/%s.bsp", sv.name);
+		sv.worldmodel = Mod_ForName (sv.modelname, false);
+
+		if (!sv.worldmodel)
+		{
+			Con_Printf ("Couldn't spawn server %s\n", sv.modelname);
+			sv.active = false;
+			return;
+		}
 	}
 	sv.models[1] = sv.worldmodel;
 
