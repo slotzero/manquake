@@ -740,7 +740,13 @@ void SV_WriteEntitiesToClient (edict_t	*clent, sizebuf_t *msg, qboolean nomap)
 	eval_t  *val;
 
 // find the client's PVS
-	VectorAdd (clent->v.origin, clent->v.view_ofs, org);
+	if ((int)clent->v.flags & FL_USE_VIEWPORT_ORIGIN)
+	{
+		val = GetEdictFieldValue(clent, "vp_origin");
+		VectorAdd (val->vector, clent->v.view_ofs, org);
+	}
+	else
+		VectorAdd (clent->v.origin, clent->v.view_ofs, org);
 	pvs = SV_FatPVS (org);
 
 // send over all entities (excpet the client) that touch the pvs

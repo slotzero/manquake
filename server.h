@@ -186,6 +186,7 @@ typedef struct client_s
 #define FL_OBSERVER				16384
 #define FL_IGNORE_MUTE_CLIENT	32768
 #define FL_MUTE_CLIENT			65536
+#define FL_USE_VIEWPORT_ORIGIN	131072
 
 // entity effects
 
