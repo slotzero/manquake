@@ -695,12 +695,19 @@ qboolean SV_InvisibleToClient(edict_t *viewer, edict_t *seen)
 	trace_t tr;
 	vec3_t start;
 	vec3_t end;
+	eval_t  *val;
 
 //	if (seen->v->solid == SOLID_BSP)
 //		return false;	//bsp ents are never culled this way
 
 	//stage 1: check against their origin
-	VectorAdd(viewer->v.origin, viewer->v.view_ofs, start);
+	if ((int)viewer->v.flags & FL_USE_VIEWPORT_ORIGIN)
+	{
+		val = GetEdictFieldValue(viewer, "vp_origin");
+		VectorAdd(val->vector, viewer->v.view_ofs, start);
+	}
+	else
+		VectorAdd(viewer->v.origin, viewer->v.view_ofs, start);
 	tr.fraction = 1;
 
 	if (!Q1BSP_Trace (sv.worldmodel, 1, 0, start, seen->v.origin, vec3_origin, vec3_origin, &tr))
