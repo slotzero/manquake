@@ -695,16 +695,18 @@ qboolean SV_InvisibleToClient(edict_t *viewer, edict_t *seen)
 	trace_t tr;
 	vec3_t start;
 	vec3_t end;
+	edict_t *ent;
 	eval_t  *val;
 
 //	if (seen->v->solid == SOLID_BSP)
 //		return false;	//bsp ents are never culled this way
 
 	//stage 1: check against their origin
-	if ((int)viewer->v.flags & FL_USE_VIEWPORT_ORIGIN)
+	val = GetEdictFieldValue(viewer, "viewentity");
+	if (val->edict)
 	{
-		val = GetEdictFieldValue(viewer, "vp_origin");
-		VectorAdd(val->vector, viewer->v.view_ofs, start);
+		ent = PROG_TO_EDICT(val->edict);
+		VectorAdd(ent->v.origin, viewer->v.view_ofs, start);
 	}
 	else
 		VectorAdd(viewer->v.origin, viewer->v.view_ofs, start);
@@ -747,10 +749,11 @@ void SV_WriteEntitiesToClient (edict_t	*clent, sizebuf_t *msg, qboolean nomap)
 	eval_t  *val;
 
 // find the client's PVS
-	if ((int)clent->v.flags & FL_USE_VIEWPORT_ORIGIN)
+	val = GetEdictFieldValue(clent, "viewentity");
+	if (val->edict)
 	{
-		val = GetEdictFieldValue(clent, "vp_origin");
-		VectorAdd (val->vector, clent->v.view_ofs, org);
+		ent = PROG_TO_EDICT(val->edict);
+		VectorAdd (ent->v.origin, clent->v.view_ofs, org);
 	}
 	else
 		VectorAdd (clent->v.origin, clent->v.view_ofs, org);
