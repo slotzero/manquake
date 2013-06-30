@@ -702,13 +702,15 @@ qboolean SV_InvisibleToClient(edict_t *viewer, edict_t *seen)
 //		return false;	//bsp ents are never culled this way
 
 	//stage 1: check against their origin
+#ifdef RUNEQUAKE
 	val = GetEdictFieldValue(viewer, "viewentity");
-	if (val->edict)
+	if (val && val->edict)
 	{
 		ent = PROG_TO_EDICT(val->edict);
 		VectorAdd(ent->v.origin, viewer->v.view_ofs, start);
 	}
 	else
+#endif
 		VectorAdd(viewer->v.origin, viewer->v.view_ofs, start);
 	tr.fraction = 1;
 
@@ -749,13 +751,15 @@ void SV_WriteEntitiesToClient (edict_t	*clent, sizebuf_t *msg, qboolean nomap)
 	eval_t  *val;
 
 // find the client's PVS
+#ifdef RUNEQUAKE
 	val = GetEdictFieldValue(clent, "viewentity");
-	if (val->edict)
+	if (val && val->edict)
 	{
 		ent = PROG_TO_EDICT(val->edict);
 		VectorAdd (ent->v.origin, clent->v.view_ofs, org);
 	}
 	else
+#endif
 		VectorAdd (clent->v.origin, clent->v.view_ofs, org);
 	pvs = SV_FatPVS (org);
 

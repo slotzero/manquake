@@ -489,6 +489,8 @@ void Host_Say(qboolean teamonly)
 			Sys_Printf("#%d ", NUM_FOR_EDICT(host_client->edict));
 #ifdef RUNEQUAKE
 		host_client_obs = (int)host_client->edict->v.flags & FL_OBSERVER;
+#else
+		host_client_obs = 0;
 #endif
 		// Slot Zero 3.50-2  Observer Say (2 lines)
 		if (teamonly && host_client_obs)
