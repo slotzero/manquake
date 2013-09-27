@@ -707,7 +707,7 @@ qboolean SV_InvisibleToClient(edict_t *viewer, edict_t *seen)
 	if (val && val->edict)
 	{
 		ent = PROG_TO_EDICT(val->edict);
-		VectorAdd(ent->v.origin, viewer->v.view_ofs, start);
+		VectorAdd(ent->v.origin, ent->v.view_ofs, start);
 	}
 	else
 #endif
@@ -756,7 +756,7 @@ void SV_WriteEntitiesToClient (edict_t	*clent, sizebuf_t *msg, qboolean nomap)
 	if (val && val->edict)
 	{
 		ent = PROG_TO_EDICT(val->edict);
-		VectorAdd (ent->v.origin, clent->v.view_ofs, org);
+		VectorAdd (ent->v.origin, ent->v.view_ofs, org);
 	}
 	else
 #endif
