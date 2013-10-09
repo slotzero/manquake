@@ -29,6 +29,7 @@ line of sight checks trace->crosscontent, but bullets don't
 
 */
 
+cvar_t	sv_noclip = {"sv_noclip", "1"};
 
 typedef struct
 {
@@ -771,6 +772,15 @@ void SV_ClipToLinks ( areanode_t *node, moveclip_t *clip )
 				continue;	// don't clip against own missiles
 			if (PROG_TO_EDICT(clip->passedict->v.owner) == touch)
 				continue;	// don't clip against owner
+			if (sv_noclip.value)
+			{
+				if (sv_noclip.value == 1) // debug: any edict except world
+					if (clip->passedict->v.owner && clip->passedict->v.owner == touch->v.owner)
+						continue;
+				if (sv_noclip.value == 2) // debug: owner has to be client
+					if (clip->passedict->v.owner && (int)PROG_TO_EDICT(clip->passedict->v.owner)->v.flags & FL_CLIENT && clip->passedict->v.owner == touch->v.owner)
+						continue;
+			}
 		}
 
 		if ((int)touch->v.flags & FL_MONSTER)
