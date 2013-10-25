@@ -774,12 +774,9 @@ void SV_ClipToLinks ( areanode_t *node, moveclip_t *clip )
 				continue;	// don't clip against owner
 			if (sv_noclip.value)
 			{
-				if (sv_noclip.value == 1) // debug: any edict except world
-					if (clip->passedict->v.owner && clip->passedict->v.owner == touch->v.owner)
-						continue;
-				if (sv_noclip.value == 2) // debug: owner has to be client
-					if (clip->passedict->v.owner && (int)PROG_TO_EDICT(clip->passedict->v.owner)->v.flags & FL_CLIENT && clip->passedict->v.owner == touch->v.owner)
-						continue;
+				// allow edicts with the same .owner to noclip, except if the owner is world or the edicts are the same classname
+				if (clip->passedict->v.owner && clip->passedict->v.owner == touch->v.owner && clip->passedict->v.classname != touch->v.classname)
+					continue;
 			}
 		}
 
