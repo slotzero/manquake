@@ -14,7 +14,7 @@ BUILD_RELEASE_DIR=release-i386
 EGCS=gcc
 CC=$(EGCS)
 
-BASE_CFLAGS=-Dstricmp=strcasecmp
+BASE_CFLAGS=-m32 -Dstricmp=strcasecmp
 RELEASE_CFLAGS=$(BASE_CFLAGS) -g -O6 -ffast-math -funroll-loops -fexpensive-optimizations
 DEBUG_CFLAGS=$(BASE_CFLAGS) -g
 LDFLAGS=-lm -ldl
