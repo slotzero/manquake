@@ -295,7 +295,6 @@ command from the console.  Active clients are kicked off.
 */
 void Host_Map_f (void)
 {
-	int		i;
 	char	name[MAX_QPATH];
 
 	if (cmd_source != src_command)
@@ -1085,7 +1084,7 @@ Host_Give_f
 void Host_Give_f (void)
 {
 	char	*t;
-	int		v, w;
+	int		v;
 	eval_t	*val;
 
 	if (cmd_source == src_command)

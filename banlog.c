@@ -122,7 +122,6 @@ void BANLog_WriteLog (void)
 {
 	FILE *f;
 	int i;
-	banlog_t temp;
 
 	if (!banlog_size)
 		return;

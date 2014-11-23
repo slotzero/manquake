@@ -57,7 +57,6 @@ static unsigned long myAddr;
 
 int UDP_Init (void)
 {
-	struct hostent *local;
 	char	buff[MAXHOSTNAMELEN];
 	struct qsockaddr addr;
 	char *colon;

@@ -475,7 +475,7 @@ void PF_ambientsound (void)
 	char		*samp;
 	float		*pos;
 	float 		vol, attenuation;
-	int			i, soundnum;
+	int			soundnum;
 
 	pos = G_VECTOR (OFS_PARM0);
 	samp = G_STRING(OFS_PARM1);

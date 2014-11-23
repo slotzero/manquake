@@ -696,7 +696,6 @@ static PollProcedure *pollProcedureList = NULL;
 void NET_Poll(void)
 {
 	PollProcedure *pp;
-	qboolean	useModem;
 
 	if (!configRestored)
 		configRestored = true;

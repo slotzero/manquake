@@ -280,7 +280,6 @@ void SV_ConnectClient (int clientnum)
 	int				edictnum;
 	struct qsocket_s *netconnection;
 	int				i;
-	float			spawn_parms[NUM_SPAWN_PARMS];
 
 	client = svs.clients + clientnum;
 

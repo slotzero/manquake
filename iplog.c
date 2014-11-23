@@ -99,7 +99,6 @@ void IPLog_WriteLog (void)
 {
 	FILE *f;
 	int i;
-	iplog_t temp;
 
 	if (!iplog_size)
 		return;
