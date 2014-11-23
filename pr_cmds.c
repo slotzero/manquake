@@ -1,4 +1,4 @@
-/* $Id: pr_cmds.c,v 1.7 2011/03/09 06:41:49 slotzero Exp $
+/*
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or

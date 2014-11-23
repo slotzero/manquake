@@ -1,4 +1,4 @@
-// $Id: security.h,v 1.1 2008/02/03 08:28:01 slotzero Exp $
+//
 // security.h
 //
 // Created by JPG for ProQuake v3.20

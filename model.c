@@ -1,4 +1,4 @@
-/* $Id: model.c,v 1.10 2010/10/28 00:17:31 slotzero Exp $
+/*
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or

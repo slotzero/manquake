@@ -1,4 +1,4 @@
-/* $Id: asm_i386.h,v 1.2 2008/02/15 05:34:15 slotzero Exp $
+/*
 Copyright (C) 1996-1997 Id Software, Inc.
 
 This program is free software; you can redistribute it and/or

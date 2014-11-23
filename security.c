@@ -1,4 +1,4 @@
-// $Id: security.c,v 1.2 2008/07/16 00:52:28 slotzero Exp $
+//
 // security.c
 //
 // Created by JPG for ProQuake v3.20

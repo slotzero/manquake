@@ -1,4 +1,4 @@
-// $Id: iplog.c,v 1.4 2011/02/27 04:01:26 slotzero Exp $
+//
 // iplog.c
 //
 // JPG 1.05
