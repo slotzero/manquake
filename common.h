@@ -146,6 +146,13 @@ void COM_FileBase (char *in, char *out);
 // does a varargs printf into a temp buffer
 char	*va(char *format, ...);
 
+// dpsnprintf and dpvsnprintf
+// return the number of printed characters, excluding the final '\0'
+// or return -1 if the buffer isn't big enough to contain the entire string.
+// buffer is ALWAYS null-terminated
+extern int dpsnprintf (char *buffer, size_t buffersize, const char *format, ...);
+extern int dpvsnprintf (char *buffer, size_t buffersize, const char *format, va_list args);
+
 
 //============================================================================
 

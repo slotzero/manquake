@@ -441,7 +441,7 @@ void Host_Say(qboolean teamonly)
 	int j;
 	int host_client_obs, client_obs = 0;
 	char *p;
-	unsigned char text[64];
+	char text[64];
 	qboolean fromServer = false;
 	qboolean spam_client = false;
 
