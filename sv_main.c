@@ -797,7 +797,7 @@ void SV_WriteEntitiesToClient (edict_t	*clent, sizebuf_t *msg, qboolean nomap)
 				continue;
 
 			// Slot Zero 3.50-2  Prevent players from using wall hack.
-			if (e <= svs.maxclients && pq_wallhackprotect.value)
+			if (e <= svs.maxclients && pq_wallhackprotect.value && !(pq_wallhackprotect.value == 2 && (int)ent->v.items & (IT_QUAD | IT_INVULNERABILITY)))
 			{
 				if(SV_InvisibleToClient(clent, ent))
 					continue;
