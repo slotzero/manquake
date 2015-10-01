@@ -1154,10 +1154,41 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	MSG_BeginReading ();
 	control = BigLong(*((int *)net_message.data));
 	MSG_ReadLong();
+
 	if (control == -1)
 		return NULL;
+
 	if ((control & (~NETFLAG_LENGTH_MASK)) !=  NETFLAG_CTL)
-		return NULL;
+	{
+		if (single_port_server)
+		{
+			/* ProQuake 3.4 (and up) clients close their request socket
+			** and make a new socket for the session.  This means we
+			** connected back to the wrong socket when accepting the
+			** connection.  So we look for a "bogus" request packet
+			** from that client on a different port, and re-connect
+			** back to that port instead.
+			**
+			** Code from Yugo2Heck (linux) and r00k (windows)
+			*/
+			for (s = net_activeSockets; s; s = s->next)
+			{
+				if (s->driver != net_driverlevel || !s->net_wait)
+					continue;
+
+				ret = dfunc.AddrCompare(&clientaddr, &s->addr);
+				if (ret == 1)
+				{
+					//same client, different port: reconnect back
+					dfunc.Connect (s->socket, &clientaddr);
+					return NULL;
+				}
+			}
+		}
+		else
+			return NULL;
+	}
+
 	if ((control & NETFLAG_LENGTH_MASK) != len)
 		return NULL;
 
@@ -1403,7 +1434,19 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 		return Datagram_Reject("Server is full.\n", acceptsock, &clientaddr);
 
 	// allocate a network socket
-	newsock = dfunc.OpenSocket(0);
+	if (single_port_server)
+	#ifndef _WIN32
+	{
+		struct qsockaddr oldaddr;
+		dfunc.GetSocketAddr(acceptsock, &oldaddr);
+		newsock = dfunc.OpenSocket(dfunc.GetSocketPort(&oldaddr));
+	}
+	#else
+		newsock = dfunc.OpenSocket(sock->client_pool);
+	#endif
+	else
+		newsock = dfunc.OpenSocket(0);
+
 	if (newsock == -1)
 	{
 		NET_FreeQSocket(sock);
@@ -1441,14 +1484,18 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	sock->client_port = dfunc.GetSocketPort(&newaddr);
 	MSG_WriteLong(&net_message, sock->client_port);
 	MSG_WriteByte(&net_message, MOD_PROQUAKE); // JPG - added this
-	MSG_WriteByte(&net_message, 10 * PROQUAKE_VERSION);	// JPG 3.00
 	if (pq_cheatfree)
 	{
+		MSG_WriteByte(&net_message, 35); // XXX client crashes when < 35
 		MSG_WriteByte(&net_message, PQF_CHEATFREE);
 		MSG_WriteLong(&net_message, _lrotl(net_seed, 17));
 	}
 	else
+	{
+		MSG_WriteByte(&net_message, 10 * PROQUAKE_VERSION);	// JPG 3.00
 		MSG_WriteByte(&net_message, 0);
+	}
+
 	*((int *)net_message.data) = BigLong(NETFLAG_CTL | (net_message.cursize & NETFLAG_LENGTH_MASK));
 	dfunc.Write (acceptsock, net_message.data, net_message.cursize, &clientaddr);
 	SZ_Clear(&net_message);

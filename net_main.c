@@ -29,6 +29,7 @@ qboolean	tcpipAvailable = false;
 
 int			net_hostport;
 int			DEFAULTnet_hostport = 26000;
+int			DEFAULTnet_clientport = 2600; // single port server
 
 char		my_tcpip_address[NET_NAMELEN];
 
@@ -91,6 +92,11 @@ unsigned _lrotr (unsigned x, int s)
 	s &= 31;
 	return (x >> s) | (x << (32 - s));
 }
+
+// make -ssp uncessary in linux
+qboolean	single_port_server = true;
+#else
+qboolean	single_port_server = false;
 #endif
 
 
@@ -585,13 +591,21 @@ void NET_Init (void)
 	int			controlSocket;
 	qsocket_t	*s;
 
+	if (i = COM_CheckParm ("-ssp"))
+	{
+		single_port_server = true;
+
+		if (i < com_argc-1 && atoi(com_argv[i+1]))
+			DEFAULTnet_clientport = atoi (com_argv[i+1]);
+	}
+
 	i = COM_CheckParm ("-port");
 	if (!i)
 		i = COM_CheckParm ("-udpport");
 
 	if (i)
 	{
-		if (i < com_argc-1)
+		if (i < com_argc-1 && atoi(com_argv[i+1]))
 			DEFAULTnet_hostport = atoi (com_argv[i+1]);
 		else
 			Sys_Error ("NET_Init: you must specify a number after -port");
@@ -610,6 +624,7 @@ void NET_Init (void)
 		s->next = net_freeSockets;
 		net_freeSockets = s;
 		s->disconnected = true;
+		s->client_pool = DEFAULTnet_clientport + i;	// single port server
 	}
 
 	// allocate space for network message buffer

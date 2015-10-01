@@ -130,6 +130,8 @@ struct qsockaddr
 extern sizebuf_t	rcon_message;
 extern qboolean		rcon_active;
 
+extern qboolean		single_port_server;
+
 typedef struct qsocket_s
 {
 	struct qsocket_s	*next;
@@ -167,6 +169,7 @@ typedef struct qsocket_s
 	int				client_port;
 	qboolean		net_wait;		// JPG 3.40 - wait for the client to send a packet to the private port
 	byte			encrypt;		// JPG 3.50
+	int				client_pool;	// single port server
 } qsocket_t;
 
 extern qsocket_t	*net_activeSockets;

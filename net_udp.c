@@ -176,6 +176,12 @@ int UDP_OpenSocket (int port)
 	if (ioctl (newsocket, FIONBIO, (char *)&_true) == -1)
 		goto ErrorReturn;
 
+	if (single_port_server && port)
+	{
+		int fReuse = 1;
+		setsockopt(newsocket, SOL_SOCKET, SO_REUSEADDR, &fReuse, sizeof(fReuse));
+	}
+
 	memset(&address, 0, sizeof(struct sockaddr_in)); // JPG 1.05 - fix by JDC
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = myAddr; // JPG - changed INADDR_ANY to myAddr
@@ -261,7 +267,10 @@ static int PartialIPAddress (char *in, struct qsockaddr *hostaddr)
 
 int UDP_Connect (int socket, struct qsockaddr *addr)
 {
-	return 0;
+	if (single_port_server)
+		return connect(socket, (struct sockaddr *)addr, sizeof(*addr));
+	else
+		return 0;
 }
 
 //=============================================================================
