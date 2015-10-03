@@ -30,6 +30,7 @@ qboolean	tcpipAvailable = false;
 int			net_hostport;
 int			DEFAULTnet_hostport = 26000;
 int			DEFAULTnet_clientport = 2600; // single port server
+qboolean	single_port_server = false;
 
 char		my_tcpip_address[NET_NAMELEN];
 
@@ -92,11 +93,6 @@ unsigned _lrotr (unsigned x, int s)
 	s &= 31;
 	return (x >> s) | (x << (32 - s));
 }
-
-// make -ssp uncessary in linux
-qboolean	single_port_server = true;
-#else
-qboolean	single_port_server = false;
 #endif
 
 
@@ -624,7 +620,9 @@ void NET_Init (void)
 		s->next = net_freeSockets;
 		net_freeSockets = s;
 		s->disconnected = true;
-		s->client_pool = DEFAULTnet_clientport + i;	// single port server
+#ifdef _WIN32
+		s->client_port	= DEFAULTnet_clientport + i; // single port server
+#endif
 	}
 
 	// allocate space for network message buffer

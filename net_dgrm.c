@@ -1423,9 +1423,9 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	if (mod != MOD_QSMACK)
 	{
 		if (pq_password.value && (len <= 18 || pq_password.value != MSG_ReadLong()))
-			return Datagram_Reject("Óåòöåò éó ðáóó÷ïòä ðòïôåãôåäŸ\nYou must use ProQuake v3.1 or above\n(http://www.proquake.com/) and set pq_password to the server password\n", acceptsock, &clientaddr);
+			return Datagram_Reject("Óåòöåò éó ðáóó÷ïòä ðòïôåãôåäŸ\nYou must use ProQuake v3.1 or above\n(http://proquake.crmod.com/) and set pq_password to the server password\n", acceptsock, &clientaddr);
 		if (pq_cheatfree && (mod != MOD_PROQUAKE || mod_version < 32))
-			return Datagram_Reject("Ôèéó éó á ãèåáô­æòåå óåòöåòŸ\nYou must use ProQuake v3.2 or above\n(http://www.proquake.com/)\n", acceptsock, &clientaddr);
+			return Datagram_Reject("Ôèéó éó á ãèåáô­æòåå óåòöåòŸ\nYou must use ProQuake v3.2 or above\n(http://proquake.crmod.com/)\n", acceptsock, &clientaddr);
 	}
 
 	// allocate a QSocket
@@ -1442,7 +1442,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 		newsock = dfunc.OpenSocket(dfunc.GetSocketPort(&oldaddr));
 	}
 	#else
-		newsock = dfunc.OpenSocket(sock->client_pool);
+		newsock = dfunc.OpenSocket(sock->client_port);
 	#endif
 	else
 		newsock = dfunc.OpenSocket(0);
