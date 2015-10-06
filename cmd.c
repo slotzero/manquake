@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void Cmd_ForwardToServer (void);
 
 #define	MAX_ALIAS_NAME	32
+#define	CMD_SIZE_TEXT	16384
 
 typedef struct cmdalias_s
 {
@@ -70,7 +71,7 @@ Cbuf_Init
 */
 void Cbuf_Init (void)
 {
-	SZ_Alloc (&cmd_text, 8192);		// space for commands and script files
+	SZ_Alloc (&cmd_text, CMD_SIZE_TEXT); // space for commands and script files
 }
 
 
@@ -143,7 +144,7 @@ void Cbuf_Execute (void)
 {
 	int		i;
 	char	*text;
-	char	line[1024];
+	char	line[CMD_SIZE_TEXT];
 	int		quotes;
 	int		notcmd;	// JPG - so that the ENTIRE line can be forwarded
 
