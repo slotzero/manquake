@@ -692,7 +692,7 @@ void Host_Init (quakeparms_t *parms)
 
 	R_InitTextures ();		// needed even for dedicated servers
 
-	Cbuf_AddText ("exec config.cfg;exec autoexec.cfg;stuffcmds;startdemos\n");
+	Cbuf_InsertText ("exec autoexec.cfg;exec server.cfg;stuffcmds;startdemos\n");
 
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
