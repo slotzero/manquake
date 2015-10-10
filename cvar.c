@@ -51,7 +51,13 @@ float	Cvar_VariableValue (char *var_name)
 
 	var = Cvar_FindVar (var_name);
 	if (!var)
-		return 0;
+	{
+		// hack to return port in PF_cvar()
+		if (!strcmp (var_name, "port"))
+			return net_hostport;
+		else
+			return 0;
+	}
 	return atof (var->string);
 }
 
