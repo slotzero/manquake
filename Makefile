@@ -1,201 +1,69 @@
+# Makefile for ManQuake
 #
-# Quake Makefile for Linux 2.0
-#
-# Aug '98 by Zoid <zoid@idsoftware.com>
-#
-# ELF only
-#
+# https://github.com/slotzero/manquake
 
-MOUNT_DIR=.
+# executable
+BIN_FILE	:= manquake
 
-BUILD_DEBUG_DIR=debug-i386
-BUILD_RELEASE_DIR=release-i386
+# directories
+DEBUG_DIR	:= debug
+RELEASE_DIR	:= release
+OBJS_DIR	:= objs
+BIN_DIR		:= bin
 
-EGCS=gcc
-CC=$(EGCS)
+# compiler flags
+CC		:= gcc
+CFLAGS		:= -m32 -Dstricmp=strcasecmp -g -O6 -ffast-math -funroll-loops -fexpensive-optimizations
+DEBUG_CFLAGS	:= -m32 -Dstricmp=strcasecmp -g
+LDFLAGS		:= -lm -ldl
+ASFLAGS		:= -DELF -x assembler-with-cpp
 
-BASE_CFLAGS=-m32 -Dstricmp=strcasecmp
-RELEASE_CFLAGS=$(BASE_CFLAGS) -g -O6 -ffast-math -funroll-loops -fexpensive-optimizations
-DEBUG_CFLAGS=$(BASE_CFLAGS) -g
-LDFLAGS=-lm -ldl
+# target
+TARGET		:= $(BUILD_DIR)/$(BIN_DIR)/$(BIN_FILE)
 
-DO_CC=$(CC) $(CFLAGS) -o $@ -c $<
-DO_DEBUG_CC=$(CC) $(DEBUG_CFLAGS) -o $@ -c $<
-DO_AS=$(CC) $(CFLAGS) -DELF -x assembler-with-cpp -o $@ -c $<
+# object files
+OBJS		:= $(addprefix $(BUILD_DIR)/$(OBJS_DIR)/, \
+		   cmd.o common.o console.o crc.o cvar.o host.o host_cmd.o iplog.o banlog.o mathlib.o \
+		   model.o net_dgrm.o net_loop.o net_main.o net_udp.o net_bsd.o pr_cmds.o pr_edict.o \
+		   pr_exec.o r_main.o security.o sv_main.o sv_phys.o sv_move.o sv_user.o zone.o wad.o \
+		   world.o sys_linux.o math.o worlda.o sys_a.o)
 
-#############################################################################
-# SETUP AND BUILD
-#############################################################################
+.PHONY: debug release build_debug build_release all
 
-TARGETS=$(BUILDDIR)/bin/squake
+build_debug debug:
+	@-mkdir -p $(DEBUG_DIR)/$(BIN_DIR) $(DEBUG_DIR)/$(OBJS_DIR)
+	$(MAKE) $(DEBUG_DIR)/$(BIN_DIR)/$(BIN_FILE) CFLAGS:="$(DEBUG_CFLAGS)" BUILD_DIR:=$(DEBUG_DIR)
+	@echo $@ complete
 
-build_debug:
-	@-mkdir $(BUILD_DEBUG_DIR) \
-		$(BUILD_DEBUG_DIR)/bin \
-		$(BUILD_DEBUG_DIR)/squake
-	$(MAKE) targets BUILDDIR=$(BUILD_DEBUG_DIR) CFLAGS="$(DEBUG_CFLAGS)"
-
-build_release:
-	@-mkdir $(BUILD_RELEASE_DIR) \
-		$(BUILD_RELEASE_DIR)/bin \
-		$(BUILD_RELEASE_DIR)/squake
-	$(MAKE) targets BUILDDIR=$(BUILD_RELEASE_DIR) CFLAGS="$(RELEASE_CFLAGS)"
-	strip $(BUILD_RELEASE_DIR)/bin/*
+build_release release:
+	@-mkdir -p $(RELEASE_DIR)/$(BIN_DIR) $(RELEASE_DIR)/$(OBJS_DIR)
+	$(MAKE) $(RELEASE_DIR)/$(BIN_DIR)/$(BIN_FILE) BUILD_DIR:=$(RELEASE_DIR)
+	strip $(RELEASE_DIR)/$(BIN_DIR)/$(BIN_FILE)
+	@echo $@ complete
 
 all: build_debug build_release
 
-targets: $(TARGETS)
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
-#############################################################################
-# SVGALIB Quake
-#############################################################################
+$(BUILD_DIR)/$(OBJS_DIR)/%.o: %.s
+	$(CC) $(CFLAGS) $(ASFLAGS) -c $< -o $@
 
-SQUAKE_OBJS = \
-	$(BUILDDIR)/squake/cmd.o \
-	$(BUILDDIR)/squake/common.o \
-	$(BUILDDIR)/squake/console.o \
-	$(BUILDDIR)/squake/crc.o \
-	$(BUILDDIR)/squake/cvar.o \
-	$(BUILDDIR)/squake/host.o \
-	$(BUILDDIR)/squake/host_cmd.o \
-	$(BUILDDIR)/squake/iplog.o \
-	$(BUILDDIR)/squake/banlog.o \
-	$(BUILDDIR)/squake/mathlib.o \
-	$(BUILDDIR)/squake/model.o \
-	$(BUILDDIR)/squake/net_dgrm.o \
-	$(BUILDDIR)/squake/net_loop.o \
-	$(BUILDDIR)/squake/net_main.o \
-	$(BUILDDIR)/squake/net_udp.o \
-	$(BUILDDIR)/squake/net_bsd.o \
-	$(BUILDDIR)/squake/pr_cmds.o \
-	$(BUILDDIR)/squake/pr_edict.o \
-	$(BUILDDIR)/squake/pr_exec.o \
-	$(BUILDDIR)/squake/r_main.o \
-	$(BUILDDIR)/squake/security.o \
-	$(BUILDDIR)/squake/sv_main.o \
-	$(BUILDDIR)/squake/sv_phys.o \
-	$(BUILDDIR)/squake/sv_move.o \
-	$(BUILDDIR)/squake/sv_user.o \
-	$(BUILDDIR)/squake/zone.o \
-	$(BUILDDIR)/squake/wad.o \
-	$(BUILDDIR)/squake/world.o \
-	$(BUILDDIR)/squake/sys_linux.o \
-	$(BUILDDIR)/squake/math.o \
-	$(BUILDDIR)/squake/worlda.o \
-	$(BUILDDIR)/squake/sys_a.o
+$(BUILD_DIR)/$(OBJS_DIR)/%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/bin/squake : $(SQUAKE_OBJS)
-	$(CC) $(CFLAGS) -o $@ $(SQUAKE_OBJS) $(LDFLAGS)
-
-####
-
-$(BUILDDIR)/squake/cmd.o :      $(MOUNT_DIR)/cmd.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/common.o :   $(MOUNT_DIR)/common.c
-	$(DO_DEBUG_CC)
-
-$(BUILDDIR)/squake/console.o :  $(MOUNT_DIR)/console.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/crc.o :      $(MOUNT_DIR)/crc.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/cvar.o :     $(MOUNT_DIR)/cvar.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/host.o :     $(MOUNT_DIR)/host.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/host_cmd.o : $(MOUNT_DIR)/host_cmd.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/iplog.o :    $(MOUNT_DIR)/iplog.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/banlog.o :	$(MOUNT_DIR)/banlog.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/mathlib.o :  $(MOUNT_DIR)/mathlib.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/model.o :    $(MOUNT_DIR)/model.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/net_dgrm.o : $(MOUNT_DIR)/net_dgrm.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/net_loop.o : $(MOUNT_DIR)/net_loop.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/net_main.o : $(MOUNT_DIR)/net_main.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/net_udp.o :  $(MOUNT_DIR)/net_udp.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/net_bsd.o :  $(MOUNT_DIR)/net_bsd.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/pr_cmds.o :  $(MOUNT_DIR)/pr_cmds.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/pr_edict.o : $(MOUNT_DIR)/pr_edict.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/pr_exec.o :  $(MOUNT_DIR)/pr_exec.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/r_main.o :   $(MOUNT_DIR)/r_main.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/security.o : $(MOUNT_DIR)/security.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/sv_main.o :  $(MOUNT_DIR)/sv_main.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/sv_phys.o :  $(MOUNT_DIR)/sv_phys.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/sv_move.o :  $(MOUNT_DIR)/sv_move.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/sv_user.o :  $(MOUNT_DIR)/sv_user.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/zone.o :	$(MOUNT_DIR)/zone.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/wad.o :      $(MOUNT_DIR)/wad.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/world.o :    $(MOUNT_DIR)/world.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/sys_linux.o :$(MOUNT_DIR)/sys_linux.c
-	$(DO_CC)
-
-$(BUILDDIR)/squake/math.o :     $(MOUNT_DIR)/math.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/worlda.o :   $(MOUNT_DIR)/worlda.s
-	$(DO_AS)
-
-$(BUILDDIR)/squake/sys_a.o : $(MOUNT_DIR)/sys_a.s
-	$(DO_AS)
-
-#############################################################################
-# MISC
-#############################################################################
+.PHONY: clean clean-debug clean-release clean-build clean-clean
 
 clean: clean-debug clean-release
 
 clean-debug:
-	$(MAKE) clean2 BUILDDIR=$(BUILD_DEBUG_DIR) CFLAGS="$(DEBUG_CFLAGS)"
+	$(MAKE) clean-build BUILD_DIR:=$(DEBUG_DIR)
 
 clean-release:
-	$(MAKE) clean2 BUILDDIR=$(BUILD_RELEASE_DIR) CFLAGS="$(DEBUG_CFLAGS)"
+	$(MAKE) clean-build BUILD_DIR:=$(RELEASE_DIR)
 
-clean2:
-	-rm -f $(SQUAKE_OBJS)
+clean-build:
+	$(RM) $(OBJS) $(TARGET)
+
+clean-clean:
+	-rm -rf $(RELEASE_DIR) $(DEBUG_DIR)
