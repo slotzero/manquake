@@ -593,6 +593,8 @@ void NET_Init (void)
 
 		if (i < com_argc-1 && atoi(com_argv[i+1]))
 			DEFAULTnet_clientport = atoi (com_argv[i+1]);
+
+		Con_Printf ("Single port server initialized\n");
 	}
 
 	i = COM_CheckParm ("-port");
