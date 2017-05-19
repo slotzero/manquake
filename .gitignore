@@ -1,6 +1,7 @@
 # linux
 
-release-i386/
+release*/
+debug*/
 
 # windows
 
