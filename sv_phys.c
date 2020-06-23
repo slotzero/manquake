@@ -83,6 +83,7 @@ SV_CheckVelocity
 void SV_CheckVelocity (edict_t *ent)
 {
 	int		i;
+	float	wishspeed;
 
 //
 // bound velocity
@@ -99,14 +100,27 @@ void SV_CheckVelocity (edict_t *ent)
 			Con_Printf ("Got a NaN origin on %s\n", pr_strings + ent->v.classname);
 			ent->v.origin[i] = 0;
 		}
+
+		/*
 		if (ent->v.velocity[i] > sv_maxvelocity.value)
 			ent->v.velocity[i] = sv_maxvelocity.value;
 		else if (ent->v.velocity[i] < -sv_maxvelocity.value)
 			ent->v.velocity[i] = -sv_maxvelocity.value;
+		*/
 
 		// Slot Zero 3.50-2  Zero velocity effect.
 		if ((int)ent->v.effects & EF_ZERO_VELOCITY)
 			ent->v.velocity[i] = 0;
+	}
+
+	// Slot Zero 2.78  Max velocity fix from Lord Havoc's Dark Places.
+	wishspeed = DotProduct(ent->v.velocity, ent->v.velocity);
+	if (wishspeed > sv_maxvelocity.value * sv_maxvelocity.value)
+	{
+		wishspeed = sv_maxvelocity.value / sqrt(wishspeed);
+		ent->v.velocity[0] *= wishspeed;
+		ent->v.velocity[1] *= wishspeed;
+		ent->v.velocity[2] *= wishspeed;
 	}
 }
 
