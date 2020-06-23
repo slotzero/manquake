@@ -27,7 +27,10 @@ server_t		sv;
 server_static_t	svs;
 
 // Slot Zero 3.50-2  Prevent players from using wall hack.
-cvar_t    pq_wallhackprotect = {"pq_wallhackprotect", "1"};
+cvar_t	pq_wallhackprotect = {"pq_wallhackprotect", "1"};
+
+// Slot Zero 2.77  Disable weapon kick while attacking.
+cvar_t	sv_nopunchangle = {"sv_nopunchangle", "1"};
 
 char	localmodels[MAX_MODELS][5];			// inline model names for precache
 
@@ -65,6 +68,8 @@ void SV_Init (void)
 	Cvar_RegisterVariable (&sv_nostep);
 	Cvar_RegisterVariable (&sv_noclip);
 	Cvar_RegisterVariable (&pq_fullpitch);	// JPG 2.01
+	Cvar_RegisterVariable (&sv_nopunchangle);	// Slot Zero 2.77  Disable weapon kick while attacking.
+
 
     // Slot Zero 3.50-2  Prevent players from using wall hack.
     Cvar_RegisterVariable (&pq_wallhackprotect);
@@ -1013,8 +1018,10 @@ void SV_WriteClientdataToMessage (edict_t *ent, sizebuf_t *msg)
 
 	for (i=0 ; i<3 ; i++)
 	{
-		if (ent->v.punchangle[i])
-			bits |= (SU_PUNCH1<<i);
+		// Slot Zero 2.77  Disable weapon kick while attacking.
+		if (ent->v.punchangle[i] && !sv_nopunchangle.value)
+				bits |= (SU_PUNCH1<<i);
+
 		if (ent->v.velocity[i])
 			bits |= (SU_VELOCITY1<<i);
 	}
@@ -1043,6 +1050,7 @@ void SV_WriteClientdataToMessage (edict_t *ent, sizebuf_t *msg)
 	{
 		if (bits & (SU_PUNCH1<<i))
 			MSG_WriteChar (msg, ent->v.punchangle[i]);
+
 		if (bits & (SU_VELOCITY1<<i))
 			MSG_WriteChar (msg, ent->v.velocity[i]/16);
 	}
